@@ -2,7 +2,8 @@
   "name": "telegram-bots",
   "type": "module",
   "scripts": {
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "postdeploy": "node scripts/setup-webhooks"
   },
   "devDependencies": {
     "@types/node": "^16.11.9",
