@@ -22,3 +22,13 @@ custom:
 
 package:
   individually: true
+
+functions:
+  dabbext:
+    handler: bots/dabbext/src/index.handler
+    environment:
+      BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
+    events:
+      - httpApi:
+          path: /bot${env:DABBEXT_BOT_TOKEN}
+          method: post

@@ -1,0 +1,13 @@
+{
+  "name": "@bots/dabbext",
+  "version": "0.1.0",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.54.0",
+    "source-map-support": "^0.5.21"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.85",
+    "@types/node-telegram-bot-api": "^0.53.2"
+  },
+  "private": true
+}
