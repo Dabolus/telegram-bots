@@ -1,0 +1,15 @@
+{
+  "name": "@bots/shared",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "type": "module",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.54.0"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.53.2"
+  },
+  "private": true
+}
