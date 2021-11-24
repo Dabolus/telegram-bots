@@ -1,0 +1,18 @@
+{
+  "name": "telegram-bots",
+  "type": "module",
+  "scripts": {
+    "deploy": "serverless deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.9",
+    "node-fetch": "^3.1.0",
+    "serverless": "^3.0.0-pre.b06e7add",
+    "serverless-esbuild": "^1.22.0",
+    "typescript": "^4.5.2"
+  },
+  "private": true,
+  "workspaces": [
+    "bots/*"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "es2020",
+    "moduleResolution": "node",
+    "target": "es2021",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "lib": ["es2020"],
+    "strict": true,
+    "baseUrl": "bots",
+    "paths": {
+      "@bots/*": ["*"]
+    }
+  },
+  "include": ["bots/**/*.ts"]
+}
