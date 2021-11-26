@@ -12,6 +12,7 @@ provider:
 
 plugins:
   - serverless-esbuild
+  - serverless-s3-sync
 
 custom:
   esbuild:
@@ -19,6 +20,10 @@ custom:
     minify: false
     sourcemap: true
     packager: yarn
+  s3Sync:
+    - bucketName: telegram-bots-assets
+      localDir: assets
+      acl: public-read
 
 package:
   individually: true
@@ -32,3 +37,11 @@ functions:
       - httpApi:
           path: /bot${env:DABBEXT_BOT_TOKEN}
           method: post
+
+resources:
+  Resources:
+    AssetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: telegram-bots-assets
+        AccessControl: PublicRead

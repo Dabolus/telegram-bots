@@ -10,6 +10,21 @@
     d "1"
     es5-ext "^0.10.47"
 
+"@auth0/s3@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@auth0/s3/-/s3-1.0.0.tgz#2f4cd16e04e583955fe594407918315bfa76a622"
+  integrity sha512-O8PTXJnA7n8ONBSwqlWa+aZ/vlOdZYnSCGQt25h87ALWNItY/Yij79TOnzIkMTJZ8aCpGXQPuIRziLmBliV++Q==
+  dependencies:
+    aws-sdk "^2.346.0"
+    fd-slicer "~1.0.0"
+    findit2 "~2.2.3"
+    graceful-fs "~4.1.4"
+    mime "^2.3.1"
+    mkdirp "~0.5.0"
+    pend "~1.2.0"
+    rimraf "~2.2.8"
+    streamsink "~1.2.0"
+
 "@kwsites/file-exists@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@kwsites/file-exists/-/file-exists-1.1.1.tgz#ad1efcac13e1987d8dbaf235ef3be5b0d96faa99"
@@ -723,6 +738,21 @@ aws-sdk@^2.1011.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-sdk@^2.346.0:
+  version "2.1036.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1036.0.tgz#47f0d0a38b5bfbd4a7a382a6756a6aa7af627aad"
+  integrity sha512-K0f4uXL32ZdoPmWiuSQEAC5ae5v7gNmhjzoEB7VonE5E8l2umWsoU0Ahm8WPr14LgsvtkeyBuqBjphbxLz6hIw==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
@@ -828,7 +858,7 @@ blob@0.0.5:
   resolved "https://registry.yarnpkg.com/blob/-/blob-0.0.5.tgz#d680eeef25f8cd91ad533f5b01eed48e64caf683"
   integrity sha512-gaqbzQPqOoamawKg0LGVd7SzLgXS+JH61oWprSLH+P+abTczqJbhTR8CmJ2u9/bUYNmHTGJx/UEmn6doAvvuig==
 
-bluebird@^3.5.0, bluebird@^3.5.1, bluebird@^3.7.2:
+bluebird@^3.5.0, bluebird@^3.5.1, bluebird@^3.5.4, bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -1958,6 +1988,13 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fd-slicer@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/fd-slicer/-/fd-slicer-1.0.1.tgz#8b5bcbd9ec327c5041bf9ab023fd6750f1177e65"
+  integrity sha1-i1vL2ewyfFBBv5qwI/1nUPEXfmU=
+  dependencies:
+    pend "~1.2.0"
+
 fd-slicer@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fd-slicer/-/fd-slicer-1.1.0.tgz#25c7c89cb1f9077f8891bbe61d8f390eae256f1e"
@@ -2058,6 +2095,11 @@ find-requires@^1.0.0:
   dependencies:
     es5-ext "^0.10.49"
     esniff "^1.1.0"
+
+findit2@~2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/findit2/-/findit2-2.2.3.tgz#58a466697df8a6205cdfdbf395536b8bd777a5f6"
+  integrity sha1-WKRmaX34piBc39vzlVNri9d3pfY=
 
 flat@^5.0.2:
   version "5.0.2"
@@ -2312,6 +2354,11 @@ graceful-fs@^4.1.10, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
+
+graceful-fs@~4.1.4:
+  version "4.1.15"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
+  integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
 
 graphlib@^2.1.8:
   version "2.1.8"
@@ -3054,6 +3101,11 @@ mime@^1.4.1, mime@^1.6.0:
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
   integrity sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==
 
+mime@^2.3.1, mime@^2.4.4:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-2.6.0.tgz#a2a682a95cd4d0cb1d6257e28f83da7e35800367"
+  integrity sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==
+
 mimic-fn@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.2.0.tgz#820c86a39334640e99516928bd03fca88057d022"
@@ -3101,7 +3153,7 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
-mkdirp@^0.5.1:
+mkdirp@^0.5.1, mkdirp@~0.5.0:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
@@ -3836,6 +3888,11 @@ reusify@^1.0.4:
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
   integrity sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
 
+rimraf@~2.2.8:
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
+  integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
+
 run-async@^2.2.0, run-async@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
@@ -3931,6 +3988,17 @@ serverless-esbuild@^1.22.0:
     ramda "^0.27.0"
     semver "^7.3.5"
     string.prototype.matchall "^4.0.4"
+
+serverless-s3-sync@^1.17.3:
+  version "1.17.3"
+  resolved "https://registry.yarnpkg.com/serverless-s3-sync/-/serverless-s3-sync-1.17.3.tgz#cf7913dde5f38c215c21dbf7466370974003cf7a"
+  integrity sha512-lnet9qqu8Uh3N8lyywxWt+0eljsfiX4xVDDMLkE2ggWBGEupM4B4xBonsI1GfWgPVpd4EJOTeyFOEWUAWpINeA==
+  dependencies:
+    "@auth0/s3" "^1.0.0"
+    bluebird "^3.5.4"
+    chalk "^2.4.2"
+    mime "^2.4.4"
+    minimatch "^3.0.4"
 
 serverless@^3.0.0-pre.b06e7add:
   version "3.0.0-pre.fc4619a7"
@@ -4191,6 +4259,11 @@ stream-shift@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
+
+streamsink@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/streamsink/-/streamsink-1.2.0.tgz#efafee9f1e22d3591ed7de3dcaa95c3f5e79f73c"
+  integrity sha1-76/unx4i01ke1949yqlcP1559zw=
 
 string-width@^1.0.1:
   version "1.0.2"

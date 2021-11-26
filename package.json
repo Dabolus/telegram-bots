@@ -10,6 +10,7 @@
     "node-fetch": "^3.1.0",
     "serverless": "^3.0.0-pre.b06e7add",
     "serverless-esbuild": "^1.22.0",
+    "serverless-s3-sync": "^1.17.3",
     "typescript": "^4.5.2"
   },
   "private": true,
