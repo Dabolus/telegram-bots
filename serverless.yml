@@ -9,6 +9,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
+  timeout: 10
 
 plugins:
   - serverless-esbuild
@@ -20,6 +21,10 @@ custom:
     minify: false
     sourcemap: true
     packager: yarn
+    exclude:
+      - aws-sdk
+      - chrome-aws-lambda
+      - puppeteer-core
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
@@ -27,6 +32,9 @@ custom:
 
 package:
   individually: true
+  # TODO: discover why this isn't working at function level (1/2)
+  patterns:
+    - 'bots/quote-generator/templates/**'
 
 functions:
   dabbext:
@@ -37,6 +45,22 @@ functions:
       - httpApi:
           path: /bot${env:DABBEXT_BOT_TOKEN}
           method: post
+  quote-generator:
+    handler: bots/quote-generator/src/index.handler
+    memorySize: 2048
+    environment:
+      ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
+      BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
+    events:
+      - httpApi:
+          path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
+          method: post
+    layers:
+      - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:25
+    # TODO: discover why this isn't working at function level (2/2)
+    # package:
+    #   patterns:
+    #     - 'bots/quote-generator/templates/**'
 
 resources:
   Resources:
