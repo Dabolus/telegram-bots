@@ -6,7 +6,9 @@
   "types": "src/index.ts",
   "type": "module",
   "dependencies": {
-    "node-telegram-bot-api": "^0.54.0"
+    "chrome-aws-lambda": "^10.1.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "puppeteer-core": "^11.0.0"
   },
   "devDependencies": {
     "@types/node-telegram-bot-api": "^0.53.2"
