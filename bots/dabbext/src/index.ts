@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import type { InlineQueryResultArticle, Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent } from 'aws-lambda';
-import { setupBot } from '@bots/shared';
+import { setupBot } from '@bots/shared/telegram';
 import * as rawEffects from './effects';
 
 const effects = Object.entries(rawEffects).sort(([a], [b]) =>

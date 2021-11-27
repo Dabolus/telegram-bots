@@ -1,7 +1,7 @@
 import 'source-map-support/register';
-import type { InlineQueryResultArticle, Update } from 'node-telegram-bot-api';
+import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { setupBot } from '@bots/shared';
+import { setupBot } from '@bots/shared/telegram';
 import { startServer } from './server';
 import { formatName, generateImage } from './utils';
 

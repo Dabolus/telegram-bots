@@ -1,6 +1,6 @@
 import { URLSearchParams } from 'url';
 import { User } from 'node-telegram-bot-api';
-import { setupBrowser } from '@bots/shared';
+import { setupBrowser } from '@bots/shared/browser';
 
 export const host = 'localhost';
 export const port = 40736;
