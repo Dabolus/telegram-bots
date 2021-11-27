@@ -1,6 +1,6 @@
 org: dabolus
-app: telegram-bots
-service: telegram-bots
+app: ${env:SERVICE_NAME}
+service: ${env:SERVICE_NAME}
 frameworkVersion: '2 || 3'
 useDotenv: true
 variablesResolutionMode: 20210326
@@ -21,7 +21,7 @@ custom:
     sourcemap: true
     packager: yarn
   s3Sync:
-    - bucketName: telegram-bots-assets
+    - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
       acl: public-read
 
@@ -43,5 +43,5 @@ resources:
     AssetsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: telegram-bots-assets
+        BucketName: ${env:SERVICE_NAME}-assets
         AccessControl: PublicRead
