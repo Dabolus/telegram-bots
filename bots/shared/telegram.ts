@@ -14,11 +14,7 @@ export const setupBot = (token = process.env.BOT_TOKEN) => {
   return bot;
 };
 
-export const getBotUsername = async () => {
-  if (!bot) {
-    throw new Error('Bot not initialized!');
-  }
-
+export const getBotUsername = async (bot: TelegramBot) => {
   const { username } = await bot.getMe();
 
   if (!username) {

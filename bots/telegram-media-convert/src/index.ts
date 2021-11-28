@@ -138,7 +138,7 @@ export const handler = async (
   if (update.message?.text) {
     console.info('Received a text message, checking if it matches a query');
 
-    const botUsername = await getBotUsername();
+    const botUsername = await getBotUsername(bot);
 
     if (getBotStartRegex(botUsername).test(update.message.text)) {
       console.info(
