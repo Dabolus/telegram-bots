@@ -1,8 +1,7 @@
-import 'source-map-support/register';
-import type { InlineQueryResultArticle, Update } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot } from '@bots/shared/telegram';
 import * as rawEffects from './effects';
+import type { InlineQueryResultArticle, Update } from 'node-telegram-bot-api';
+import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 const effects = Object.entries(rawEffects).sort(([a], [b]) =>
   a.localeCompare(b),

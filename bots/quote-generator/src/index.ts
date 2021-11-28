@@ -1,4 +1,3 @@
-import 'source-map-support/register';
 import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot, getBotUsername } from '@bots/shared/telegram';
