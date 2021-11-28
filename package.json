@@ -2,6 +2,7 @@
   "name": "telegram-bots",
   "type": "module",
   "scripts": {
+    "postinstall": "make layers",
     "deploy": "serverless deploy",
     "postdeploy": "node scripts/setup-webhooks"
   },

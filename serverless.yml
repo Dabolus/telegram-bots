@@ -26,6 +26,7 @@ custom:
       - aws-sdk
       - chrome-aws-lambda
       - puppeteer-core
+      - sharp
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
@@ -36,6 +37,12 @@ package:
   # TODO: discover why this isn't working at function level (1/2)
   patterns:
     - 'bots/quote-generator/templates/**'
+
+layers:
+  ffmpeg:
+    path: layers/ffmpeg/build
+  sharp:
+    path: layers/sharp/build
 
 functions:
   dabbext:
