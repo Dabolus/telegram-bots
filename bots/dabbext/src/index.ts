@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import type { InlineQueryResultArticle, Update } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent } from 'aws-lambda';
+import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot } from '@bots/shared/telegram';
 import * as rawEffects from './effects';
 
@@ -15,7 +15,12 @@ const importNameToSentenceCase = (str: string): string =>
     : // Otherwise, convert it to sentence case, starting with and adding spaces between capital letters
       `${str[0].toUpperCase()}${str.slice(1).replace(/[A-Z]/g, ' $&')}`;
 
-export const handler = async (event: APIGatewayProxyEvent) => {
+export const handler = async (
+  event: APIGatewayProxyEvent,
+  context: Context,
+) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   if (!event.body) {
     console.error('No body provided');
     return;
