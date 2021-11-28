@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { setupBot } from '@bots/shared/telegram';
+import { setupBot, getBotUsername } from '@bots/shared/telegram';
 import { startServer } from './server';
 import { formatName, generateImage } from './utils';
 
@@ -23,7 +23,12 @@ export const handler = async (
     return;
   }
 
-  const match = update.message.text.match(/\/quote(?:@GenQuoteBot)?\s*(.*)/);
+  const bot = setupBot();
+  const botUsername = await getBotUsername(bot);
+
+  const match = update.message.text.match(
+    new RegExp(`^\\/quote(?:@${botUsername})?\\s+(.*)$`),
+  );
 
   if (!match || match.length < 2) {
     console.info('Message text not matching required pattern, ignoring it');
@@ -42,7 +47,6 @@ export const handler = async (
 
   console.info('Generating image');
   startServer();
-  const bot = setupBot();
   await bot.sendChatAction(update.message.chat.id, 'upload_photo');
 
   const image = await generateImage(
