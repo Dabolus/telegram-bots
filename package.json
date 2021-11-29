@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.9",
+    "esbuild-plugin-yaml": "^0.0.1",
     "node-fetch": "^3.1.0",
     "serverless": "^3.0.0-pre.b06e7add",
     "serverless-esbuild": "^1.22.0",

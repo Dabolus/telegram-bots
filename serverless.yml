@@ -23,6 +23,7 @@ custom:
     bundle: true
     minify: false
     sourcemap: true
+    plugins: esbuild-plugins.cjs
     packager: yarn
     exclude:
       - aws-sdk
