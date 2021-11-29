@@ -13,6 +13,17 @@ provider:
   timeout: 10
   environment:
     NODE_OPTIONS: --enable-source-maps
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        Fn::GetAtt:
+          - CacheTable
+          - Arn
 
 plugins:
   - serverless-esbuild
@@ -94,8 +105,26 @@ functions:
 
 resources:
   Resources:
+    # The bucket used to store assets
     AssetsBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${env:SERVICE_NAME}-assets
         AccessControl: PublicRead
+    # The cache table used by bots to store data that should persist across executions
+    CacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:SERVICE_NAME}-cache
+        AttributeDefinitions:
+          - AttributeName: botToken
+            AttributeType: S
+          # NOTE: this is not needed, but it's added here for completeness
+          # - AttributeName: val
+          #   AttributeType: M
+        KeySchema:
+          - AttributeName: botToken
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
