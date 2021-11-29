@@ -103,6 +103,32 @@ functions:
     # package:
     #   patterns:
     #     - 'bots/telegram-media-convert/static/**'
+  wotd:
+    handler: bots/wotd/src/index.handler
+    environment:
+      BOT_TOKEN: ${env:WOTD_BOT_TOKEN}
+      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+      CHAT_IDS_ALLOWLIST: ${env:WOTD_CHAT_IDS_ALLOWLIST}
+      GOOGLE_CUSTOM_SEARCH_API_KEY: ${env:GOOGLE_CUSTOM_SEARCH_API_KEY}
+      GOOGLE_CUSTOM_SEARCH_CX: ${env:GOOGLE_CUSTOM_SEARCH_CX}
+    events:
+      # TODO: replace all these schedules with the commented one + serverless-local-schedule once it gets support for Serverless 3
+      # See: https://github.com/serverless/serverless-local-schedule/issues/20
+      # - schedule:
+      #     rate: cron(1 18 * * ? *)
+      #     timezone: Europe/Rome
+      - schedule:
+          rate: cron(1 17 * 1-2,11-12 ? *)
+      - schedule:
+          rate: cron(1 17 1-27 3 ? *)
+      - schedule:
+          rate: cron(1 16 28-31 3 ? *)
+      - schedule:
+          rate: cron(1 16 * 4-9 ? *)
+      - schedule:
+          rate: cron(1 16 1-30 10 ? *)
+      - schedule:
+          rate: cron(1 17 31 10 ? *)
 
 resources:
   Resources:

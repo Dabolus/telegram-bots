@@ -1,0 +1,14 @@
+{
+  "name": "@bots/wotd",
+  "version": "0.1.0",
+  "dependencies": {
+    "@googleapis/customsearch": "^0.2.0",
+    "aws-sdk": "^2.1037.0",
+    "node-telegram-bot-api": "^0.54.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.85",
+    "@types/node-telegram-bot-api": "^0.53.2"
+  },
+  "private": true
+}
