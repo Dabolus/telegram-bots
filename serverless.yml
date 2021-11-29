@@ -41,6 +41,7 @@ custom:
       - chrome-aws-lambda
       - puppeteer-core
       - sharp
+      - aws-sdk
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
