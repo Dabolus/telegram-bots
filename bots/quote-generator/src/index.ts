@@ -26,7 +26,7 @@ export const handler = async (
   const botUsername = await getBotUsername(bot);
 
   const match = update.message.text.match(
-    new RegExp(`^\\/quote(?:@${botUsername})?\\s+(.*)$`),
+    new RegExp(`^\\/quote(?:@${botUsername})?\\s*(.*)$`),
   );
 
   if (!match || match.length < 2) {
