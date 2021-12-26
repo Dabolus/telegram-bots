@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import { URLSearchParams } from 'url';
-import { User } from 'node-telegram-bot-api';
+import { Update, User } from 'node-telegram-bot-api';
 import { setupBrowser } from '@bots/shared/browser';
 import { RenderTemplateOptions } from './server';
 
@@ -248,3 +248,76 @@ export const getRandomTemplateOptions =
       emphasizedSize: Math.random() < 0.8 ? 1 : 1 + Math.random() / 4,
     };
   };
+
+export interface QuoteInfo {
+  text: string;
+  author: string;
+}
+
+export const extractQuoteInfo = (
+  update: Update,
+  botUsername: string,
+): QuoteInfo | null => {
+  // Update is an inline query, get the info from there
+  if (update.inline_query) {
+    const trimmed = update.inline_query.query.trim();
+
+    if (!trimmed) {
+      console.info('Inline query text is empty, ignoring it');
+      return null;
+    }
+
+    return {
+      text: update.inline_query.query.trim(),
+      author: formatName(update.inline_query.from),
+    };
+  }
+
+  if (!update.message) {
+    console.info('Update is not of one of the supported types, ignoring it');
+    return null;
+  }
+
+  const match = update.message.text?.match(
+    new RegExp(`^\\/quote(?:@${botUsername})?\\s*(.*)$`),
+  );
+
+  if (!match || match.length < 2) {
+    console.info('Message text not matching required pattern, ignoring it');
+    return null;
+  }
+
+  // Update is a response to another message, get the info from there
+  if (
+    update.message.reply_to_message?.text &&
+    (update.message.reply_to_message?.from ||
+      update.message.reply_to_message?.forward_from)
+  ) {
+    const trimmed = update.message.reply_to_message.text.trim();
+
+    if (!trimmed) {
+      console.info('Replied message text is empty, ignoring it');
+      return null;
+    }
+
+    return {
+      text: trimmed,
+      author: formatName(
+        update.message.reply_to_message.forward_from! ||
+          update.message.reply_to_message.from!,
+      ),
+    };
+  }
+
+  const trimmed = match[1].trim();
+
+  console.info('Message text is empty, ignoring it');
+  if (!trimmed || (!update.message.forward_from && !update.message.from)) {
+    return null;
+  }
+
+  return {
+    text: trimmed,
+    author: formatName(update.message.forward_from! || update.message.from!),
+  };
+};

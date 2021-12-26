@@ -3,7 +3,7 @@ import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot, getBotUsername } from '@bots/shared/telegram';
 import { startServer } from './server';
 import {
-  formatName,
+  extractQuoteInfo,
   generateImage,
   getRandomTemplateOptions,
   quoteHeight,
@@ -23,15 +23,23 @@ export const handler = async (
 
   const update: Update = JSON.parse(event.body);
   const bot = setupBot();
+  const botUsername = await getBotUsername(bot);
 
+  const quoteInfo = extractQuoteInfo(update, botUsername);
+
+  if (!quoteInfo) {
+    return;
+  }
+
+  // If the update was an inline query, respond with a URL to the quote renderer lambda
   if (update.inline_query?.query) {
     const { gradientAngle, emphasizedSize, ...options } =
       await getRandomTemplateOptions();
     const imageUrl = `${process.env.API_GATEWAY_BASE_URL}${
       process.env.RENDERER_PATH
     }?${new URLSearchParams({
-      query: update.inline_query.query,
-      author: formatName(update.inline_query.from),
+      query: quoteInfo.text,
+      author: quoteInfo.author,
       ...options,
       gradientAngle: gradientAngle.toFixed(2),
       emphasizedSize: emphasizedSize.toFixed(2),
@@ -49,43 +57,18 @@ export const handler = async (
     ]);
   }
 
-  if (!update.message?.text) {
-    console.info('Update is not a message with text, ignoring it');
+  if (!update.message) {
     return;
   }
 
-  const botUsername = await getBotUsername(bot);
-
-  const match = update.message.text.match(
-    new RegExp(`^\\/quote(?:@${botUsername})?\\s*(.*)$`),
-  );
-
-  if (!match || match.length < 2) {
-    console.info('Message text not matching required pattern, ignoring it');
-    return;
-  }
-
-  const [, query] = match;
-
-  const quoteText =
-    update.message.reply_to_message?.text?.trim() || query.trim();
-
-  if (!quoteText) {
-    console.info('Text to quote is empty, ignoring it');
-    return;
-  }
-
+  // Otherwise, if the update is a simple message, generate the image and send it to the correct chat
   console.info('Generating image');
   startServer();
   await bot.sendChatAction(update.message.chat.id, 'upload_photo');
 
   const image = await generateImage(
-    quoteText,
-    formatName(
-      update.message.reply_to_message?.text?.trim()
-        ? update.message.reply_to_message.from!
-        : update.message.from!,
-    ),
+    quoteInfo.text,
+    quoteInfo.author,
     await getRandomTemplateOptions(),
   );
 
