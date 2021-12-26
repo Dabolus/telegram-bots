@@ -1,6 +1,8 @@
+import fetch from 'node-fetch';
 import { URLSearchParams } from 'url';
 import { User } from 'node-telegram-bot-api';
 import { setupBrowser } from '@bots/shared/browser';
+import { RenderTemplateOptions } from './server';
 
 export const host = 'localhost';
 export const port = 40736;
@@ -80,7 +82,11 @@ export const colors = ['#65da88', '#e7af59', '#47a2ba'];
 
 export const getRandomColor = () => getRandomArrayElement(colors);
 
-export const generateImage = async (query: string, author: string) => {
+export const generateImage = async (
+  query: string,
+  author: string,
+  { gradientAngle, emphasizedSize, ...options }: RenderTemplateOptions,
+) => {
   console.info(`Received query "${query}"`);
 
   const browser = await setupBrowser();
@@ -93,16 +99,19 @@ export const generateImage = async (query: string, author: string) => {
     `http://${host}:${port}?${new URLSearchParams({
       query,
       author,
+      ...options,
+      gradientAngle: gradientAngle.toFixed(2),
+      emphasizedSize: emphasizedSize.toFixed(2),
     }).toString()}`,
     { waitUntil: 'networkidle0' },
   );
 
   console.info('Exporting page image...');
 
-  const image = await page.screenshot({
+  const image = (await page.screenshot({
     type: 'jpeg',
     quality: 80,
-  });
+  })) as Buffer;
 
   console.info('Closing browser...');
 
@@ -218,3 +227,24 @@ export const replaceEmojis = (str: string) =>
         emoji,
       )}">`,
   );
+
+export const getRandomTemplateOptions =
+  async (): Promise<RenderTemplateOptions> => {
+    const quoteFont = getRandomFont();
+    const imageRes = await fetch(
+      `https://source.unsplash.com/${quoteWidth}x${quoteHeight}/?inspiring`,
+    );
+
+    return {
+      themeColor: getRandomColor(),
+      imageUrl: imageRes.url,
+      gradientAngle: Math.random() < 0.5 ? 0 : 180,
+      quoteFont,
+      quoteVariant: Math.random() < 0.8 ? 'normal' : 'small-caps',
+      authorFont: getRandomFont(),
+      emphasizedFont: Math.random() < 0.8 ? quoteFont : getRandomFont('fancy'),
+      emphasizedStyle: Math.random() < 0.8 ? 'normal' : 'italic',
+      emphasizedWeight: Math.random() < 0.8 ? 'normal' : 'bold',
+      emphasizedSize: Math.random() < 0.8 ? 1 : 1 + Math.random() / 4,
+    };
+  };

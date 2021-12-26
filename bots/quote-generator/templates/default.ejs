@@ -5,14 +5,17 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=<%= quoteFont.replace(
       / /g,
       '+',
-    ) %>:400,b,i,bi|<%= authorFont.replace(/ /g, '+') %>:400,b,i,bi">
+    ) %>:400,b,i,bi|<%= authorFont.replace(/ /g, '+') %>:400,b,i,bi|<%= emphasizedFont.replace(
+      / /g,
+      '+',
+    ) %>:400,b,i,bi">
     <style>
       * { box-sizing: border-box; }
       html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
       body {
         background:
-          linear-gradient(<%= Math.random() < 0.5 ? 0 : 180 %>deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.9) 100%),
-          url('https://source.unsplash.com/<%= quoteWidth %>x<%= quoteHeight %>/?inspiring');
+          linear-gradient(<%= gradientAngle %>deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.9) 100%),
+          url('<%= imageUrl %>');
         display: flex;
         align-items: center;
         justify-content: center;
@@ -25,8 +28,8 @@
         align-items: center;
         justify-content: center;
         font-size: 96px;
-        gap: <%= quoteWidth / 40 %>px;
-        padding: <%= quoteWidth / 20 %>px;
+        gap: <%= imageWidth / 40 %>px;
+        padding: <%= imageWidth / 20 %>px;
       }
       p {
         margin: 0;
@@ -36,24 +39,20 @@
       #quote {
         font-family: '<%= quoteFont %>';
         font-size: 1em;
-        font-variant: <%= Math.random() < 0.8 ? 'normal' : 'small-caps' %>;
+        font-variant: <%= quoteVariant %>;
       }
       strong {
-        font-style: <%= Math.random() < 0.8 ? 'normal' : 'italic' %>;
-        font-weight: <%= Math.random() < 0.8 ? 'normal' : 'bold' %>;
-        font-size: <%=
-          Math.random() < 0.8
-            ? '1em'
-            : `${(1 + Math.random() / 4).toFixed(2)}em`
-        %>;
-        font-family: '<%= highlightFont %>';
+        font-style: <%= emphasizedStyle %>;
+        font-weight: <%= emphasizedWeight %>;
+        font-size: <%= emphasizedSize.toFixed(2) %>em;
+        font-family: '<%= emphasizedFont %>';
       }
       #author {
         font-family: '<%= authorFont %>';
         font-size: 0.9375em;
       }
       strong, #author {
-        color: <%= getRandomColor() %>;
+        color: <%= themeColor %>;
       }
       img {
         height: 1em;

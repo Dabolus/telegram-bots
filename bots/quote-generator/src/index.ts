@@ -2,7 +2,7 @@ import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot, getBotUsername } from '@bots/shared/telegram';
 import { startServer } from './server';
-import { formatName, generateImage } from './utils';
+import { formatName, generateImage, getRandomTemplateOptions } from './utils';
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -16,13 +16,13 @@ export const handler = async (
   }
 
   const update: Update = JSON.parse(event.body);
+  const bot = setupBot();
 
   if (!update.message?.text) {
     console.info('Update is not a message with text, ignoring it');
     return;
   }
 
-  const bot = setupBot();
   const botUsername = await getBotUsername(bot);
 
   const match = update.message.text.match(
@@ -55,6 +55,7 @@ export const handler = async (
         ? update.message.reply_to_message.from!
         : update.message.from!,
     ),
+    await getRandomTemplateOptions(),
   );
 
   console.info('Sending image');
