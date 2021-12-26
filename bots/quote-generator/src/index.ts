@@ -2,7 +2,13 @@ import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { setupBot, getBotUsername } from '@bots/shared/telegram';
 import { startServer } from './server';
-import { formatName, generateImage, getRandomTemplateOptions } from './utils';
+import {
+  formatName,
+  generateImage,
+  getRandomTemplateOptions,
+  quoteHeight,
+  quoteWidth,
+} from './utils';
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -17,6 +23,31 @@ export const handler = async (
 
   const update: Update = JSON.parse(event.body);
   const bot = setupBot();
+
+  if (update.inline_query?.query) {
+    const { gradientAngle, emphasizedSize, ...options } =
+      await getRandomTemplateOptions();
+    const imageUrl = `${process.env.API_GATEWAY_BASE_URL}${
+      process.env.RENDERER_PATH
+    }?${new URLSearchParams({
+      query: update.inline_query.query,
+      author: formatName(update.inline_query.from),
+      ...options,
+      gradientAngle: gradientAngle.toFixed(2),
+      emphasizedSize: emphasizedSize.toFixed(2),
+    }).toString()}`;
+
+    await bot.answerInlineQuery(update.inline_query.id, [
+      {
+        id: '1',
+        type: 'photo',
+        photo_url: imageUrl,
+        thumb_url: `${imageUrl}&thumb=true`,
+        photo_width: quoteWidth,
+        photo_height: quoteHeight,
+      },
+    ]);
+  }
 
   if (!update.message?.text) {
     console.info('Update is not a message with text, ignoring it');

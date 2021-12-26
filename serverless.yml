@@ -14,6 +14,14 @@ provider:
   timeout: 10
   environment:
     NODE_OPTIONS: --enable-source-maps
+    API_GATEWAY_BASE_URL:
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - Ref: HttpApi
+          - '.execute-api.'
+          - Ref: AWS::Region
+          - '.amazonaws.com'
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -75,6 +83,7 @@ functions:
     memorySize: 1536
     environment:
       ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
+      RENDERER_PATH: /quote-generator/render
       BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
     events:
       - httpApi:
