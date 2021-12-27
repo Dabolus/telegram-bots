@@ -34,13 +34,13 @@
       p {
         margin: 0;
         color: #fff;
-        text-align: center;
       }
       #quote {
         font-family: '<%= quoteFont %>';
         font-size: 1em;
         font-variant: <%= quoteVariant %>;
         white-space: pre-wrap;
+        text-align: <%= query.includes('\n') ? 'left' : 'center' %>;
       }
       strong {
         font-style: <%= emphasizedStyle %>;
@@ -51,6 +51,7 @@
       #author {
         font-family: '<%= authorFont %>';
         font-size: 0.9375em;
+        text-align: center;
       }
       strong, #author {
         color: <%= themeColor %>;
