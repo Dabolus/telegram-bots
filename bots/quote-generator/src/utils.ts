@@ -3,6 +3,7 @@ import { URLSearchParams } from 'url';
 import { Update, User } from 'node-telegram-bot-api';
 import { setupBrowser } from '@bots/shared/browser';
 import { RenderTemplateOptions } from './server';
+import { parseArgs } from '@bots/shared/utils';
 
 export const host = 'localhost';
 export const port = 40736;
@@ -32,7 +33,7 @@ export const highlight = (str: string) =>
       : word,
   );
 
-export const getRandomArrayElement = (arr: any[]) =>
+export const getRandomArrayElement = <T>(arr: T[]): T =>
   arr[Math.floor(Math.random() * arr.length)];
 
 export const standardFonts = [
@@ -228,30 +229,34 @@ export const replaceEmojis = (str: string) =>
       )}">`,
   );
 
-export const getRandomTemplateOptions =
-  async (): Promise<RenderTemplateOptions> => {
-    const quoteFont = getRandomFont();
-    const imageRes = await fetch(
-      `https://source.unsplash.com/${quoteWidth}x${quoteHeight}/?inspiring`,
-    );
+export const getRandomTemplateOptions = async (
+  imageQuery = 'inspiring',
+  themeColor = getRandomColor(),
+): Promise<RenderTemplateOptions> => {
+  const quoteFont = getRandomFont();
+  const imageRes = await fetch(
+    `https://source.unsplash.com/${quoteWidth}x${quoteHeight}/?${imageQuery}`,
+  );
 
-    return {
-      themeColor: getRandomColor(),
-      imageUrl: imageRes.url,
-      gradientAngle: Math.random() < 0.5 ? 0 : 180,
-      quoteFont,
-      quoteVariant: Math.random() < 0.8 ? 'normal' : 'small-caps',
-      authorFont: getRandomFont(),
-      emphasizedFont: Math.random() < 0.8 ? quoteFont : getRandomFont('fancy'),
-      emphasizedStyle: Math.random() < 0.8 ? 'normal' : 'italic',
-      emphasizedWeight: Math.random() < 0.8 ? 'normal' : 'bold',
-      emphasizedSize: Math.random() < 0.8 ? 1 : 1 + Math.random() / 4,
-    };
+  return {
+    themeColor,
+    imageUrl: imageRes.url,
+    gradientAngle: Math.random() < 0.5 ? 0 : 180,
+    quoteFont,
+    quoteVariant: Math.random() < 0.8 ? 'normal' : 'small-caps',
+    authorFont: getRandomFont(),
+    emphasizedFont: Math.random() < 0.8 ? quoteFont : getRandomFont('fancy'),
+    emphasizedStyle: Math.random() < 0.8 ? 'normal' : 'italic',
+    emphasizedWeight: Math.random() < 0.8 ? 'normal' : 'bold',
+    emphasizedSize: Math.random() < 0.8 ? 1 : 1 + Math.random() / 4,
   };
+};
 
 export interface QuoteInfo {
   text: string;
   author: string;
+  imageQuery?: string;
+  themeColor?: string;
 }
 
 export const extractQuoteInfo = (
@@ -267,9 +272,16 @@ export const extractQuoteInfo = (
       return null;
     }
 
+    // Only parse as args if the text starts with a quote
+    const [text, imageQuery, themeColor] = trimmed.startsWith('"')
+      ? parseArgs(trimmed)
+      : [trimmed];
+
     return {
-      text: update.inline_query.query.trim(),
       author: formatName(update.inline_query.from),
+      text,
+      imageQuery,
+      themeColor,
     };
   }
 
@@ -293,9 +305,16 @@ export const extractQuoteInfo = (
       return null;
     }
 
+    // Only parse as args if the text starts with a quote
+    const [text, imageQuery, themeColor] = trimmed.startsWith('"')
+      ? parseArgs(trimmed)
+      : [trimmed];
+
     return {
-      text: trimmed,
       author: formatName(update.message.forward_from! || update.message.from!),
+      text,
+      imageQuery,
+      themeColor,
     };
   }
 
@@ -303,6 +322,8 @@ export const extractQuoteInfo = (
     console.info('Message text not matching required pattern, ignoring it');
     return null;
   }
+
+  const trimmedMatch = match[1].trim();
 
   // Update is a response to another message, get the info from there
   if (
@@ -317,24 +338,36 @@ export const extractQuoteInfo = (
       return null;
     }
 
+    // Parse the args from the message text (if any)
+    const [imageQuery, themeColor] = trimmedMatch
+      ? parseArgs(trimmedMatch)
+      : [];
+
     return {
-      text: trimmed,
       author: formatName(
         update.message.reply_to_message.forward_from! ||
           update.message.reply_to_message.from!,
       ),
+      text: trimmed,
+      imageQuery,
+      themeColor,
     };
   }
 
-  const trimmed = match[1].trim();
-
   console.info('Message text is empty, ignoring it');
-  if (!trimmed || (!update.message.forward_from && !update.message.from)) {
+  if (!trimmedMatch || (!update.message.forward_from && !update.message.from)) {
     return null;
   }
 
+  // Only parse as args if the text starts with a quote
+  const [text, imageQuery, themeColor] = trimmedMatch.startsWith('"')
+    ? parseArgs(trimmedMatch)
+    : [trimmedMatch];
+
   return {
-    text: trimmed,
     author: formatName(update.message.forward_from! || update.message.from!),
+    text,
+    imageQuery,
+    themeColor,
   };
 };

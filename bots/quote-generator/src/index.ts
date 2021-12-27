@@ -45,9 +45,9 @@ I can generate fancy quotes from text\\.
 
 There are multiple ways in which I can generate a quote:
 • By sending or forwarding me a text message in private
-• By writing \\/quote \\<text\\> in a group chat where I'm in
-• By writing \\/quote in response to another message in a group chat where I'm in
-• By using inline mode in any chat, e\\.g\\. @${botUsername} \\<text\\> \\(experimental\\)
+• By writing \\/quote \`\\<text\\>\` \`\\<image query?\\>\` \`\\<theme color?\\>\` in a group chat where I'm in
+• By writing \\/quote \`\\<image query?\\>\` \`\\<theme color?\\>\` in response to another message in a group chat where I'm in
+• By using inline mode in any chat, e\\.g\\. @${botUsername} \`\\<text\\>\` \`\\<image query?\\>\` \`\\<theme color?\\>\` \\(experimental\\)
 `,
       {
         parse_mode: 'MarkdownV2',
@@ -65,7 +65,10 @@ There are multiple ways in which I can generate a quote:
   // If the update was an inline query, respond with a URL to the quote renderer lambda
   if (update.inline_query?.query) {
     const { gradientAngle, emphasizedSize, ...options } =
-      await getRandomTemplateOptions();
+      await getRandomTemplateOptions(
+        quoteInfo.imageQuery,
+        quoteInfo.themeColor,
+      );
     const imageUrl = `${process.env.API_GATEWAY_BASE_URL}${
       process.env.RENDERER_PATH
     }?${new URLSearchParams({
@@ -100,7 +103,7 @@ There are multiple ways in which I can generate a quote:
   const image = await generateImage(
     quoteInfo.text,
     quoteInfo.author,
-    await getRandomTemplateOptions(),
+    await getRandomTemplateOptions(quoteInfo.imageQuery, quoteInfo.themeColor),
   );
 
   console.info('Sending image');
