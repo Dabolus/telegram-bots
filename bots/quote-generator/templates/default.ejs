@@ -40,6 +40,7 @@
         font-family: '<%= quoteFont %>';
         font-size: 1em;
         font-variant: <%= quoteVariant %>;
+        white-space: pre-wrap;
       }
       strong {
         font-style: <%= emphasizedStyle %>;
@@ -63,9 +64,7 @@
   </head>
   <body>
     <div id="container">
-      <p id="quote">
-        <%- replaceEmojis(highlight(sanitize(query))) %>
-      </p>
+      <p id="quote"><%- replaceEmojis(highlight(sanitize(query))) %></p>
       <p id="author">
         — <%= author %>
       </p>
