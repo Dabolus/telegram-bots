@@ -1,6 +1,10 @@
 import type { Update } from 'node-telegram-bot-api';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { setupBot, getBotUsername } from '@bots/shared/telegram';
+import {
+  setupBot,
+  getBotUsername,
+  getBotStartRegex,
+} from '@bots/shared/telegram';
 import { startServer } from './server';
 import {
   extractQuoteInfo,
@@ -24,6 +28,33 @@ export const handler = async (
   const update: Update = JSON.parse(event.body);
   const bot = setupBot();
   const botUsername = await getBotUsername(bot);
+
+  if (
+    update.message?.text &&
+    getBotStartRegex(botUsername).test(update.message.text)
+  ) {
+    console.info(
+      'The message is a start message, answering with the presentation message',
+    );
+
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await bot.sendMessage(
+      update.message.chat.id,
+      `Hi\\!
+I can generate fancy quotes from text\\.
+
+There are multiple ways in which I can generate a quote:
+• By sending or forwarding me a text message in private
+• By writing \\/quote \\<text\\> in a group chat where I'm in
+• By writing \\/quote in response to another message in a group chat where I'm in
+• By using inline mode in any chat, e\\.g\\. @${botUsername} \\<text\\> \\(experimental\\)
+`,
+      {
+        parse_mode: 'MarkdownV2',
+      },
+    );
+    return;
+  }
 
   const quoteInfo = extractQuoteInfo(update, botUsername);
 
