@@ -282,6 +282,23 @@ export const extractQuoteInfo = (
     new RegExp(`^\\/quote(?:@${botUsername})?\\s*(.*)$`),
   );
 
+  if (update.message.chat.id === update.message.from?.id) {
+    console.info(
+      'Message is from a private chat with the bot, no need to be matching the command',
+    );
+    const trimmed = (match?.[1] ?? update.message.text)?.trim();
+
+    if (!trimmed || (!update.message.forward_from && !update.message.from)) {
+      console.info('Message text is empty, ignoring it');
+      return null;
+    }
+
+    return {
+      text: trimmed,
+      author: formatName(update.message.forward_from! || update.message.from!),
+    };
+  }
+
   if (!match || match.length < 2) {
     console.info('Message text not matching required pattern, ignoring it');
     return null;
