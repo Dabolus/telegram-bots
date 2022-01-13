@@ -50,7 +50,7 @@ custom:
       - chrome-aws-lambda
       - puppeteer-core
       - sharp
-      - aws-sdk
+      - vosk
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
@@ -68,6 +68,8 @@ layers:
     path: layers/ffmpeg/build
   sharp:
     path: layers/sharp/build
+  vosk:
+    path: layers/vosk/build
 
 functions:
   dabbext:
