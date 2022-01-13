@@ -1,5 +1,11 @@
-import { setupBot, getAllowedChatIds } from '@bots/shared/telegram';
-import { getChatsWords, getImage } from './utils';
+import {
+  setupBot,
+  getAllowedChatIds,
+  getAllUpdates,
+  getBotUsername,
+} from '@bots/shared/telegram';
+import { getItem, setItem } from '@bots/shared/cache';
+import { getChatsWords, getImage, getUpdatedExclusions } from './utils';
 import messages from './messages';
 import type { Context } from 'aws-lambda';
 
@@ -7,8 +13,22 @@ export const handler = async (event: unknown, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
   const bot = setupBot();
+  const botUsername = await getBotUsername(bot);
   const allowedIds = getAllowedChatIds();
-  const chatsWords = await getChatsWords(bot, allowedIds);
+
+  const offset = await getItem<number>('offset');
+  const { updates, lastUpdateId } = await getAllUpdates(bot, offset);
+
+  if (lastUpdateId > 0) {
+    await setItem('offset', lastUpdateId);
+  }
+
+  const filteredUpdates = Object.entries(updates).filter(([chatId]) =>
+    allowedIds.includes(Number(chatId)),
+  );
+
+  const exclusions = await getUpdatedExclusions(filteredUpdates, botUsername);
+  const chatsWords = await getChatsWords(filteredUpdates, exclusions);
 
   for (const { chatId, words } of chatsWords) {
     if (words.length < 1) {

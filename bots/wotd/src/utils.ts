@@ -1,16 +1,17 @@
 import fetch from 'node-fetch';
 import { customsearch, customsearch_v1 } from '@googleapis/customsearch';
-import { getAllUpdates } from '@bots/shared/telegram';
 import { getItem, setItem } from '@bots/shared/cache';
-import exclusions from './exclusions.yaml';
-import type TelegramBot from 'node-telegram-bot-api';
+import type { Update } from 'node-telegram-bot-api';
 
 export interface WordResult {
   word: string;
   count: number;
 }
 
-const getWords = (updates: TelegramBot.Update[]): WordResult[] => {
+const getWords = (
+  updates: Update[],
+  exclusions: string[] = [],
+): WordResult[] => {
   const text = updates
     .map(({ message: { text = '' } = {} }) => text.trim())
     .filter(text => Boolean(text) && !text.startsWith('/'))
@@ -46,23 +47,12 @@ export interface GetChatsWordsResult {
 }
 
 export const getChatsWords = async (
-  bot: TelegramBot,
-  chats: number[],
+  updates: [string, Update[]][],
+  exclusions: Record<string, string[]>,
 ): Promise<GetChatsWordsResult[]> => {
-  const offset = await getItem<number>('offset');
-  const { updates, lastUpdateId } = await getAllUpdates(bot, offset);
-
-  if (lastUpdateId > 0) {
-    await setItem('offset', lastUpdateId);
-  }
-
-  const filteredUpdates = Object.entries(updates).filter(([chatId]) =>
-    chats.includes(Number(chatId)),
-  );
-
-  const words = filteredUpdates.map(([chatId, updates]) => ({
+  const words = updates.map(([chatId, chatUpdates]) => ({
     chatId: Number(chatId),
-    words: getWords(updates),
+    words: getWords(chatUpdates, exclusions?.[chatId] || []),
   }));
 
   return words;
@@ -124,4 +114,54 @@ export const getImage = async (
     console.warn('Error getting image', error);
     return null;
   }
+};
+
+export const getUpdatedExclusions = async (
+  updates: [string, Update[]][],
+  botUsername: string,
+): Promise<Record<string, string[]>> => {
+  const excludeRegex = new RegExp(`^\\/exclude(?:@${botUsername})?\\s+(.*)$`);
+  const includeRegex = new RegExp(`^\\/include(?:@${botUsername})?\\s+(.*)$`);
+  const exclusions = await getItem<Record<string, string[]>>('exclusions');
+
+  const newExclusions = updates.reduce((acc, [chatId, chatUpdates]) => {
+    const newChatExclusions = chatUpdates.reduce((excl, update) => {
+      const { message: { text = '' } = {} } = update;
+
+      // If the message is an exclude command, add the words to the exclusions
+      const excludeMatch = text.match(excludeRegex);
+      if (excludeMatch && excludeMatch.length > 1) {
+        const words = excludeMatch[1]
+          .split(/\s+/)
+          // Normalize the words
+          .map(word => word.toLowerCase().trim())
+          // Make sure we don't include empty words
+          .filter(word => !!word && word.length > 2);
+        return [...excl, ...words];
+      }
+
+      // If the message is an include command, remove the word from the exclusions
+      const includeMatch = text.match(includeRegex);
+      if (includeMatch && includeMatch.length > 1) {
+        const words = includeMatch[1]
+          .split(/\s+/)
+          // Normalize the words
+          .map(word => word.toLowerCase().trim())
+          // Make sure we don't include empty words
+          .filter(word => !!word && word.length > 2);
+        return words.length > 0 ? excl.filter(w => !words.includes(w)) : excl;
+      }
+
+      return excl;
+    }, exclusions?.[chatId] || []);
+
+    return {
+      ...acc,
+      [chatId]: Array.from(new Set(newChatExclusions)),
+    };
+  }, {});
+
+  await setItem('exclusions', newExclusions);
+
+  return newExclusions;
 };
