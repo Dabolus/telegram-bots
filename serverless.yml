@@ -81,16 +81,21 @@ functions:
   quote-generator:
     handler: bots/quote-generator/src/index.handler
     memorySize: 1536
+    timeout: 20
     environment:
       ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
       RENDERER_PATH: /quote-generator/render
       BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
+      GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
+      GCLOUD_CLIENT_EMAIL: ${env:QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL}
+      GCLOUD_PRIVATE_KEY: ${env:QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY}
     events:
       - httpApi:
           path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
           method: post
     layers:
       - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:25
+      - { Ref: FfmpegLambdaLayer }
     # TODO: discover why this isn't working at function level (2/3)
     # package:
     #   patterns:

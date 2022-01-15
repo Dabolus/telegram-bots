@@ -1,9 +1,13 @@
 import fetch from 'node-fetch';
+import os from 'os';
+import { promises as fs } from 'fs';
 import { URLSearchParams } from 'url';
-import { Update, User } from 'node-telegram-bot-api';
+import TelegramBot, { Update, User } from 'node-telegram-bot-api';
 import { setupBrowser } from '@bots/shared/browser';
-import { RenderTemplateOptions } from './server';
 import { parseArgs } from '@bots/shared/utils';
+import { getFileInfo, runFfmpeg } from '@bots/shared/ffmpeg';
+import { recognize } from '@bots/shared/stt';
+import { RenderTemplateOptions } from './server';
 
 export const host = 'localhost';
 export const port = 40736;
@@ -259,10 +263,38 @@ export interface QuoteInfo {
   themeColor?: string;
 }
 
-export const extractQuoteInfo = (
+const getAudioMessageText = async (
+  bot: TelegramBot,
+  fileId: string,
+  lang: string,
+) => {
+  const filePath = await bot.downloadFile(fileId, os.tmpdir());
+  const processedFilePath = filePath.replace(/\..+$/, '.pcm');
+
+  console.info('Getting audio file info');
+  const { sample_rate } = await getFileInfo(filePath);
+
+  console.info('Converting audio file to linear PCM');
+  await runFfmpeg(
+    `-i ${filePath} -ar ${sample_rate} -ac 1 -f s16le -bufsize 4000 ${processedFilePath}`,
+  );
+
+  console.info('Reading transcribed output file');
+  const rawAudio = await fs.readFile(processedFilePath);
+
+  console.info('Recognizing text from audio file');
+  const text = await recognize(rawAudio, Number(sample_rate), lang);
+
+  await Promise.all([fs.unlink(filePath), fs.unlink(processedFilePath)]);
+
+  return text;
+};
+
+export const extractQuoteInfo = async (
+  bot: TelegramBot,
   update: Update,
   botUsername: string,
-): QuoteInfo | null => {
+): Promise<QuoteInfo | null> => {
   // Update is an inline query, get the info from there
   if (update.inline_query) {
     const trimmed = update.inline_query.query.trim();
@@ -298,7 +330,16 @@ export const extractQuoteInfo = (
     console.info(
       'Message is from a private chat with the bot, no need to be matching the command',
     );
-    const trimmed = (match?.[1] ?? update.message.text)?.trim();
+    const messageText =
+      update.message.audio || update.message.voice
+        ? await getAudioMessageText(
+            bot,
+            update.message.audio?.file_id || update.message.voice!.file_id,
+            update.message.from?.language_code || 'en-US',
+          )
+        : match?.[1] ?? update.message.text;
+
+    const trimmed = messageText?.trim();
 
     if (!trimmed || (!update.message.forward_from && !update.message.from)) {
       console.info('Message text is empty, ignoring it');
@@ -325,13 +366,25 @@ export const extractQuoteInfo = (
 
   const trimmedMatch = match[1].trim();
 
-  // Update is a response to another message, get the info from there
   if (
-    update.message.reply_to_message?.text &&
-    (update.message.reply_to_message?.from ||
-      update.message.reply_to_message?.forward_from)
+    update.message.reply_to_message?.from ||
+    update.message.reply_to_message?.forward_from
   ) {
-    const trimmed = update.message.reply_to_message.text.trim();
+    console.info(
+      'Message is a reply to another message, getting text from the original message',
+    );
+    const messageText =
+      update.message.reply_to_message.audio ||
+      update.message.reply_to_message.voice
+        ? await getAudioMessageText(
+            bot,
+            update.message.reply_to_message.audio?.file_id ||
+              update.message.reply_to_message.voice!.file_id,
+            update.message.reply_to_message.from?.language_code || 'en-US',
+          )
+        : update.message.reply_to_message.text;
+
+    const trimmed = messageText?.trim();
 
     if (!trimmed) {
       console.info('Replied message text is empty, ignoring it');

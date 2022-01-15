@@ -44,9 +44,9 @@ export const handler = async (
 I can generate fancy quotes from text\\.
 
 There are multiple ways in which I can generate a quote:
-• By sending or forwarding me a text message in private
+• By sending or forwarding me a text message or an audio \\(experimental\\) in private
 • By writing \\/quote \`\\<text\\>\` \`\\<image query?\\>\` \`\\<theme color?\\>\` in a group chat where I'm in
-• By writing \\/quote \`\\<image query?\\>\` \`\\<theme color?\\>\` in response to another message in a group chat where I'm in
+• By writing \\/quote \`\\<image query?\\>\` \`\\<theme color?\\>\` in response to another message or audio \\(experimental\\) in a group chat where I'm in
 • By using inline mode in any chat, e\\.g\\. @${botUsername} \`\\<text\\>\` \`\\<image query?\\>\` \`\\<theme color?\\>\` \\(experimental\\)
 `,
       {
@@ -56,7 +56,7 @@ There are multiple ways in which I can generate a quote:
     return;
   }
 
-  const quoteInfo = extractQuoteInfo(update, botUsername);
+  const quoteInfo = await extractQuoteInfo(bot, update, botUsername);
 
   if (!quoteInfo) {
     return;
