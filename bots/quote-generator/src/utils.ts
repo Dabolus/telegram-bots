@@ -7,6 +7,7 @@ import { setupBrowser } from '@bots/shared/browser';
 import { parseArgs } from '@bots/shared/utils';
 import { getFileInfo, runFfmpeg } from '@bots/shared/ffmpeg';
 import { recognize } from '@bots/shared/stt';
+import { getRandomImage } from '@bots/shared/unsplash';
 import { RenderTemplateOptions } from './server';
 
 export const host = 'localhost';
@@ -254,13 +255,20 @@ export const getRandomTemplateOptions = async (
   themeColor = getRandomColor(),
 ): Promise<RenderTemplateOptions> => {
   const quoteFont = getRandomFont();
-  const imageRes = await fetch(
-    `https://source.unsplash.com/${quoteWidth}x${quoteHeight}/?${imageQuery}`,
-  );
+  let imageUrl;
+
+  try {
+    imageUrl = await getRandomImage(imageQuery, quoteWidth, quoteHeight);
+  } catch (error) {
+    if (imageQuery === 'inspiring') {
+      throw error;
+    }
+    imageUrl = await getRandomImage('inspiring', quoteWidth, quoteHeight);
+  }
 
   return {
     themeColor,
-    imageUrl: imageRes.url,
+    imageUrl,
     gradientAngle: Math.random() < 0.5 ? 0 : 180,
     quoteFont,
     quoteVariant: Math.random() < 0.8 ? 'normal' : 'small-caps',
