@@ -90,7 +90,12 @@ export const getRandomColor = () => getRandomArrayElement(colors);
 export const generateImage = async (
   query: string,
   author: string,
-  { gradientAngle, emphasizedSize, ...options }: RenderTemplateOptions,
+  {
+    gradientAngle,
+    emphasizedSize,
+    imageUrl,
+    ...options
+  }: RenderTemplateOptions,
 ) => {
   console.info(`Received query "${query}"`);
 
@@ -104,11 +109,22 @@ export const generateImage = async (
     `http://${host}:${port}?${new URLSearchParams({
       query,
       author,
+      imageUrl,
       ...options,
       gradientAngle: gradientAngle.toFixed(2),
       emphasizedSize: emphasizedSize.toFixed(2),
     }).toString()}`,
     { waitUntil: 'networkidle0' },
+  );
+  await page.evaluate(
+    imageUrl =>
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.addEventListener('load', resolve);
+        img.addEventListener('error', reject);
+        img.src = imageUrl;
+      }),
+    imageUrl,
   );
 
   console.info('Exporting page image...');
