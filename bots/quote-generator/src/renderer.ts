@@ -1,13 +1,25 @@
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import sharp from 'sharp';
 import { RenderTemplateOptions, startServer } from './server';
-import { generateImage, quoteHeight, quoteWidth } from './utils';
+import {
+  generateImage,
+  quoteHeight,
+  quoteWidth,
+  uriDecodeEntities,
+} from './utils';
 
 export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  const { query, author, thumb, gradientAngle, emphasizedSize, ...options } =
-    event.queryStringParameters || {};
+  const {
+    query,
+    author,
+    thumb,
+    gradientAngle,
+    emphasizedSize,
+    entities = '',
+    ...options
+  } = event.queryStringParameters || {};
 
   if (!query || !author) {
     return { statusCode: 404 };
@@ -15,14 +27,19 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
 
   console.info('Generating image');
   startServer();
-  const image = await generateImage(query, author, {
-    gradientAngle: Number(gradientAngle),
-    emphasizedSize: Number(emphasizedSize),
-    ...(options as unknown as Omit<
-      RenderTemplateOptions,
-      'gradientAngle' | 'emphasizedSize'
-    >),
-  });
+  const image = await generateImage(
+    query,
+    author,
+    uriDecodeEntities(entities),
+    {
+      gradientAngle: Number(gradientAngle),
+      emphasizedSize: Number(emphasizedSize),
+      ...(options as unknown as Omit<
+        RenderTemplateOptions,
+        'gradientAngle' | 'emphasizedSize'
+      >),
+    },
+  );
   const final = thumb
     ? await sharp(image)
         .resize(quoteWidth / 4, quoteHeight / 4)

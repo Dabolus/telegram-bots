@@ -2,19 +2,17 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import http from 'http';
 import { URLSearchParams } from 'url';
-
 import ejs from 'ejs';
-
+import type { MessageEntity } from 'node-telegram-bot-api';
 import {
   host,
   port,
-  getRandomFont,
-  getRandomColor,
   quoteWidth,
   quoteHeight,
   highlight,
-  sanitize,
+  entitiesToHTML,
   replaceEmojis,
+  uriDecodeEntities,
 } from './utils';
 
 const templatePromise = fs
@@ -37,6 +35,7 @@ export interface RenderTemplateOptions {
 export const renderTemplate = async (
   query: string,
   author: string,
+  entities: MessageEntity[],
   options: RenderTemplateOptions,
 ) => {
   const template = await templatePromise;
@@ -45,10 +44,7 @@ export const renderTemplate = async (
     ...options,
     imageWidth: quoteWidth,
     imageHeight: quoteHeight,
-    highlight,
-    sanitize,
-    replaceEmojis,
-    query,
+    query: replaceEmojis(highlight(entitiesToHTML(query, entities))),
     author,
   });
 
@@ -76,6 +72,7 @@ const server = http.createServer(async (req, res) => {
   const emphasizedStyle = params.get('emphasizedStyle')!;
   const emphasizedWeight = params.get('emphasizedWeight')!;
   const emphasizedSize = Number(params.get('emphasizedSize')!);
+  const encodedEntities = params.get('entities')!;
 
   if (!query || !author) {
     res.writeHead(404);
@@ -83,18 +80,23 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const rendered = await renderTemplate(query, author, {
-    themeColor,
-    imageUrl,
-    gradientAngle,
-    quoteFont,
-    quoteVariant,
-    authorFont,
-    emphasizedFont,
-    emphasizedStyle,
-    emphasizedWeight,
-    emphasizedSize,
-  });
+  const rendered = await renderTemplate(
+    query,
+    author,
+    uriDecodeEntities(encodedEntities),
+    {
+      themeColor,
+      imageUrl,
+      gradientAngle,
+      quoteFont,
+      quoteVariant,
+      authorFont,
+      emphasizedFont,
+      emphasizedStyle,
+      emphasizedWeight,
+      emphasizedSize,
+    },
+  );
 
   res.writeHead(200);
   res.end(rendered);

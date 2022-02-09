@@ -53,8 +53,11 @@
         font-size: 0.9375em;
         text-align: center;
       }
-      strong, #author {
+      strong, em, u, mark, del, #author {
         color: <%= themeColor %>;
+      }
+      mark {
+        background: <%= themeColor %>;
       }
       img {
         height: 1em;
@@ -65,7 +68,7 @@
   </head>
   <body>
     <div id="container">
-      <p id="quote"><%- replaceEmojis(highlight(sanitize(query))) %></p>
+      <p id="quote"><%- query %></p>
       <p id="author">
         — <%= author %>
       </p>

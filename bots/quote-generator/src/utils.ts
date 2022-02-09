@@ -2,7 +2,12 @@ import fetch from 'node-fetch';
 import os from 'os';
 import { promises as fs } from 'fs';
 import { URLSearchParams } from 'url';
-import TelegramBot, { Update, User } from 'node-telegram-bot-api';
+import TelegramBot, {
+  MessageEntity,
+  MessageEntityType,
+  Update,
+  User,
+} from 'node-telegram-bot-api';
 import { setupBrowser } from '@bots/shared/browser';
 import { parseArgs } from '@bots/shared/utils';
 import { getFileInfo, runFfmpeg } from '@bots/shared/ffmpeg';
@@ -29,6 +34,19 @@ export const sanitize = (str: string) =>
       }[char as '&' | '"' | "'" | '<' | '>']),
   );
 
+// Every entity not present in this map will use the `default` tag
+const entityToTagMap: Partial<Record<MessageEntityType, string>> & {
+  default: string;
+} = {
+  default: 'strong',
+  italic: 'em',
+  code: 'code',
+  pre: 'pre',
+  underline: 'u',
+  strikethrough: 'del',
+  spoiler: 'mark',
+};
+
 export const highlight = (str: string) =>
   str.replace(/\w+/gi, word =>
     /(?:[aei]r(?:e|ti|tel[aeio])|mai|sempre|comunque|d?ovunque|qualunque|issim[aeio])$/.test(
@@ -40,6 +58,23 @@ export const highlight = (str: string) =>
 
 export const getRandomArrayElement = <T>(arr: T[]): T =>
   arr[Math.floor(Math.random() * arr.length)];
+
+export const entitiesToHTML = (
+  text: string,
+  entities: MessageEntity[],
+): string =>
+  entities.reduce((output, { offset, length, type }, index) => {
+    const nextEntity = entities[index + 1];
+
+    const encodedText = sanitize(text.slice(offset, offset + length));
+    const encodedSuffix = sanitize(
+      text.slice(offset + length, nextEntity?.offset),
+    );
+
+    const tag = entityToTagMap[type] || entityToTagMap.default;
+
+    return `${output}<${tag}>${encodedText}</${tag}>${encodedSuffix}`;
+  }, sanitize(text.slice(0, entities[0]?.offset)));
 
 export const standardFonts = [
   'Lato',
@@ -91,6 +126,7 @@ export const getRandomColor = () => getRandomArrayElement(colors);
 export const generateImage = async (
   query: string,
   author: string,
+  entities: MessageEntity[],
   {
     gradientAngle,
     emphasizedSize,
@@ -114,6 +150,7 @@ export const generateImage = async (
       ...options,
       gradientAngle: gradientAngle.toFixed(2),
       emphasizedSize: emphasizedSize.toFixed(2),
+      entities: uriEncodeEntities(entities),
     }).toString()}`,
     { waitUntil: 'networkidle0' },
   );
@@ -250,6 +287,21 @@ export const replaceEmojis = (str: string) =>
       )}">`,
   );
 
+export const uriEncodeEntities = (entities: MessageEntity[]): string =>
+  entities
+    .map(({ offset, length, type }) => `${offset}:${length}:${type}`)
+    .join(',');
+
+export const uriDecodeEntities = (encodedEntities: string): MessageEntity[] =>
+  encodedEntities.split(',').map(encodedEntity => {
+    const [offset, length, type] = encodedEntity.split(':');
+    return {
+      offset: Number(offset),
+      length: Number(length),
+      type,
+    } as MessageEntity;
+  });
+
 export const getRandomTemplateOptions = async (
   imageQuery = 'inspiring',
   themeColor = getRandomColor(),
@@ -282,6 +334,7 @@ export const getRandomTemplateOptions = async (
 
 export interface QuoteInfo {
   text: string;
+  entities: MessageEntity[];
   author: string;
   imageQuery?: string;
   themeColor?: string;
@@ -336,6 +389,7 @@ export const extractQuoteInfo = async (
     return {
       author: formatName(update.inline_query.from),
       text,
+      entities: [],
       imageQuery,
       themeColor,
     };
@@ -378,6 +432,7 @@ export const extractQuoteInfo = async (
     return {
       author: formatName(update.message.forward_from! || update.message.from!),
       text,
+      entities: update.message.entities ?? [],
       imageQuery,
       themeColor,
     };
@@ -426,6 +481,7 @@ export const extractQuoteInfo = async (
           update.message.reply_to_message.from!,
       ),
       text: trimmed,
+      entities: update.message.reply_to_message.entities ?? [],
       imageQuery,
       themeColor,
     };
@@ -444,6 +500,7 @@ export const extractQuoteInfo = async (
   return {
     author: formatName(update.message.forward_from! || update.message.from!),
     text,
+    entities: update.message.entities ?? [],
     imageQuery,
     themeColor,
   };

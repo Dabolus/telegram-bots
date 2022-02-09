@@ -12,6 +12,7 @@ import {
   getRandomTemplateOptions,
   quoteHeight,
   quoteWidth,
+  uriEncodeEntities,
 } from './utils';
 
 export const handler = async (
@@ -77,6 +78,7 @@ There are multiple ways in which I can generate a quote:
       ...options,
       gradientAngle: gradientAngle.toFixed(2),
       emphasizedSize: emphasizedSize.toFixed(2),
+      entities: uriEncodeEntities(quoteInfo.entities),
     }).toString()}`;
 
     await bot.answerInlineQuery(update.inline_query.id, [
@@ -103,6 +105,7 @@ There are multiple ways in which I can generate a quote:
   const image = await generateImage(
     quoteInfo.text,
     quoteInfo.author,
+    quoteInfo.entities,
     await getRandomTemplateOptions(quoteInfo.imageQuery, quoteInfo.themeColor),
   );
 
