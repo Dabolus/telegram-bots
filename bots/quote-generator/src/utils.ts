@@ -127,33 +127,34 @@ export const generateImage = async (
   query: string,
   author: string,
   entities: MessageEntity[],
-  {
-    gradientAngle,
-    emphasizedSize,
-    imageUrl,
-    ...options
-  }: RenderTemplateOptions,
+  options: RenderTemplateOptions,
 ) => {
   console.info(`Received query "${query}"`);
+  console.info('Generating page...');
 
   const browser = await setupBrowser();
   const page = await browser.newPage();
   await page.setViewport({ width: quoteWidth, height: quoteHeight });
+  await page.setRequestInterception(true);
 
-  console.info('Generating page...');
+  page.once('request', request => {
+    request.continue({
+      method: 'POST',
+      postData: JSON.stringify({
+        query,
+        author,
+        entities,
+        ...options,
+      }),
+      headers: {
+        ...request.headers(),
+        'content-type': 'application/json',
+      },
+    });
+    page.setRequestInterception(false);
+  });
 
-  await page.goto(
-    `http://${host}:${port}?${new URLSearchParams({
-      query,
-      author,
-      imageUrl,
-      ...options,
-      gradientAngle: gradientAngle.toFixed(2),
-      emphasizedSize: emphasizedSize.toFixed(2),
-      entities: uriEncodeEntities(entities),
-    }).toString()}`,
-    { waitUntil: 'networkidle0' },
-  );
+  await page.goto(`http://${host}:${port}`, { waitUntil: 'networkidle0' });
   await page.evaluate(
     imageUrl =>
       new Promise((resolve, reject) => {
@@ -162,7 +163,7 @@ export const generateImage = async (
         img.addEventListener('error', reject);
         img.src = imageUrl;
       }),
-    imageUrl,
+    options.imageUrl,
   );
 
   console.info('Exporting page image...');

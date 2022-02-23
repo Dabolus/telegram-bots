@@ -51,28 +51,22 @@ export const renderTemplate = async (
   return rendered;
 };
 
+const parseBody = <T = unknown>(req: http.IncomingMessage) =>
+  new Promise<T>((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => resolve(JSON.parse(body)));
+    req.on('error', reject);
+  });
+
 const server = http.createServer(async (req, res) => {
-  if (!req.url) {
-    res.writeHead(404);
-    res.end();
-    return;
-  }
-
-  const params = new URLSearchParams(req.url.slice(1));
-
-  const query = params.get('query');
-  const author = params.get('author');
-  const themeColor = params.get('themeColor')!;
-  const imageUrl = params.get('imageUrl')!;
-  const gradientAngle = Number(params.get('gradientAngle')!);
-  const quoteFont = params.get('quoteFont')!;
-  const quoteVariant = params.get('quoteVariant')!;
-  const authorFont = params.get('authorFont')!;
-  const emphasizedFont = params.get('emphasizedFont')!;
-  const emphasizedStyle = params.get('emphasizedStyle')!;
-  const emphasizedWeight = params.get('emphasizedWeight')!;
-  const emphasizedSize = Number(params.get('emphasizedSize')!);
-  const encodedEntities = params.get('entities')!;
+  const { query, author, entities, ...options } = await parseBody<
+    RenderTemplateOptions & {
+      query: string;
+      author: string;
+      entities: MessageEntity[];
+    }
+  >(req);
 
   if (!query || !author) {
     res.writeHead(404);
@@ -80,23 +74,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const rendered = await renderTemplate(
-    query,
-    author,
-    uriDecodeEntities(encodedEntities),
-    {
-      themeColor,
-      imageUrl,
-      gradientAngle,
-      quoteFont,
-      quoteVariant,
-      authorFont,
-      emphasizedFont,
-      emphasizedStyle,
-      emphasizedWeight,
-      emphasizedSize,
-    },
-  );
+  const rendered = await renderTemplate(query, author, entities, options);
 
   res.writeHead(200);
   res.end(rendered);
