@@ -64,6 +64,8 @@ package:
     - 'bots/telegram-media-convert/static/**'
 
 layers:
+  chromium:
+    path: layers/chromium/build
   ffmpeg:
     path: layers/ffmpeg/build
   sharp:
@@ -95,7 +97,7 @@ functions:
           path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
           method: post
     layers:
-      - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:25
+      - { Ref: ChromiumLambdaLayer }
       - { Ref: FfmpegLambdaLayer }
     # TODO: discover why this isn't working at function level (2/3)
     # package:
@@ -111,7 +113,7 @@ functions:
           path: /quote-generator/render
           method: get
     layers:
-      - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:25
+      - { Ref: ChromiumLambdaLayer }
       - { Ref: SharpLambdaLayer }
   telegram-media-convert:
     handler: bots/telegram-media-convert/src/index.handler
