@@ -586,7 +586,7 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.6"
 
-argparse@^1.0.7:
+argparse@^1.0.10, argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
   integrity sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==
@@ -1175,6 +1175,14 @@ crc32-stream@^4.0.2:
     crc-32 "^1.2.0"
     readable-stream "^3.4.0"
 
+cron-converter@0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/cron-converter/-/cron-converter-0.0.12.tgz#63b44e0dc400a1d721d6ea4bb22e866c7699834c"
+  integrity sha512-JXVOF2i5AyoNoXiDpAMwSezdfP6ycQmClpQjbDEqhlVZNNFTXzd7tgn9Tl2wRm8131lYY+zcvk1yBoMj0eExlQ==
+  dependencies:
+    moment-timezone "~0.5"
+    sprintf-js "~1"
+
 cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -1291,6 +1299,18 @@ decompress@^4.2.1:
     make-dir "^1.0.0"
     pify "^2.3.0"
     strip-dirs "^2.0.0"
+
+deep-equal@^1.0.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.1.tgz#b5c98c942ceffaf7cb051e24e1434a25a2e6076a"
+  integrity sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==
+  dependencies:
+    is-arguments "^1.0.4"
+    is-date-object "^1.0.1"
+    is-regex "^1.0.4"
+    object-is "^1.0.1"
+    object-keys "^1.1.1"
+    regexp.prototype.flags "^1.2.0"
 
 deep-extend@^0.6.0:
   version "0.6.0"
@@ -2693,7 +2713,7 @@ is-promise@^2.2.2:
   resolved "https://registry.yarnpkg.com/is-promise/-/is-promise-2.2.2.tgz#39ab959ccbf9a774cf079f7b40c7a26f763135f1"
   integrity sha512-+lP4/6lKUBfQjZ2pdxThZvLUAafmZb8OAxFb8XXtiQmS35INgr85hdOGoEs124ez1FCnZJt6jau/T+alh58QFQ==
 
-is-regex@^1.1.4:
+is-regex@^1.0.4, is-regex@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.4.tgz#eef5663cd59fa4c0ae339505323df6854bb15958"
   integrity sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==
@@ -2979,6 +2999,17 @@ lie@~3.3.0:
   dependencies:
     immediate "~3.0.5"
 
+local-crontab@^0.1.7:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/local-crontab/-/local-crontab-0.1.8.tgz#7df5fa79d5b4dd089ca8ffebf939b486f24ff832"
+  integrity sha512-Sip2a6kDXsqtqLOXgmdh1xh8D7LlPR+gLEtBrrEj5352KJsw1TuBsdXz1Pj8eneKo6Whf5Z9Rdx+JANgV0Y7mA==
+  dependencies:
+    argparse "^1.0.10"
+    cron-converter "0.0.12"
+    deep-equal "^1.0.1"
+    timezone-js "^0.4.13"
+    tzdata "^1.0.9"
+
 locate-path@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-5.0.0.tgz#1afba396afd676a6d42504d0a67a3a7eb9f62aa0"
@@ -3215,6 +3246,18 @@ mkdirp@~0.5.0:
   dependencies:
     minimist "^1.2.5"
 
+moment-timezone@~0.5:
+  version "0.5.37"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.37.tgz#adf97f719c4e458fdb12e2b4e87b8bec9f4eef1e"
+  integrity sha512-uEDzDNFhfaywRl+vwXxffjjq1q0Vzr+fcQpQ1bU0kbzorfS7zVtZnCnGc8mhWmF39d4g4YriF6kwA75mJKE/Zg==
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0":
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
+
 ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
@@ -3416,6 +3459,14 @@ object-inspect@^1.12.0:
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.2.tgz#c0641f26394532f28ab8d796ab954e43c009a8ea"
   integrity sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ==
+
+object-is@^1.0.1:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/object-is/-/object-is-1.1.5.tgz#b9deeaa5fc7f1846a0faecdceec138e5778f53ac"
+  integrity sha512-3cyDsyHgtmi7I7DfSSI2LDp6SK2lwvtbg0p0R1e0RvTqF5ceGx+K2dfSjm1bKDMVCFEDAQvy+o8c6a7VujOddw==
+  dependencies:
+    call-bind "^1.0.2"
+    define-properties "^1.1.3"
 
 object-keys@^1.0.12, object-keys@^1.1.1:
   version "1.1.1"
@@ -3844,7 +3895,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-regexp.prototype.flags@^1.4.3:
+regexp.prototype.flags@^1.2.0, regexp.prototype.flags@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/regexp.prototype.flags/-/regexp.prototype.flags-1.4.3.tgz#87cab30f80f66660181a3bb7bf5981a872b367ac"
   integrity sha512-fjggEOO3slI6Wvgjwflkc4NFRCTZAu5CnNfBd5qOMYhWdn67nJBBu34/TkD++eeFmd8C9r9jfXJ27+nSiRkSUA==
@@ -4050,6 +4101,14 @@ serverless-esbuild@^1.32.8:
     ramda "^0.27.0"
     semver "^7.3.5"
 
+serverless-local-schedule@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/serverless-local-schedule/-/serverless-local-schedule-0.1.7.tgz#7286b2fda51c860ac294afaf84c87244a2b73be4"
+  integrity sha512-3DnrDr0SnnhdWHEZ5vHgRQZbCoOp33LJf4cqKXeuHcBtVewUi2/+7jJl24VdySxxh8yqUGlJTl5Ee9PI5TwvUQ==
+  dependencies:
+    local-crontab "^0.1.7"
+    timezone-enum "^1.0.1"
+
 serverless-s3-sync@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/serverless-s3-sync/-/serverless-s3-sync-3.0.0.tgz#e837dcdb04f97bff1390e4a88e6c86d57e3f0c6a"
@@ -4229,6 +4288,11 @@ split2@^3.1.1:
   integrity sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==
   dependencies:
     readable-stream "^3.0.0"
+
+sprintf-js@~1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.1.2.tgz#da1765262bf8c0f571749f2ad6c26300207ae673"
+  integrity sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==
 
 sprintf-js@~1.0.2:
   version "1.0.3"
@@ -4519,6 +4583,16 @@ timers-ext@^0.1.7:
     es5-ext "~0.10.46"
     next-tick "1"
 
+timezone-enum@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/timezone-enum/-/timezone-enum-1.0.1.tgz#200870301165dc824ac0fabab61455ab098154fc"
+  integrity sha512-LwL2YvHxG/tRzSL3nEbhH6F5ZGM0/8x4lPg32cs1jVSIHhE28xfZKULQ0cS90dHGaVhIdCuwU/hBmZjiaP96ZQ==
+
+timezone-js@^0.4.13:
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/timezone-js/-/timezone-js-0.4.13.tgz#4fd09d951007d524db00dadb75fa5b59f9d2cbac"
+  integrity sha512-DEpVFNWDqXh3Ljro8XIY3IzC8FbdfVF/Xme4IheEokDNmy6mncBinXk32Ul1dqOlKwMEvG0t4tcgKI7+SXD+JA==
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -4612,6 +4686,11 @@ typescript@^4.8.2:
   version "4.8.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.2.tgz#e3b33d5ccfb5914e4eeab6699cf208adee3fd790"
   integrity sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==
+
+tzdata@^1.0.9:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/tzdata/-/tzdata-1.0.32.tgz#acc34fdd8d773008132d01850c2ef89722736530"
+  integrity sha512-sZ+Z5mQZz+wtU8Cz9fJhH8DjWkEcAn4UMUa1zzWiEkhUjZ4gNlcL5KgVxDN1sbnx9MFOa4wPSrn4Ax/9zQ3IQw==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
