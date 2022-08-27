@@ -20,17 +20,19 @@ provider:
           - '.execute-api.'
           - Ref: AWS::Region
           - '.amazonaws.com'
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        Fn::GetAtt:
-          - CacheTable
-          - Arn
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            Fn::GetAtt:
+              - CacheTable
+              - Arn
 
 plugins:
   - serverless-esbuild
