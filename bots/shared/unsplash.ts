@@ -1,7 +1,6 @@
 import { createApi, Orientation } from 'unsplash-js';
 import type { ApiResponse } from 'unsplash-js/dist/helpers/response';
 import type { Random } from 'unsplash-js/dist/methods/photos/types';
-import fetch from 'node-fetch';
 
 let unsplash: ReturnType<typeof createApi>;
 

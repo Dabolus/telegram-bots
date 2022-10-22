@@ -1,7 +1,5 @@
-import fetch from 'node-fetch';
 import os from 'os';
 import { promises as fs } from 'fs';
-import { URLSearchParams } from 'url';
 import TelegramBot, {
   MessageEntity,
   MessageEntityType,

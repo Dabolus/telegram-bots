@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import type TelegramBot from 'node-telegram-bot-api';
 
 export const downloadFile = async (

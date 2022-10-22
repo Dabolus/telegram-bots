@@ -1,5 +1,4 @@
 import childProcess from 'child_process';
-import fetch from 'node-fetch';
 
 const setWebhook = async url => {
   const token = url.slice(url.indexOf('bot') + 3);

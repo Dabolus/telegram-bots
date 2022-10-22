@@ -2,11 +2,11 @@
   "name": "@bots/dabbext",
   "version": "0.1.0",
   "dependencies": {
-    "node-telegram-bot-api": "^0.56.0"
+    "node-telegram-bot-api": "^0.59.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.85",
-    "@types/node-telegram-bot-api": "^0.56.0"
+    "@types/aws-lambda": "^8.10.108",
+    "@types/node-telegram-bot-api": "^0.57.5"
   },
   "private": true
 }

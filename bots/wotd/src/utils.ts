@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { customsearch, customsearch_v1 } from '@googleapis/customsearch';
 import { getItem, setItem } from '@bots/shared/cache';
 import type { Update } from 'node-telegram-bot-api';
