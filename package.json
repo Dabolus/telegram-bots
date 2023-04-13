@@ -7,15 +7,15 @@
     "postdeploy": "node scripts/setup-webhooks"
   },
   "devDependencies": {
-    "@types/node": "^18.11.3",
-    "esbuild": "^0.15.12",
+    "@types/node": "^18.15.11",
+    "esbuild": "^0.17.16",
     "esbuild-plugin-yaml": "^0.0.1",
-    "serverless": "^3.23.0",
-    "serverless-esbuild": "^1.33.0",
+    "serverless": "^3.30.1",
+    "serverless-esbuild": "^1.43.0",
     "serverless-local-schedule": "^0.1.7",
     "serverless-s3-sync": "^3.1.0",
-    "typescript": "^4.8.4",
-    "undici": "^5.11.0"
+    "typescript": "^5.0.4",
+    "undici": "^5.21.2"
   },
   "private": true,
   "workspaces": [
