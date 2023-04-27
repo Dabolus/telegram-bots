@@ -47,11 +47,9 @@ custom:
     plugins: esbuild-plugins.cjs
     packager: yarn
     exclude:
-      - aws-sdk
       - chrome-aws-lambda
       - puppeteer-core
       - sharp
-      - aws-sdk
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
@@ -138,6 +136,17 @@ functions:
       - schedule:
           rate: cron(1 18 * * ? *)
           timezone: Europe/Rome
+  chatgpt:
+    handler: bots/chatgpt/src/index.handler
+    environment:
+      BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
+      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+      CHAT_IDS_ALLOWLIST: ${env:CHATGPT_CHAT_IDS_ALLOWLIST}
+      OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+    events:
+      - httpApi:
+          path: /bot${env:CHATGPT_BOT_TOKEN}
+          method: post
 
 resources:
   Resources:

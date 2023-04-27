@@ -1,10 +1,16 @@
-import { DynamoDB } from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+} from '@aws-sdk/lib-dynamodb';
 
-let documentClient: DynamoDB.DocumentClient;
+let documentClient: DynamoDBDocumentClient;
 
 const setupDynamoDB = () => {
   if (!documentClient) {
-    documentClient = new DynamoDB.DocumentClient();
+    const dynamoDbClient = new DynamoDBClient({});
+    documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
   }
 
   return documentClient;
@@ -23,12 +29,12 @@ const getVal = async (
 
   const ddb = setupDynamoDB();
 
-  const { Item } = await ddb
-    .get({
+  const { Item } = await ddb.send(
+    new GetCommand({
       TableName: cacheTable,
       Key: { botToken: `bot${token}` },
-    })
-    .promise();
+    }),
+  );
 
   return Item?.val;
 };
@@ -60,8 +66,8 @@ export const setItem = async <T>(
 
   const val = await getVal(token, cacheTable);
 
-  await ddb
-    .put({
+  await ddb.send(
+    new PutCommand({
       TableName: cacheTable,
       Item: {
         botToken: `bot${token}`,
@@ -70,6 +76,6 @@ export const setItem = async <T>(
           [key]: value,
         },
       },
-    })
-    .promise();
+    }),
+  );
 };
