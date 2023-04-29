@@ -38,6 +38,7 @@ plugins:
   - serverless-esbuild
   - serverless-local-schedule
   - serverless-s3-sync
+  - serverless-lift
 
 custom:
   esbuild:
@@ -67,35 +68,21 @@ layers:
     path: layers/sharp/build
 
 functions:
-  dabbext:
-    handler: bots/dabbext/src/index.handler
+  broker:
+    handler: bots/broker/src/index.handler
     environment:
-      BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
+      CHATGPT_BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
+      CHATGPT_QUEUE_URL: ${construct:chatgpt.queueUrl}
+      DABBEXT_BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
+      DABBEXT_QUEUE_URL: ${construct:dabbext.queueUrl}
+      QUOTE_GENERATOR_BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
+      QUOTE_GENERATOR_QUEUE_URL: ${construct:quote-generator.queueUrl}
+      TELEGRAM_MEDIA_CONVERT_BOT_TOKEN: ${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
+      TELEGRAM_MEDIA_CONVERT_QUEUE_URL: ${construct:telegram-media-convert.queueUrl}
     events:
       - httpApi:
-          path: /bot${env:DABBEXT_BOT_TOKEN}
+          path: /${env:SERVICE_SECRET}/{botId}/{botToken}
           method: post
-  quote-generator:
-    handler: bots/quote-generator/src/index.handler
-    memorySize: 1536
-    environment:
-      ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
-      RENDERER_PATH: /quote-generator/render
-      BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
-      GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
-      GCLOUD_CLIENT_EMAIL: ${env:QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL}
-      GCLOUD_PRIVATE_KEY: ${env:QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY}
-      UNSPLASH_ACCESS_KEY: ${env:QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY}
-    events:
-      - httpApi:
-          path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
-          method: post
-    layers:
-      - { Ref: ChromiumLambdaLayer }
-      - { Ref: FfmpegLambdaLayer }
-    package:
-      patterns:
-        - 'bots/quote-generator/templates/**'
   quote-generator-renderer:
     handler: bots/quote-generator/src/renderer.handler
     memorySize: 1536
@@ -108,22 +95,6 @@ functions:
     layers:
       - { Ref: ChromiumLambdaLayer }
       - { Ref: SharpLambdaLayer }
-  telegram-media-convert:
-    handler: bots/telegram-media-convert/src/index.handler
-    memorySize: 1536
-    environment:
-      ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
-      BOT_TOKEN: ${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
-    events:
-      - httpApi:
-          path: /bot${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
-          method: post
-    layers:
-      - { Ref: FfmpegLambdaLayer }
-      - { Ref: SharpLambdaLayer }
-    package:
-      patterns:
-        - 'bots/telegram-media-convert/static/**'
   wotd:
     handler: bots/wotd/src/index.handler
     environment:
@@ -136,17 +107,64 @@ functions:
       - schedule:
           rate: cron(1 18 * * ? *)
           timezone: Europe/Rome
+
+constructs:
   chatgpt:
-    handler: bots/chatgpt/src/index.handler
-    environment:
-      BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
-      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
-      CHAT_IDS_ALLOWLIST: ${env:CHATGPT_CHAT_IDS_ALLOWLIST}
-      OPENAI_API_KEY: ${env:OPENAI_API_KEY}
-    events:
-      - httpApi:
-          path: /bot${env:CHATGPT_BOT_TOKEN}
-          method: post
+    type: queue
+    worker:
+      handler: bots/chatgpt/src/index.handler
+      environment:
+        BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
+        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+        CHAT_IDS_ALLOWLIST: ${env:CHATGPT_CHAT_IDS_ALLOWLIST}
+        OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+  dabbext:
+    type: queue
+    worker:
+      handler: bots/dabbext/src/index.handler
+      environment:
+        BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
+  quote-generator:
+    type: queue
+    worker:
+      handler: bots/quote-generator/src/index.handler
+      memorySize: 1536
+      environment:
+        ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
+        RENDERER_PATH: /quote-generator/render
+        BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
+        GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
+        GCLOUD_CLIENT_EMAIL: ${env:QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL}
+        GCLOUD_PRIVATE_KEY: ${env:QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY}
+        UNSPLASH_ACCESS_KEY: ${env:QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY}
+      events:
+        - httpApi:
+            path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
+            method: post
+      layers:
+        - { Ref: ChromiumLambdaLayer }
+        - { Ref: FfmpegLambdaLayer }
+      package:
+        patterns:
+          - 'bots/quote-generator/templates/**'
+  telegram-media-convert:
+    type: queue
+    worker:
+      handler: bots/telegram-media-convert/src/index.handler
+      memorySize: 1536
+      environment:
+        ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
+        BOT_TOKEN: ${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
+      events:
+        - httpApi:
+            path: /bot${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
+            method: post
+      layers:
+        - { Ref: FfmpegLambdaLayer }
+        - { Ref: SharpLambdaLayer }
+      package:
+        patterns:
+          - 'bots/telegram-media-convert/static/**'
 
 resources:
   Resources:

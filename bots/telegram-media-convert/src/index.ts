@@ -1,30 +1,15 @@
 import {
-  setupBot,
   getBotUsername,
   getBotStartRegex,
+  createUpdateHandler,
 } from '@bots/shared/telegram';
 import { emojiToSticker, imageToSticker, stickerToImage } from './image';
 import { audioToVoice, voiceToAudio } from './audio';
 import { animationToVideo, videoToNote } from './video';
 import { downloadFile } from './utils';
-import type { PhotoSize, Update } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import type { PhotoSize } from 'node-telegram-bot-api';
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context,
-) => {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  if (!event.body) {
-    console.error('No body provided');
-    return;
-  }
-
-  const update: Update = JSON.parse(event.body);
-
-  const bot = setupBot();
-
+export const handler = createUpdateHandler(async (update, bot) => {
   if (update.message?.sticker && !update.message.sticker.is_animated) {
     console.info('Received a sticker, converting it into an image');
     await stickerToImage(
@@ -97,9 +82,11 @@ export const handler = async (
     console.info('Received a photo, converting it into a sticker');
 
     const { file_id: largestFileId } = update.message.photo.reduce<PhotoSize>(
-      (largestFile, file = { file_id: '', width: 0, height: 0 }) =>
-        file.width > largestFile.width ? file : largestFile,
-      { file_id: '', width: 0, height: 0 },
+      (
+        largestFile,
+        file = { file_id: '', file_unique_id: '', width: 0, height: 0 },
+      ) => (file.width > largestFile.width ? file : largestFile),
+      { file_id: '', file_unique_id: '', width: 0, height: 0 },
     );
 
     if (!largestFileId) {
@@ -184,4 +171,4 @@ _Note that you can also send me pictures, audios, and videos as files\\. I will 
   }
 
   console.info('Update is of an unsupported type, ignoring it');
-};
+});

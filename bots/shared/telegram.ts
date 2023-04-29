@@ -1,4 +1,5 @@
 import TelegramBot, { Update } from 'node-telegram-bot-api';
+import type { SQSEvent, Context } from 'aws-lambda';
 
 let bot: TelegramBot;
 
@@ -94,3 +95,14 @@ export const getAllUpdates = async (
     lastUpdateId: latestOffset,
   });
 };
+
+export const createUpdateHandler =
+  (handler: (update: Update, bot: TelegramBot) => void | Promise<void>) =>
+  async (event: SQSEvent, ctx: Context) => {
+    ctx.callbackWaitsForEmptyEventLoop = false;
+    for (const record of event.Records) {
+      const update: Update = JSON.parse(record.body);
+      const bot = setupBot();
+      await handler(update, bot);
+    }
+  };

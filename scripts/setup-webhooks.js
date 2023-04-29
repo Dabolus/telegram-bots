@@ -1,7 +1,10 @@
 import childProcess from 'child_process';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const setWebhook = async url => {
-  const token = url.slice(url.indexOf('bot') + 3);
+  const token = url.slice(url.lastIndexOf('/') + 1);
   const response = await fetch(
     `https://api.telegram.org/bot${token}/setWebhook`,
     {
@@ -22,6 +25,20 @@ const setWebhook = async url => {
 };
 
 childProcess.exec('serverless info', async (_, stdout) => {
-  const urls = Array.from(stdout.matchAll(/POST - (.+)/g));
-  await Promise.all(urls.map(([_, match]) => setWebhook(match)));
+  const url = stdout.match(/POST - (.+)/)?.[1];
+  const bots = Object.entries(process.env).filter(([key]) =>
+    key.endsWith('_BOT_TOKEN'),
+  );
+  await Promise.all(
+    bots.map(([key, token]) => {
+      const botId = key
+        .replace('_BOT_TOKEN', '')
+        .replace(/_/g, '-')
+        .toLowerCase();
+      const fullUrl = url
+        .replace('{botId}', botId)
+        .replace('{botToken}', token);
+      return setWebhook(fullUrl);
+    }),
+  );
 });

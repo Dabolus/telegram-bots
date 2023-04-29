@@ -1,24 +1,13 @@
 import {
-  setupBot,
   getAllowedChatIds,
   getBotUsername,
   getBotStartRegex,
+  createUpdateHandler,
 } from '@bots/shared/telegram';
 import { setupOpenAi } from '@bots/shared/openai';
-import type { Update } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { getChatConfiguration, setChatConfiguration } from './utils';
 
-export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
-  ctx.callbackWaitsForEmptyEventLoop = false;
-
-  if (!event.body) {
-    console.error('No body provided');
-    return;
-  }
-
-  const update: Update = JSON.parse(event.body);
-  const bot = setupBot();
+export const handler = createUpdateHandler(async (update, bot) => {
   const botUsername = await getBotUsername(bot);
   const allowedIds = getAllowedChatIds();
 
@@ -126,4 +115,4 @@ export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
   });
 
   console.info('Done');
-};
+});

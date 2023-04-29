@@ -1,9 +1,7 @@
-import type { Update } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import {
-  setupBot,
   getBotUsername,
   getBotStartRegex,
+  createUpdateHandler,
 } from '@bots/shared/telegram';
 import { startServer } from './server';
 import {
@@ -15,19 +13,7 @@ import {
   uriEncodeEntities,
 } from './utils';
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context,
-) => {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  if (!event.body) {
-    console.error('No body provided');
-    return;
-  }
-
-  const update: Update = JSON.parse(event.body);
-  const bot = setupBot();
+export const handler = createUpdateHandler(async (update, bot) => {
   const botUsername = await getBotUsername(bot);
 
   if (
@@ -114,4 +100,4 @@ There are multiple ways in which I can generate a quote:
   await bot.sendPhoto(update.message.chat.id, image);
 
   console.info('Done');
-};
+});
