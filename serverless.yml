@@ -48,8 +48,7 @@ custom:
     plugins: esbuild-plugins.cjs
     packager: yarn
     exclude:
-      - chrome-aws-lambda
-      - puppeteer-core
+      - '@sparticuz/chromium'
       - sharp
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets

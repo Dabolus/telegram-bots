@@ -1096,10 +1096,10 @@ __metadata:
   resolution: "@bots/quote-generator@workspace:bots/quote-generator"
   dependencies:
     "@google-cloud/speech": ^5.4.0
+    "@sparticuz/chromium": ^112.0.2
     "@types/aws-lambda": ^8.10.114
     "@types/ejs": ^3.1.2
     "@types/node-telegram-bot-api": ^0.61.6
-    chrome-aws-lambda: ^10.1.0
     ejs: ^3.1.9
     node-telegram-bot-api: ^0.61.0
     puppeteer-core: ^19.9.0
@@ -1646,6 +1646,16 @@ __metadata:
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
+  languageName: node
+  linkType: hard
+
+"@sparticuz/chromium@npm:^112.0.2":
+  version: 112.0.2
+  resolution: "@sparticuz/chromium@npm:112.0.2"
+  dependencies:
+    follow-redirects: ^1.15.2
+    tar-fs: ^2.1.1
+  checksum: 227d7965941a390409077d83bb7a8bac11e5d5744e3477677a930d415460971ea1211045a1e253c06bcf3378eb9e3e63b0d45bc5422ec0e39f540616928f5748
   languageName: node
   linkType: hard
 
@@ -2682,17 +2692,6 @@ __metadata:
   version: 2.0.0
   resolution: "chownr@npm:2.0.0"
   checksum: c57cf9dd0791e2f18a5ee9c1a299ae6e801ff58fee96dc8bfd0dcb4738a6ce58dd252a3605b1c93c6418fe4f9d5093b28ffbf4d66648cb2a9c67eaef9679be2f
-  languageName: node
-  linkType: hard
-
-"chrome-aws-lambda@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "chrome-aws-lambda@npm:10.1.0"
-  dependencies:
-    lambdafs: ^2.0.3
-  peerDependencies:
-    puppeteer-core: ^10.1.0
-  checksum: e5ad2dc68cfaf33123fd94503fdacd1744f127f097a1a20e40a07a2e0b9f97ce7650aaec96a3ae6a941e86a2757d7c426f7d4171bff997e8d1454c4be1f298e0
   languageName: node
   linkType: hard
 
@@ -4118,7 +4117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.8":
+"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.8, follow-redirects@npm:^1.15.2":
   version: 1.15.2
   resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
@@ -5500,17 +5499,6 @@ __metadata:
   dependencies:
     graceful-fs: ^4.1.9
   checksum: 1bf9de22392c80d28de8a2babd6f0de29fa52fcdc1654838fd35174b3641c168ec32b8b03022191e3c190efd535c31fce23f85e29cb260245571da7263ef418e
-  languageName: node
-  linkType: hard
-
-"lambdafs@npm:^2.0.3":
-  version: 2.1.1
-  resolution: "lambdafs@npm:2.1.1"
-  dependencies:
-    tar-fs: "*"
-  bin:
-    lambdafs: bin/brotli.js
-  checksum: e277462851769dbb9062096e793d0da67f8bada78be9988bb177ddab91f9335ba1f67ea9fc0768c966dc52381301575945211b6e34061a068b82f127e6848e4e
   languageName: node
   linkType: hard
 
@@ -7949,7 +7937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:*, tar-fs@npm:2.1.1, tar-fs@npm:^2.0.0, tar-fs@npm:^2.1.1":
+"tar-fs@npm:2.1.1, tar-fs@npm:^2.0.0, tar-fs@npm:^2.1.1":
   version: 2.1.1
   resolution: "tar-fs@npm:2.1.1"
   dependencies:
