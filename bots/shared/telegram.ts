@@ -25,6 +25,16 @@ export const getBotUsername = async (bot: TelegramBot) => {
   return username;
 };
 
+export const createCommandChecker =
+  (username: string, update: Update) =>
+  (command: string): boolean =>
+    new RegExp(`^\\/${command}(?:@${username})?(?:\\s|$)`).test(
+      update.message?.text || '',
+    );
+
+export const getCommandArguments = (update: Update): string =>
+  update.message?.text?.match(/^\/\w+(?:@\w+)?\s+(.+)/)?.[1]?.trim() || '';
+
 export const getBotStartRegex = (username: string) =>
   new RegExp(`^\\/start(?:@${username})?\s*$`);
 

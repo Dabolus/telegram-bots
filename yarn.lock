@@ -1076,6 +1076,7 @@ __metadata:
     "@aws-sdk/client-dynamodb": ^3.312.0
     "@aws-sdk/lib-dynamodb": ^3.312.0
     "@types/node-telegram-bot-api": ^0.61.6
+    gptoken: ^0.1.0
     node-telegram-bot-api: ^0.61.0
     openai: ^3.2.1
   languageName: unknown
@@ -4579,6 +4580,13 @@ __metadata:
     p-cancelable: ^2.0.0
     responselike: ^2.0.0
   checksum: bbc783578a8d5030c8164ef7f57ce41b5ad7db2ed13371e1944bef157eeca5a7475530e07c0aaa71610d7085474d0d96222c9f4268d41db333a17e39b463f45d
+  languageName: node
+  linkType: hard
+
+"gptoken@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "gptoken@npm:0.1.0"
+  checksum: fe47f42be3625245da70bd386a9f4484ef4c5a27896245725a83a2ae44eeb289a0e01ae774ec89db513275e0e9c1ef67d408b2da69896fb2816733244a18281c
   languageName: node
   linkType: hard
 

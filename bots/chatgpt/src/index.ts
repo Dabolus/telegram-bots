@@ -1,10 +1,15 @@
 import {
   getAllowedChatIds,
   getBotUsername,
-  getBotStartRegex,
   createUpdateHandler,
+  createCommandChecker,
+  getCommandArguments,
 } from '@bots/shared/telegram';
-import { setupOpenAi } from '@bots/shared/openai';
+import {
+  chatConfig,
+  setupOpenAi,
+  updateChatHistory,
+} from '@bots/shared/openai';
 import { getChatConfiguration, setChatConfiguration } from './utils';
 
 export const handler = createUpdateHandler(async (update, bot) => {
@@ -16,7 +21,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  if (getBotStartRegex(botUsername).test(update.message.text)) {
+  const isCommand = createCommandChecker(botUsername, update);
+  const commandArguments = getCommandArguments(update);
+
+  if (isCommand('start')) {
     console.info('Sending start message');
     await bot.sendChatAction(update.message.chat.id, 'typing');
     await bot.sendMessage(
@@ -26,14 +34,17 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  if (update.message.text.startsWith('/context')) {
-    const context = update.message.text.replace('/context', '').trim();
+  if (isCommand('context')) {
+    const context = commandArguments;
     if (context) {
       console.info(
         `Setting context for chat ${update.message.chat.id} to "${context}"`,
       );
       await bot.sendChatAction(update.message.chat.id, 'typing');
-      await setChatConfiguration(update.message.chat.id, { context });
+      await setChatConfiguration(update.message.chat.id, currentConfig => ({
+        ...currentConfig,
+        context,
+      }));
       await bot.sendMessage(
         update.message.chat.id,
         `Context set to "${context}"`,
@@ -60,6 +71,97 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
+  if (isCommand('enablehistory')) {
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    const currentConfig = await getChatConfiguration(update.message.chat.id);
+    if (currentConfig.history?.enabled) {
+      console.info(
+        `History already enabled for chat ${update.message.chat.id}`,
+      );
+      await bot.sendMessage(
+        update.message.chat.id,
+        'History already enabled for this chat.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      console.info(`Enabling history for chat ${update.message.chat.id}`);
+      await setChatConfiguration(update.message.chat.id, {
+        ...currentConfig,
+        history: {
+          ...currentConfig.history,
+          enabled: true,
+        },
+      });
+      await bot.sendMessage(update.message.chat.id, 'History enabled.', {
+        reply_to_message_id: update.message.message_id,
+      });
+    }
+    return;
+  }
+
+  if (isCommand('disablehistory')) {
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    const currentConfig = await getChatConfiguration(update.message.chat.id);
+    if (!currentConfig.history?.enabled) {
+      console.info(
+        `History already disabled for chat ${update.message.chat.id}`,
+      );
+      await bot.sendMessage(
+        update.message.chat.id,
+        'History already disabled for this chat.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      console.info(`Disabling history for chat ${update.message.chat.id}`);
+      await setChatConfiguration(update.message.chat.id, {
+        ...currentConfig,
+        history: {
+          ...currentConfig.history,
+          messages: [],
+          enabled: false,
+        },
+      });
+      await bot.sendMessage(update.message.chat.id, 'History disabled.', {
+        reply_to_message_id: update.message.message_id,
+      });
+    }
+    return;
+  }
+
+  if (isCommand('clearhistory')) {
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    const currentConfig = await getChatConfiguration(update.message.chat.id);
+    if (!currentConfig.history?.enabled) {
+      console.info(
+        `Can't clear history for chat ${update.message.chat.id} as it is disabled`,
+      );
+      await bot.sendMessage(
+        update.message.chat.id,
+        'History is disabled for this chat.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      console.info(`Clearing history for chat ${update.message.chat.id}`);
+      await setChatConfiguration(update.message.chat.id, {
+        ...currentConfig,
+        history: {
+          ...currentConfig.history,
+          messages: [],
+        },
+      });
+      await bot.sendMessage(update.message.chat.id, 'History cleared.', {
+        reply_to_message_id: update.message.message_id,
+      });
+    }
+    return;
+  }
+
   if (
     update.message.chat.id !== update.message.from?.id &&
     !update.message.text.startsWith(`@${botUsername}`)
@@ -70,8 +172,8 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  const { context } = await getChatConfiguration(update.message.chat.id);
-  if (!context) {
+  const currentConfig = await getChatConfiguration(update.message.chat.id);
+  if (!currentConfig.context) {
     await bot.sendChatAction(update.message.chat.id, 'typing');
     await bot.sendMessage(
       update.message.chat.id,
@@ -90,19 +192,22 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
+  const messages = updateChatHistory(
+    currentConfig.context,
+    currentConfig.history?.messages || [],
+    {
+      role: 'user',
+      content: message,
+    },
+  );
   const completion = await openai.createChatCompletion({
-    // https://platform.openai.com/docs/models/gpt-4
-    // https://help.openai.com/en/articles/7127956-how-much-does-gpt-4-cost
-    model: 'gpt-4',
+    model: chatConfig.model,
     messages: [
       {
         role: 'system',
-        content: context,
+        content: currentConfig.context,
       },
-      {
-        role: 'user',
-        content: message,
-      },
+      ...messages,
     ],
   });
   const response = completion.data.choices?.[0]?.message?.content;
@@ -113,6 +218,15 @@ export const handler = createUpdateHandler(async (update, bot) => {
   await bot.sendMessage(update.message.chat.id, response, {
     reply_to_message_id: update.message.message_id,
   });
+  if (currentConfig.history?.enabled) {
+    await setChatConfiguration(update.message.chat.id, {
+      ...currentConfig,
+      history: {
+        ...currentConfig.history,
+        messages: [...messages, completion.data.choices[0].message!],
+      },
+    });
+  }
 
   console.info('Done');
 });
