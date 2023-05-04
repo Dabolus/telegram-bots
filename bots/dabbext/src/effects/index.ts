@@ -18,3 +18,4 @@ export { default as triangled } from './triangled';
 export { default as denied } from './denied';
 export { default as RIS } from './ris';
 export { default as braille } from './braille';
+export { default as IPA } from './ipa';

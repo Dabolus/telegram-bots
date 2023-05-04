@@ -22,12 +22,18 @@ export const handler = createUpdateHandler(async (update, bot) => {
   console.info('Computing results');
   const results: InlineQueryResultArticle[] = effects.map(
     ([name, transform]) => {
-      const transformedQuery = transform(update.inline_query!.query);
+      const transformedQuery = transform(
+        update.inline_query!.query,
+        update.inline_query?.from.language_code,
+      );
 
       return {
         type: 'article',
         id: name,
-        title: transform(importNameToSentenceCase(name)),
+        title: transform(
+          importNameToSentenceCase(name),
+          update.inline_query?.from.language_code,
+        ),
         description: transformedQuery,
         input_message_content: {
           message_text: transformedQuery,

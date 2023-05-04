@@ -124,6 +124,9 @@ constructs:
       handler: bots/dabbext/src/index.handler
       environment:
         BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
+      package:
+        patterns:
+          - 'bots/dabbext/static/**'
   quote-generator:
     type: queue
     worker:
