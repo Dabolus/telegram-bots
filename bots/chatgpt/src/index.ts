@@ -4,6 +4,7 @@ import {
   createUpdateHandler,
   createCommandChecker,
   getCommandArguments,
+  getCommandRegex,
 } from '@bots/shared/telegram';
 import {
   chatConfig,
@@ -158,6 +159,124 @@ export const handler = createUpdateHandler(async (update, bot) => {
       await bot.sendMessage(update.message.chat.id, 'History cleared.', {
         reply_to_message_id: update.message.message_id,
       });
+    }
+    return;
+  }
+
+  if (isCommand('exporthistory')) {
+    await bot.sendChatAction(update.message.chat.id, 'upload_document');
+    const currentConfig = await getChatConfiguration(update.message.chat.id);
+    if (!currentConfig.history?.enabled) {
+      console.info(
+        `Can't export history for chat ${update.message.chat.id} as it is disabled`,
+      );
+      await bot.sendMessage(
+        update.message.chat.id,
+        'History is disabled for this chat.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      console.info(`Exporting history for chat ${update.message.chat.id}`);
+      const json = JSON.stringify(
+        currentConfig.history.messages || [],
+        null,
+        2,
+      );
+      await bot.sendDocument(
+        update.message.chat.id,
+        Buffer.from(json, 'utf-8'),
+        {
+          caption: 'Here is the current history for this chat.',
+          reply_to_message_id: update.message.message_id,
+        },
+        {
+          filename: 'history.json',
+          contentType: 'application/json',
+        },
+      );
+    }
+    return;
+  }
+
+  if (
+    isCommand('importhistory') ||
+    getCommandRegex(botUsername, 'importhistory').test(
+      update.message?.caption || '',
+    )
+  ) {
+    if (
+      !update.message.document &&
+      !update.message.reply_to_message?.document
+    ) {
+      console.info(
+        `Can't import history for chat ${update.message.chat.id} as no document was provided`,
+      );
+      await bot.sendMessage(
+        update.message.chat.id,
+        'No history provided. Please attach the history to the message or reply to a message containing the history.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      await bot.sendChatAction(update.message.chat.id, 'typing');
+      const currentConfig = await getChatConfiguration(update.message.chat.id);
+      if (!currentConfig.history?.enabled) {
+        console.info(
+          `Can't import history for chat ${update.message.chat.id} as it is disabled`,
+        );
+        await bot.sendMessage(
+          update.message.chat.id,
+          'History is disabled for this chat.',
+          {
+            reply_to_message_id: update.message.message_id,
+          },
+        );
+      } else {
+        console.info(`Importing history for chat ${update.message.chat.id}`);
+        try {
+          const fileLink = await bot.getFileLink(
+            update.message.document?.file_id ||
+              update.message.reply_to_message?.document?.file_id!,
+          );
+          const rawHistory = await fetch(fileLink).then(res => res.text());
+          const history = JSON.parse(rawHistory);
+          if (
+            !Array.isArray(history) ||
+            !history.every(
+              el =>
+                typeof el.content === 'string' &&
+                (el.role === 'user' || el.role === 'assistant') &&
+                Object.keys(el).every(k => k === 'content' || k === 'role'),
+            )
+          ) {
+            throw new Error('Invalid history');
+          }
+          await setChatConfiguration(update.message.chat.id, {
+            ...currentConfig,
+            history: {
+              ...currentConfig.history,
+              messages: history,
+            },
+          });
+          await bot.sendMessage(update.message.chat.id, 'History imported.', {
+            reply_to_message_id: update.message.message_id,
+          });
+        } catch (error) {
+          console.warn(
+            `Failed to import history for chat ${update.message.chat.id}: ${error}`,
+          );
+          await bot.sendMessage(
+            update.message.chat.id,
+            'Failed to import history. Please make sure the history is valid.',
+            {
+              reply_to_message_id: update.message.message_id,
+            },
+          );
+        }
+      }
     }
     return;
   }
