@@ -477,11 +477,9 @@ The context is currently set to: "${currentConfig.context}"`;
         filename: `${prompt.replace(/\s+/g, '_')}.png`,
       },
     );
-    return;
-  }
-  // If the response is "whisper", we need to transcribe an audio
-  // using the transcription API
-  if (response === 'whisper') {
+    // If the response is "whisper", we need to transcribe an audio
+    // using the transcription API
+  } else if (response === 'whisper') {
     console.info(`Transcribing audio for chat ${update.message.chat.id}`);
     const audioFile =
       update.message.voice?.file_id || update.message.audio?.file_id;
@@ -503,11 +501,12 @@ The context is currently set to: "${currentConfig.context}"`;
         reply_to_message_id: update.message.message_id,
       },
     );
+    // Otherwise, we just send the response as is
+  } else {
+    await bot.sendMessage(update.message.chat.id, response, {
+      reply_to_message_id: update.message.message_id,
+    });
   }
-  // Otherwise, we just send the response as is
-  await bot.sendMessage(update.message.chat.id, response, {
-    reply_to_message_id: update.message.message_id,
-  });
   if (currentConfig.history?.enabled) {
     await setChatConfiguration(update.message.chat.id, {
       ...currentConfig,
