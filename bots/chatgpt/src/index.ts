@@ -329,6 +329,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
       },
       ...messages,
     ],
+    user: update.message.from?.id.toString(),
   });
   const response = completion.data.choices?.[0]?.message?.content;
   if (!response) {
@@ -347,6 +348,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
       prompt,
       response_format: 'b64_json',
       size: '1024x1024',
+      user: update.message.from?.id.toString(),
     });
     const image = imageResponse.data.data?.[0]?.b64_json;
     if (!image) {
