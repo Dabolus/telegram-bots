@@ -309,10 +309,11 @@ export const handler = createUpdateHandler(async (update, bot) => {
     console.error('Received empty message');
     return;
   }
+  const fullContext = `${currentConfig.context}\n\nWhen asked to generate or to send an image, you will answer with a a message containing a prompt to be provided to DALL-E to generate the requested image. Your answer must have this exact format: "dalle:<prompt for DALL-E>"`;
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
   const messages = updateChatHistory(
-    currentConfig.context,
+    fullContext,
     currentConfig.history?.messages || [],
     {
       role: 'user',
@@ -324,7 +325,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
     messages: [
       {
         role: 'system',
-        content: currentConfig.context,
+        content: fullContext,
       },
       ...messages,
     ],
@@ -334,6 +335,39 @@ export const handler = createUpdateHandler(async (update, bot) => {
     console.error('No response received from OpenAI');
     return;
   }
+  // If the response starts with "dalle:", we need to generate an image
+  // using the DALL-E API
+  if (response.startsWith('dalle:')) {
+    const prompt = response.replace('dalle:', '').trim();
+    console.info(
+      `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
+    );
+    await bot.sendChatAction(update.message.chat.id, 'upload_photo');
+    const imageResponse = await openai.createImage({
+      prompt,
+      response_format: 'b64_json',
+      size: '1024x1024',
+    });
+    const image = imageResponse.data.data?.[0]?.b64_json;
+    if (!image) {
+      console.error('No image received from DALL-E');
+      return;
+    }
+    const imageBuffer = Buffer.from(image, 'base64');
+    await bot.sendPhoto(
+      update.message.chat.id,
+      imageBuffer,
+      {
+        reply_to_message_id: update.message.message_id,
+      },
+      {
+        contentType: 'image/png',
+        filename: `${prompt.replace(/\s+/g, '_')}.png`,
+      },
+    );
+    return;
+  }
+  // Otherwise, we just send the response as is
   await bot.sendMessage(update.message.chat.id, response, {
     reply_to_message_id: update.message.message_id,
   });
