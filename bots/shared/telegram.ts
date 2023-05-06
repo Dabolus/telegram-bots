@@ -39,22 +39,31 @@ export const getCommandArguments = (update: Update): string =>
 export const getBotStartRegex = (username: string) =>
   new RegExp(`^\\/start(?:@${username})?\s*$`);
 
+export const parseIds = (rawIds: string): number[] =>
+  rawIds
+    // Split by comma
+    .split(',')
+    // Trim whitespaces and convert to number
+    // If the string is empty, convert it to a string that can't be
+    // casted to a number so that it gets casted to NaN instead of 0
+    .map(id => Number(id.trim() || 'NaN'))
+    // Filter out NaNs
+    .filter(id => !isNaN(id));
+
 export const getAllowedChatIds = (rawIds = process.env.CHAT_IDS_ALLOWLIST) => {
   if (!rawIds) {
     throw new Error('Chat ids allowlist not provided!');
   }
 
-  return (
-    rawIds
-      // Split by comma
-      .split(',')
-      // Trim whitespaces and convert to number
-      // If the string is empty, convert it to a string that can't be
-      // casted to a number so that it gets casted to NaN instead of 0
-      .map(id => Number(id.trim() || 'NaN'))
-      // Filter out NaNs
-      .filter(id => !isNaN(id))
-  );
+  return parseIds(rawIds);
+};
+
+export const getBotAdmins = (rawIds = process.env.ADMIN_USER_IDS) => {
+  if (!rawIds) {
+    throw new Error('Admin user ids not provided!');
+  }
+
+  return parseIds(rawIds);
 };
 
 const extractChatId = (update: Update): number | undefined =>

@@ -30,3 +30,30 @@ export const setChatConfiguration = async (
   }
   await setItem(`${chatId}`, config);
 };
+
+export const getDenyList = async (): Promise<number[]> => {
+  const denyList = await getItem<number[]>('denyList');
+  return denyList || [];
+};
+
+export const setDenyList = async (denyList: number[]): Promise<void> => {
+  await setItem('denyList', denyList);
+};
+
+export const addToDenyList = async (userId: number): Promise<void> => {
+  const currentList = await getDenyList();
+  const newList = Array.from(new Set([...currentList, userId]));
+  if (newList.length === currentList.length) {
+    return;
+  }
+  await setDenyList(newList);
+};
+
+export const removeFromDenyList = async (userId: number): Promise<void> => {
+  const currentList = await getDenyList();
+  const newList = currentList.filter(id => id !== userId);
+  if (newList.length === currentList.length) {
+    return;
+  }
+  await setDenyList(newList);
+};

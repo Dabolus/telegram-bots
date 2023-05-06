@@ -5,25 +5,106 @@ import {
   createCommandChecker,
   getCommandArguments,
   getCommandRegex,
+  getBotAdmins,
+  parseIds,
 } from '@bots/shared/telegram';
 import {
   chatConfig,
   setupOpenAi,
   updateChatHistory,
 } from '@bots/shared/openai';
-import { getChatConfiguration, setChatConfiguration } from './utils';
+import {
+  getChatConfiguration,
+  getDenyList,
+  setChatConfiguration,
+  setDenyList,
+} from './utils';
 
 export const handler = createUpdateHandler(async (update, bot) => {
-  const botUsername = await getBotUsername(bot);
   const allowedIds = getAllowedChatIds();
+  const botAdmins = getBotAdmins();
 
   if (!update.message?.text || !allowedIds.includes(update.message.chat.id)) {
     console.warn('Update is not a text message or chat is not allowed');
     return;
   }
 
+  const denyList = await getDenyList();
+  const botUsername = await getBotUsername(bot);
   const isCommand = createCommandChecker(botUsername, update);
   const commandArguments = getCommandArguments(update);
+
+  // Always allow admins to block/unblock users, even if they are on the deny list
+  // (this is to prevent admins from blocking themselves while testing)
+  if (isCommand('block')) {
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    if (botAdmins.includes(update.message.from!.id)) {
+      const idsToBlock = parseIds(commandArguments);
+      const newDenyList = Array.from(new Set([...denyList, ...idsToBlock]));
+      await setDenyList(newDenyList);
+      await bot.sendMessage(
+        update.message.chat.id,
+        `${idsToBlock.length > 1 ? 'Users' : 'User'} added to deny list.`,
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      await bot.sendMessage(
+        update.message.chat.id,
+        'You are not allowed to use this command.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    }
+    return;
+  }
+
+  if (isCommand('unblock')) {
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    if (botAdmins.includes(update.message.from!.id)) {
+      const idsToUnblock = parseIds(commandArguments);
+      const newDenyList = denyList.filter(id => !idsToUnblock.includes(id));
+      await setDenyList(newDenyList);
+      await bot.sendMessage(
+        update.message.chat.id,
+        `${idsToUnblock.length > 1 ? 'Users' : 'User'} removed from deny list.`,
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    } else {
+      await bot.sendMessage(
+        update.message.chat.id,
+        'You are not allowed to use this command.',
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+      );
+    }
+    return;
+  }
+
+  if (
+    denyList.includes(update.message.from!.id) &&
+    !botAdmins.includes(update.message.from!.id)
+  ) {
+    console.warn(
+      `User ${
+        update.message.from!.id
+      } is on the deny list, answering with block message`,
+    );
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await bot.sendMessage(
+      update.message.chat.id,
+      'You have been blocked from using this bot.',
+      {
+        reply_to_message_id: update.message.message_id,
+      },
+    );
+    return;
+  }
 
   if (isCommand('start')) {
     console.info('Sending start message');
@@ -312,6 +393,25 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const fullContext = `${currentConfig.context}\n\nWhen asked to generate or to send an image, you will answer with a a message containing a prompt to be provided to DALL-E to generate the requested image. Your answer must have this exact format: "dalle:<prompt for DALL-E>"`;
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
+  const moderationResult = await openai.createModeration({
+    input: message,
+    model: 'text-moderation-latest',
+  });
+  if (moderationResult.data.results.some(result => result.flagged)) {
+    console.info(
+      `Message "${message}" from chat ${update.message.chat.id} was flagged as inappropriate by OpenAI`,
+    );
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await setDenyList([...denyList, update.message.from!.id]);
+    await bot.sendMessage(
+      update.message.chat.id,
+      'Your message is inappropriate. You have been added to the deny list and will not be able to use this bot anymore.',
+      {
+        reply_to_message_id: update.message.message_id,
+      },
+    );
+    return;
+  }
   const messages = updateChatHistory(
     fullContext,
     currentConfig.history?.messages || [],
