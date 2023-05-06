@@ -8,7 +8,7 @@
     ) %>:400,b,i,bi|<%= authorFont.replace(/ /g, '+') %>:400,b,i,bi|<%= emphasizedFont.replace(
       / /g,
       '+',
-    ) %>:400,b,i,bi">
+    ) %>:400,b,i,bi|Inconsolata:400">
     <style>
       * { box-sizing: border-box; }
       html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@
         font-size: 0.9375em;
         text-align: center;
       }
-      strong, em, u, mark, del, #author {
+      strong, em, u, mark, del, code, pre, #author {
         color: <%= themeColor %>;
       }
       mark {
@@ -63,6 +63,10 @@
         height: 1em;
         margin-bottom: .25em;
         vertical-align: middle;
+      }
+      code, pre {
+        margin: 0;
+        font-family: 'Inconsolata', monospace;
       }
     </style>
   </head>
