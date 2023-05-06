@@ -94,6 +94,9 @@ functions:
     layers:
       - { Ref: ChromiumLambdaLayer }
       - { Ref: SharpLambdaLayer }
+    package:
+      patterns:
+        - 'bots/quote-generator/templates/**'
   wotd:
     handler: bots/wotd/src/index.handler
     environment:
