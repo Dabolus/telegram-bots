@@ -390,7 +390,17 @@ export const handler = createUpdateHandler(async (update, bot) => {
     console.error('Received empty message');
     return;
   }
-  const fullContext = `${currentConfig.context}\n\nWhen asked to generate or to send an image, you will answer with a a message containing a prompt to be provided to DALL-E to generate the requested image. Your answer must have this exact format: "dalle:<prompt for DALL-E>"`;
+  const fullContext = `You are a bot that behaves according to a user-provided context.
+
+When asked to generate or to send an image, you will answer with a message containing a prompt to be provided to DALL-E to generate the requested image.
+Your answer must have this exact format: "dalle:<prompt for DALL-E>"\n\n${currentConfig.context}
+
+When asked to transcribe an audio, you will answer exactly with this message: "whisper"
+
+For any other message, you will answer based on the context you were provided with.
+
+The context is currently set to: "${currentConfig.context}"`;
+
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
   const moderationResult = await openai.createModeration({
@@ -468,6 +478,31 @@ export const handler = createUpdateHandler(async (update, bot) => {
       },
     );
     return;
+  }
+  // If the response is "whisper", we need to transcribe an audio
+  // using the transcription API
+  if (response === 'whisper') {
+    console.info(`Transcribing audio for chat ${update.message.chat.id}`);
+    const audioFile =
+      update.message.voice?.file_id || update.message.audio?.file_id;
+    if (!audioFile) {
+      console.error('Transcription requested but no audio file provided');
+      await bot.sendMessage(update.message.chat.id, 'No audio provided.', {
+        reply_to_message_id: update.message.message_id,
+      });
+      return;
+    }
+    const audioFileStream = bot.getFileStream(audioFile);
+    const audioResponse = await openai
+      .createTranscription(audioFileStream, 'whisper-1')
+      .catch(() => {});
+    await bot.sendMessage(
+      update.message.chat.id,
+      audioResponse?.data?.text || 'Unable to transcribe audio.',
+      {
+        reply_to_message_id: update.message.message_id,
+      },
+    );
   }
   // Otherwise, we just send the response as is
   await bot.sendMessage(update.message.chat.id, response, {
