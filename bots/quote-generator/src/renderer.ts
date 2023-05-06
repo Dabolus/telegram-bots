@@ -11,6 +11,8 @@ import {
 export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
+  console.info('Received raw query string:', event.rawQueryString);
+
   const {
     query,
     author,

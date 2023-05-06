@@ -49,24 +49,27 @@ There are multiple ways in which I can generate a quote:
     return;
   }
 
+  const templateOptions = await getRandomTemplateOptions(
+    quoteInfo.imageQuery,
+    quoteInfo.themeColor,
+  );
+
+  // Compute the image URL even when directly generating the image, for debugging purposes
+  const imageUrl = `${process.env.API_GATEWAY_BASE_URL}${
+    process.env.RENDERER_PATH
+  }?${new URLSearchParams({
+    query: quoteInfo.text,
+    author: quoteInfo.author,
+    ...templateOptions,
+    gradientAngle: templateOptions.gradientAngle.toFixed(2),
+    emphasizedSize: templateOptions.emphasizedSize.toFixed(2),
+    entities: uriEncodeEntities(quoteInfo.entities),
+  }).toString()}`;
+
+  console.info('Image URL:', imageUrl);
+
   // If the update was an inline query, respond with a URL to the quote renderer lambda
   if (update.inline_query?.query) {
-    const { gradientAngle, emphasizedSize, ...options } =
-      await getRandomTemplateOptions(
-        quoteInfo.imageQuery,
-        quoteInfo.themeColor,
-      );
-    const imageUrl = `${process.env.API_GATEWAY_BASE_URL}${
-      process.env.RENDERER_PATH
-    }?${new URLSearchParams({
-      query: quoteInfo.text,
-      author: quoteInfo.author,
-      ...options,
-      gradientAngle: gradientAngle.toFixed(2),
-      emphasizedSize: emphasizedSize.toFixed(2),
-      entities: uriEncodeEntities(quoteInfo.entities),
-    }).toString()}`;
-
     await bot.answerInlineQuery(update.inline_query.id, [
       {
         id: '1',
@@ -77,6 +80,7 @@ There are multiple ways in which I can generate a quote:
         photo_height: quoteHeight,
       },
     ]);
+    return;
   }
 
   if (!update.message) {
@@ -92,7 +96,7 @@ There are multiple ways in which I can generate a quote:
     quoteInfo.text,
     quoteInfo.author,
     quoteInfo.entities,
-    await getRandomTemplateOptions(quoteInfo.imageQuery, quoteInfo.themeColor),
+    templateOptions,
   );
 
   console.info('Sending image');
