@@ -432,7 +432,11 @@ If the image should also be associated with a caption, it should be provided in 
 If the user asks you to transcribe an audio, the response JSON must have a "whisper" property set to true.
 
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
-
+${
+  currentConfig.history?.enabled
+    ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
+    : ''
+}
 The context is: "${currentConfig.context}"`;
 
   await bot.sendChatAction(update.message.chat.id, 'typing');
@@ -484,6 +488,7 @@ The context is: "${currentConfig.context}"`;
     message: response,
     dalle,
     whisper,
+    followup = [],
   } = await parseResponse(rawResponse);
   // If the response starts with "dalle:", we need to generate an image
   // using the DALL-E API
@@ -545,6 +550,26 @@ The context is: "${currentConfig.context}"`;
   } else {
     await bot.sendMessage(update.message.chat.id, response, {
       reply_to_message_id: update.message.message_id,
+      reply_markup: {
+        selective: true,
+        ...(followup.length > 0
+          ? {
+              keyboard: followup.map(hint => [
+                {
+                  text:
+                    update.message?.chat?.id !== update.message?.from?.id
+                      ? // If the bot is used in a group, we need to prefix the hint with the bot's username
+                        `@${botUsername} ${hint}`
+                      : // Otherwise, we can just use the hint as is
+                        hint,
+                },
+              ]),
+              one_time_keyboard: true,
+            }
+          : {
+              remove_keyboard: true,
+            }),
+      },
     });
   }
   if (currentConfig.history?.enabled) {

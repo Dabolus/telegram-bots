@@ -62,6 +62,7 @@ export interface GPTResponse {
   message: string;
   dalle?: string;
   whisper?: boolean;
+  followup?: string[];
 }
 
 export const parseResponse = async (message: string): Promise<GPTResponse> => {
