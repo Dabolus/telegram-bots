@@ -33,16 +33,21 @@ export const sanitize = (str: string) =>
   );
 
 // Every entity not present in this map will use the `default` tag
-const entityToTagMap: Partial<Record<MessageEntityType, string>> & {
-  default: string;
-} = {
-  default: 'strong',
-  italic: 'em',
-  code: 'code',
-  pre: 'pre',
-  underline: 'u',
-  strikethrough: 'del',
-  spoiler: 'mark',
+const entityToHtmlMap: Partial<
+  Record<
+    MessageEntityType | 'default',
+    (content: string, customEmojis: Record<string, string>) => string
+  >
+> = {
+  default: content => `<strong>${content}</strong>`,
+  italic: content => `<em>${content}</em>`,
+  code: content => `<code>${content}</code>`,
+  pre: content => `<pre><code>${content}</code></pre>`,
+  underline: content => `<u>${content}</u>`,
+  strikethrough: content => `<del>${content}</del>`,
+  spoiler: content => `<mark>${content}</mark>`,
+  custom_emoji: (content, customEmojis) =>
+    `<img src="${customEmojis[content]}">`,
 };
 
 export const highlight = (str: string) =>
@@ -60,19 +65,26 @@ export const getRandomArrayElement = <T>(arr: T[]): T =>
 export const entitiesToHTML = (
   text: string,
   entities: MessageEntity[],
+  customEmojis: Record<string, string>,
 ): string =>
-  entities.reduce((output, { offset, length, type }, index) => {
-    const nextEntity = entities[index + 1];
+  entities.reduce(
+    (output, { offset, length, type, custom_emoji_id }, index) => {
+      const nextEntity = entities[index + 1];
 
-    const encodedText = sanitize(text.slice(offset, offset + length));
-    const encodedSuffix = sanitize(
-      text.slice(offset + length, nextEntity?.offset),
-    );
+      const encodedText = sanitize(text.slice(offset, offset + length));
+      const encodedSuffix = sanitize(
+        text.slice(offset + length, nextEntity?.offset),
+      );
 
-    const tag = entityToTagMap[type] || entityToTagMap.default;
+      const mapper = entityToHtmlMap[type] || entityToHtmlMap.default!;
+      // For emojis, content should be the ID of the custom emoji
+      const entityContent =
+        type === 'custom_emoji' ? custom_emoji_id! : encodedText;
 
-    return `${output}<${tag}>${encodedText}</${tag}>${encodedSuffix}`;
-  }, sanitize(text.slice(0, entities[0]?.offset)));
+      return `${output}${mapper(entityContent, customEmojis)}${encodedSuffix}`;
+    },
+    sanitize(text.slice(0, entities[0]?.offset)),
+  );
 
 export const standardFonts = [
   'Lato',
