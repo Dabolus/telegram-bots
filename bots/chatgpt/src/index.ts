@@ -86,27 +86,30 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  if (
+  const isBlocked =
     denyList.includes(update.message.from!.id) &&
-    !botAdmins.includes(update.message.from!.id)
-  ) {
+    !botAdmins.includes(update.message.from!.id);
+  const answerBlockedUser = async () => {
     console.warn(
       `User ${
-        update.message.from!.id
+        update.message!.from!.id
       } is on the deny list, answering with block message`,
     );
-    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await bot.sendChatAction(update.message!.chat.id, 'typing');
     await bot.sendMessage(
-      update.message.chat.id,
+      update.message!.chat.id,
       'You have been blocked from using this bot.',
       {
-        reply_to_message_id: update.message.message_id,
+        reply_to_message_id: update.message!.message_id,
       },
     );
-    return;
-  }
+  };
 
   if (isCommand('start')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     console.info('Sending start message');
     await bot.sendChatAction(update.message.chat.id, 'typing');
     await bot.sendMessage(
@@ -117,6 +120,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   if (isCommand('context')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     const context = commandArguments;
     if (context) {
       console.info(
@@ -154,6 +161,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   if (isCommand('enablehistory')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const currentConfig = await getChatConfiguration(update.message.chat.id);
     if (currentConfig.history?.enabled) {
@@ -184,6 +195,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   if (isCommand('disablehistory')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const currentConfig = await getChatConfiguration(update.message.chat.id);
     if (!currentConfig.history?.enabled) {
@@ -215,6 +230,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   if (isCommand('clearhistory')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const currentConfig = await getChatConfiguration(update.message.chat.id);
     if (!currentConfig.history?.enabled) {
@@ -245,6 +264,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   if (isCommand('exporthistory')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     await bot.sendChatAction(update.message.chat.id, 'upload_document');
     const currentConfig = await getChatConfiguration(update.message.chat.id);
     if (!currentConfig.history?.enabled) {
@@ -287,6 +310,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
       update.message?.caption || '',
     )
   ) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
     if (
       !update.message.document &&
       !update.message.reply_to_message?.document
@@ -372,6 +399,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
+  if (isBlocked) {
+    await answerBlockedUser();
+    return;
+  }
   const currentConfig = await getChatConfiguration(update.message.chat.id);
   if (!currentConfig.context) {
     await bot.sendChatAction(update.message.chat.id, 'typing');
