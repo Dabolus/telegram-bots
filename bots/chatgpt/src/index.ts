@@ -16,6 +16,7 @@ import {
 import {
   getChatConfiguration,
   getDenyList,
+  parseResponse,
   setChatConfiguration,
   setDenyList,
 } from './utils';
@@ -423,14 +424,16 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
   const fullContext = `You are a bot that behaves according to a user-provided context.
 
-When asked to generate or to send an image, you will answer with a message containing a prompt to be provided to DALL-E to generate the requested image.
-Your answer must have this exact format: "dalle:<prompt for DALL-E>"\n\n${currentConfig.context}
+Since your responses will need to be parsed programmatically, you must always respond with a valid JSON.
 
-When asked to transcribe an audio, you will answer exactly with this message: "whisper"
+If the user asks you to generate or to send an image, the response JSON must have a "dalle" property containing the prompt to be provided to DALL-E to generate the requested image.
+If the image should also be associated with a caption, it should be provided in a "message" property.
 
-For any other message, you will answer based on the context you were provided with.
+If the user asks you to transcribe an audio, the response JSON must have a "whisper" property set to true.
 
-The context is currently set to: "${currentConfig.context}"`;
+For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
+
+The context is: "${currentConfig.context}"`;
 
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
@@ -472,15 +475,20 @@ The context is currently set to: "${currentConfig.context}"`;
     ],
     user: update.message.from?.id.toString(),
   });
-  const response = completion.data.choices?.[0]?.message?.content;
-  if (!response) {
+  const rawResponse = completion.data.choices?.[0]?.message?.content;
+  if (!rawResponse) {
     console.error('No response received from OpenAI');
     return;
   }
+  const {
+    message: response,
+    dalle,
+    whisper,
+  } = await parseResponse(rawResponse);
   // If the response starts with "dalle:", we need to generate an image
   // using the DALL-E API
-  if (response.startsWith('dalle:')) {
-    const prompt = response.replace('dalle:', '').trim();
+  if (dalle) {
+    const prompt = dalle.trim();
     console.info(
       `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
     );
@@ -502,6 +510,7 @@ The context is currently set to: "${currentConfig.context}"`;
       imageBuffer,
       {
         reply_to_message_id: update.message.message_id,
+        caption: response,
       },
       {
         contentType: 'image/png',
@@ -510,7 +519,7 @@ The context is currently set to: "${currentConfig.context}"`;
     );
     // If the response is "whisper", we need to transcribe an audio
     // using the transcription API
-  } else if (response === 'whisper') {
+  } else if (whisper) {
     console.info(`Transcribing audio for chat ${update.message.chat.id}`);
     const audioFile =
       update.message.voice?.file_id || update.message.audio?.file_id;

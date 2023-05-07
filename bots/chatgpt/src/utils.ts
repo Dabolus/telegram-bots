@@ -57,3 +57,18 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
   }
   await setDenyList(newList);
 };
+
+export interface GPTResponse {
+  message: string;
+  dalle?: string;
+  whisper?: boolean;
+}
+
+export const parseResponse = async (message: string): Promise<GPTResponse> => {
+  try {
+    const parsed = JSON.parse(message);
+    return parsed;
+  } catch {
+    return { message: message };
+  }
+};
