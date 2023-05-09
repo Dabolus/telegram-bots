@@ -429,8 +429,6 @@ Since your responses will need to be parsed programmatically, you must always re
 If the user asks you to generate or to send an image, the response JSON must have a "dalle" property containing the prompt to be provided to DALL-E to generate the requested image.
 If the image should also be associated with a caption, it should be provided in a "message" property.
 
-If the user asks you to transcribe an audio, the response JSON must have a "whisper" property set to true.
-
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
 ${
   currentConfig.history?.enabled
@@ -487,7 +485,6 @@ The context is: "${currentConfig.context}"`;
   const {
     message: response,
     dalle,
-    whisper,
     followup = [],
   } = await parseResponse(rawResponse);
   // If the response starts with "dalle:", we need to generate an image
@@ -522,31 +519,6 @@ The context is: "${currentConfig.context}"`;
         filename: `${prompt.replace(/\s+/g, '_')}.png`,
       },
     );
-    // If the response is "whisper", we need to transcribe an audio
-    // using the transcription API
-  } else if (whisper) {
-    console.info(`Transcribing audio for chat ${update.message.chat.id}`);
-    const audioFile =
-      update.message.voice?.file_id || update.message.audio?.file_id;
-    if (!audioFile) {
-      console.error('Transcription requested but no audio file provided');
-      await bot.sendMessage(update.message.chat.id, 'No audio provided.', {
-        reply_to_message_id: update.message.message_id,
-      });
-      return;
-    }
-    const audioFileStream = bot.getFileStream(audioFile);
-    const audioResponse = await openai
-      .createTranscription(audioFileStream, 'whisper-1')
-      .catch(() => {});
-    await bot.sendMessage(
-      update.message.chat.id,
-      audioResponse?.data?.text || 'Unable to transcribe audio.',
-      {
-        reply_to_message_id: update.message.message_id,
-      },
-    );
-    // Otherwise, we just send the response as is
   } else {
     await bot.sendMessage(update.message.chat.id, response, {
       reply_to_message_id: update.message.message_id,

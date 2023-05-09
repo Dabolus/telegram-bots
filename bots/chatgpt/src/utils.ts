@@ -61,7 +61,6 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
 export interface GPTResponse {
   message: string;
   dalle?: string;
-  whisper?: boolean;
   followup?: string[];
 }
 
