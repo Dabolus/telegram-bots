@@ -433,7 +433,8 @@ If the user asks you to generate or to send an image, the response JSON must hav
 - "caption": (optional) if you think the image should also be associated with a caption, provide it here;
 - "hd": (optional) if the user asks for an HD or high quality image, set this to true;
 - "natural": (optional) if the user asks for an image that looks more natural, set this to true;
-- "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square".
+- "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square";
+- "file": (optional) if the user asks for the image to be sent as a file, set this to true.
 
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
 The "message" property must be written in Telegram's "MarkdownV2" format, so you can use *bold*, _italic_, \`code\`, [links](https://example.com), and more, but you
@@ -504,7 +505,8 @@ ${currentConfig.context}`;
     console.info(
       `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
     );
-    await bot.sendChatAction(update.message.chat.id, 'upload_photo');
+    const chatAction = dalle.file ? 'upload_document' : 'upload_photo';
+    await bot.sendChatAction(update.message.chat.id, chatAction);
     const imageResponse = await openai.images.generate({
       model: chatConfig.image.model,
       prompt,
@@ -523,40 +525,20 @@ ${currentConfig.context}`;
       console.error('No image received from DALL-E');
       return;
     }
-    if (images.length > 1) {
-      await bot.sendMediaGroup(
-        update.message.chat.id,
-        images.map((image, index) => ({
-          type: 'photo',
-          // This method allows providing the images as buffers, but the typings
-          // are currently wrong, so we need to cast it to any
-          media: image as any,
-          parse_mode: 'MarkdownV2',
-          caption: dalle.caption || response,
-          fileOptions: {
-            contentType: 'image/png',
-            filename: `${prompt.replace(/\s+/g, '_')}_${index}.png`,
-          },
-        })),
-        {
-          reply_to_message_id: update.message.message_id,
-        },
-      );
-    } else {
-      await bot.sendPhoto(
-        update.message.chat.id,
-        images[0],
-        {
-          reply_to_message_id: update.message.message_id,
-          parse_mode: 'MarkdownV2',
-          caption: dalle.caption || response,
-        },
-        {
-          contentType: 'image/png',
-          filename: `${prompt.replace(/\s+/g, '_')}.png`,
-        },
-      );
-    }
+    const methodToUse = dalle.file ? 'sendDocument' : 'sendPhoto';
+    await bot[methodToUse](
+      update.message.chat.id,
+      images[0],
+      {
+        reply_to_message_id: update.message.message_id,
+        parse_mode: 'MarkdownV2',
+        caption: dalle.caption || response,
+      },
+      {
+        contentType: 'image/png',
+        filename: `${prompt.replace(/\s+/g, '_')}.png`,
+      },
+    );
   } else {
     await bot.sendMessage(update.message.chat.id, response, {
       reply_to_message_id: update.message.message_id,

@@ -66,6 +66,7 @@ export interface GPTResponse {
     hd?: boolean;
     natural?: boolean;
     orientation?: 'landscape' | 'portrait' | 'square';
+    file?: boolean;
   };
   followup?: string[];
 }
