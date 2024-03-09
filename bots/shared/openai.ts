@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from 'openai';
+import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 
 export const chatConfig = {
@@ -6,7 +6,7 @@ export const chatConfig = {
   maxTokens: 128000,
 } as const;
 
-let openai: OpenAIApi;
+let openai: OpenAI;
 
 export const setupOpenAi = (apiKey = process.env.OPENAI_API_KEY) => {
   if (!apiKey) {
@@ -14,26 +14,28 @@ export const setupOpenAi = (apiKey = process.env.OPENAI_API_KEY) => {
   }
 
   if (!openai) {
-    const configuration = new Configuration({
+    openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    openai = new OpenAIApi(configuration);
   }
 
   return openai;
 };
 
 export const computeChatHistoryTokens = (
-  history: ChatCompletionRequestMessage[],
+  history: OpenAI.ChatCompletionMessageParam[],
 ): number =>
-  history.reduce((sum, message) => sum + countTokens(message.content), 0);
+  history.reduce(
+    (sum, message) => sum + countTokens(`${message.content ?? ''}`),
+    0,
+  );
 
 export const updateChatHistory = (
   context: string,
-  currentHisory: ChatCompletionRequestMessage[],
-  ...newMessages: ChatCompletionRequestMessage[]
+  currentHisory: OpenAI.ChatCompletionMessageParam[],
+  ...newMessages: OpenAI.ChatCompletionMessageParam[]
 ) => {
-  const fullHistory: ChatCompletionRequestMessage[] = [
+  const fullHistory: OpenAI.ChatCompletionMessageParam[] = [
     ...currentHisory,
     ...newMessages,
   ];

@@ -446,11 +446,11 @@ ${currentConfig.context}`;
 
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
-  const moderationResult = await openai.createModeration({
+  const moderationResult = await openai.moderations.create({
     input: message,
     model: 'text-moderation-latest',
   });
-  if (moderationResult.data.results.some(result => result.flagged)) {
+  if (moderationResult.results.some(result => result.flagged)) {
     console.info(
       `Message "${message}" from chat ${update.message.chat.id} was flagged as inappropriate by OpenAI`,
     );
@@ -473,7 +473,7 @@ ${currentConfig.context}`;
       content: message,
     },
   );
-  const completion = await openai.createChatCompletion({
+  const completion = await openai.chat.completions.create({
     model: chatConfig.model,
     messages: [
       {
@@ -484,7 +484,7 @@ ${currentConfig.context}`;
     ],
     user: update.message.from?.id.toString(),
   });
-  const rawResponse = completion.data.choices?.[0]?.message?.content;
+  const rawResponse = completion.choices?.[0]?.message?.content;
   if (!rawResponse) {
     console.error('No response received from OpenAI');
     return;
@@ -502,7 +502,7 @@ ${currentConfig.context}`;
       `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
     );
     await bot.sendChatAction(update.message.chat.id, 'upload_photo');
-    const imageResponse = await openai.createImage({
+    const imageResponse = await openai.images.generate({
       prompt,
       response_format: 'b64_json',
       size: '1024x1024',
@@ -510,7 +510,7 @@ ${currentConfig.context}`;
       user: update.message.from?.id.toString(),
     });
     const images =
-      imageResponse.data.data
+      imageResponse.data
         ?.filter(image => !!image.b64_json)
         .map(image => Buffer.from(image.b64_json!, 'base64')) || [];
     if (images.length < 1) {
@@ -582,7 +582,7 @@ ${currentConfig.context}`;
       ...currentConfig,
       history: {
         ...currentConfig.history,
-        messages: [...messages, completion.data.choices[0].message!],
+        messages: [...messages, completion.choices[0].message!],
       },
     });
   }
