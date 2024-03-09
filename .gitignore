@@ -11,7 +11,7 @@ jspm_packages
 # Layers artifacts
 layers/*/build
 
-# Yarn 3
+# Yarn 4
 .pnp.*
 .yarn/*
 !.yarn/patches
