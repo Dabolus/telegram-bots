@@ -1,12 +1,12 @@
 org: dabolus
 app: ${env:SERVICE_NAME}
 service: ${env:SERVICE_NAME}
-frameworkVersion: '2 || 3'
+frameworkVersion: '3'
 useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs20.x
   region: us-east-1
   memorySize: 768
   timeout: 28
