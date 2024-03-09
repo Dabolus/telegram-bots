@@ -437,9 +437,19 @@ If the user asks you to generate or to send an image, the response JSON must hav
 - "file": (optional) if the user asks for the image to be sent as a file, set this to true.
 
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
-The "message" property must be written in Telegram's "MarkdownV2" format, so you can use *bold*, _italic_, \`code\`, [links](https://example.com), and more, but you
-must always escape the following characters: '_', '*', '[', ']', '(', ')', '~', '\`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!', and '\\' using a backslash.
-Note that, since the response is a JSON, you must also escape the backslash itself using another backslash.
+The "message" property must be written in Telegram's "HTML" format, so you can use the following HTML tags:
+- <b>bold</b>
+- <i>italic</i>
+- <u>underline</u>
+- <s>strikethrough</s>
+- <tg-spoiler>spoiler</tg-spoiler>
+- <a href="http://example.com">URL</a>
+- <code>inline fixed-width code</code>
+- <pre>pre-formatted fixed-width code block</pre>
+- <pre><code class="language-python">pre-formatted fixed-width code block in a specific language</code></pre>
+- <blockquote>Block quotation</blockquote>
+Make sure to escape the reserved HTML entities in the message.
+Also, since the response is inside a JSON field, make sure to escape also the backslashes using another backslash.
 ${
   currentConfig.history?.enabled
     ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
@@ -531,7 +541,7 @@ ${currentConfig.context}`;
       images[0],
       {
         reply_to_message_id: update.message.message_id,
-        parse_mode: 'MarkdownV2',
+        parse_mode: 'HTML',
         caption: dalle.caption || response,
       },
       {
@@ -542,7 +552,7 @@ ${currentConfig.context}`;
   } else {
     await bot.sendMessage(update.message.chat.id, response, {
       reply_to_message_id: update.message.message_id,
-      parse_mode: 'MarkdownV2',
+      parse_mode: 'HTML',
       reply_markup: {
         selective: true,
         ...(followup.length > 0
