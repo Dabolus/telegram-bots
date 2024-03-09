@@ -1,9 +1,9 @@
 import { getItem, setItem } from '@bots/shared/cache';
-import type { ChatCompletionRequestMessage } from 'openai';
+import type { OpenAI } from 'openai';
 
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
-  messages?: ChatCompletionRequestMessage[];
+  messages?: OpenAI.ChatCompletionMessageParam[];
 }
 
 export interface ChatConfiguration {
@@ -62,11 +62,26 @@ export interface GPTResponse {
   message: string;
   dalle?: {
     prompt: string;
-    count?: number;
     caption?: string;
+    hd?: boolean;
+    natural?: boolean;
+    orientation?: 'landscape' | 'portrait' | 'square';
   };
   followup?: string[];
 }
+
+export const getImageSize = (
+  orientation?: NonNullable<GPTResponse['dalle']>['orientation'],
+): OpenAI.ImageGenerateParams['size'] => {
+  switch (orientation) {
+    case 'landscape':
+      return '1792x1024';
+    case 'portrait':
+      return '1024x1792';
+    default:
+      return '1024x1024';
+  }
+};
 
 export const parseResponse = async (message: string): Promise<GPTResponse> => {
   try {

@@ -16,6 +16,7 @@ import {
 import {
   getChatConfiguration,
   getDenyList,
+  getImageSize,
   parseResponse,
   setChatConfiguration,
   setDenyList,
@@ -429,8 +430,10 @@ The JSON must be provided as-is, without wrapping it in a Markdown code block or
 
 If the user asks you to generate or to send an image, the response JSON must have a "dalle" property, which must be an object containing the following properties:
 - "prompt": the prompt to be provided to DALL-E to generate the requested image;
-- "count": (optional) the number of images the user requested to generate. It must be a number between 1 and 10 (both included);
-- "caption": (optional) if you think the image should also be associated with a caption, provide it here.
+- "caption": (optional) if you think the image should also be associated with a caption, provide it here;
+- "hd": (optional) if the user asks for an HD or high quality image, set this to true;
+- "natural": (optional) if the user asks for an image that looks more natural, set this to true;
+- "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square".
 
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
 The "message" property must be written in Telegram's "MarkdownV2" format, so you can use *bold*, _italic_, \`code\`, [links](https://example.com), and more, but you
@@ -474,7 +477,7 @@ ${currentConfig.context}`;
     },
   );
   const completion = await openai.chat.completions.create({
-    model: chatConfig.model,
+    model: chatConfig.text.model,
     messages: [
       {
         role: 'system',
@@ -503,10 +506,13 @@ ${currentConfig.context}`;
     );
     await bot.sendChatAction(update.message.chat.id, 'upload_photo');
     const imageResponse = await openai.images.generate({
+      model: chatConfig.image.model,
       prompt,
+      quality: dalle.hd ? 'hd' : 'standard',
+      style: dalle.natural ? 'natural' : 'vivid',
+      size: getImageSize(dalle.orientation),
+      n: 1,
       response_format: 'b64_json',
-      size: '1024x1024',
-      n: dalle.count || 1,
       user: update.message.from?.id.toString(),
     });
     const images =

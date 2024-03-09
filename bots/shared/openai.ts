@@ -1,10 +1,27 @@
 import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 
-export const chatConfig = {
-  model: 'gpt-4-turbo-preview',
-  maxTokens: 128000,
-} as const;
+export interface ChatConfig {
+  text: {
+    model: NonNullable<OpenAI.ChatCompletionCreateParams['model']>;
+    maxTokens: number;
+  };
+  image: {
+    model: NonNullable<OpenAI.ImageGenerateParams['model']>;
+    maxTokens: number;
+  };
+}
+
+export const chatConfig: ChatConfig = {
+  text: {
+    model: 'gpt-4-turbo-preview',
+    maxTokens: 128000,
+  },
+  image: {
+    model: 'dall-e-3',
+    maxTokens: 4000,
+  },
+};
 
 let openai: OpenAI;
 
@@ -50,7 +67,7 @@ export const updateChatHistory = (
       },
       ...fullHistory,
     ]) >
-      chatConfig.maxTokens * 0.9
+      chatConfig.text.maxTokens * 0.9
   ) {
     fullHistory.shift();
   }
