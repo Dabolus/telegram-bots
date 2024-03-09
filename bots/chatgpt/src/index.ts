@@ -425,6 +425,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const fullContext = `You are a bot that behaves according to a user-provided context.
 
 Since your responses will need to be parsed programmatically, you must always respond with a valid JSON.
+The JSON must be provided as-is, without wrapping it in a Markdown code block or anything else.
 
 If the user asks you to generate or to send an image, the response JSON must have a "dalle" property, which must be an object containing the following properties:
 - "prompt": the prompt to be provided to DALL-E to generate the requested image;
@@ -432,12 +433,16 @@ If the user asks you to generate or to send an image, the response JSON must hav
 - "caption": (optional) if you think the image should also be associated with a caption, provide it here.
 
 For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
+The "message" property must be written in Telegram's "MarkdownV2" format, so you can use *bold*, _italic_, \`code\`, [links](https://example.com), and more, but you
+must always escape the following characters: '_', '*', '[', ']', '(', ')', '~', '\`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!', and '\\' using a backslash.
+Note that, since the response is a JSON, you must also escape the backslash itself using another backslash.
 ${
   currentConfig.history?.enabled
     ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
     : ''
 }
-The context is: "${currentConfig.context}"`;
+The context is:
+${currentConfig.context}`;
 
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
@@ -520,6 +525,7 @@ The context is: "${currentConfig.context}"`;
           // This method allows providing the images as buffers, but the typings
           // are currently wrong, so we need to cast it to any
           media: image as any,
+          parse_mode: 'MarkdownV2',
           caption: dalle.caption || response,
           fileOptions: {
             contentType: 'image/png',
@@ -536,6 +542,7 @@ The context is: "${currentConfig.context}"`;
         images[0],
         {
           reply_to_message_id: update.message.message_id,
+          parse_mode: 'MarkdownV2',
           caption: dalle.caption || response,
         },
         {
@@ -547,6 +554,7 @@ The context is: "${currentConfig.context}"`;
   } else {
     await bot.sendMessage(update.message.chat.id, response, {
       reply_to_message_id: update.message.message_id,
+      parse_mode: 'MarkdownV2',
       reply_markup: {
         selective: true,
         ...(followup.length > 0
