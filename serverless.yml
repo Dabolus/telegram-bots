@@ -36,7 +36,6 @@ provider:
 
 plugins:
   - serverless-esbuild
-  - serverless-local-schedule
   - serverless-s3-sync
   - serverless-lift
 
@@ -107,6 +106,7 @@ functions:
       GOOGLE_CUSTOM_SEARCH_CX: ${env:GOOGLE_CUSTOM_SEARCH_CX}
     events:
       - schedule:
+          method: scheduler
           rate: cron(1 18 * * ? *)
           timezone: Europe/Rome
 
