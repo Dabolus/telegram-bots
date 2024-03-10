@@ -4,22 +4,24 @@ import { countTokens } from 'gptoken';
 export interface ChatConfig {
   text: {
     model: NonNullable<OpenAI.ChatCompletionCreateParams['model']>;
-    maxTokens: number;
+    maxHistoryTokens: number;
+    maxOutputTokens: number;
   };
   image: {
     model: NonNullable<OpenAI.ImageGenerateParams['model']>;
-    maxTokens: number;
+    maxInputTokens: number;
   };
 }
 
 export const chatConfig: ChatConfig = {
   text: {
     model: 'gpt-4-vision-preview',
-    maxTokens: 4096,
+    maxHistoryTokens: 128000,
+    maxOutputTokens: 4096,
   },
   image: {
     model: 'dall-e-3',
-    maxTokens: 4000,
+    maxInputTokens: 4000,
   },
 };
 
@@ -86,7 +88,7 @@ export const updateChatHistory = (
       },
       ...fullHistory,
     ]) >
-      chatConfig.text.maxTokens * 0.9
+      chatConfig.text.maxHistoryTokens * 0.9
   ) {
     fullHistory.shift();
   }

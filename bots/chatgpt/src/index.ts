@@ -457,7 +457,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
   );
   const completion = await openai.chat.completions.create({
     model: chatConfig.text.model,
-    max_tokens: chatConfig.text.maxTokens,
+    max_tokens: chatConfig.text.maxOutputTokens,
     messages: [
       {
         role: 'system',

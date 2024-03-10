@@ -6,6 +6,7 @@ import { runFfmpeg, getFilePackets } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
+import { chatConfig } from '@bots/shared/openai';
 
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
@@ -109,7 +110,9 @@ export const getChatContext = async (
 Since your responses will need to be parsed programmatically, you MUST ALWAYS respond with a valid JSON.
 The JSON MUST be provided as-is. It MUST NOT be wrapped in a Markdown code block nor anything else.
 If the user asks you to generate or to send an image, the response JSON MUST HAVE a "dalle" property, which MUST BE an object containing the following properties:
-- "prompt": the prompt to be provided to DALL-E to generate the requested image;
+- "prompt": the prompt to be provided to DALL-E to generate the requested image. This prompt MUST have a maximum length of ${
+  chatConfig.image.maxInputTokens
+} tokens;
 - "caption": (optional) if you think the image should also be associated with a caption, provide it here;
 - "hd": (optional) if the user asks for an HD or high quality image, set this to true;
 - "natural": (optional) if the user asks for an image that looks more natural, set this to true;
