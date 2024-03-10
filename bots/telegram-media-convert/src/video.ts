@@ -1,6 +1,6 @@
 import os from 'os';
 import path from 'path';
-import { promises as fs } from 'fs';
+import syncFs, { promises as fs } from 'fs';
 import { runFfmpeg } from '@bots/shared/ffmpeg';
 import type TelegramBot from 'node-telegram-bot-api';
 
@@ -24,7 +24,7 @@ export const videoToNote = async (
       `-i ${filePath} -i ${videoNoteMaskPath} -filter_complex "[0:v] scale=240:240:force_original_aspect_ratio=increase,crop=240:240 [0v]; [0v][1:v] overlay=0:0" -c:a copy ${processedFilePath}`,
     );
 
-    await bot.sendVideoNote(chatId, processedFilePath);
+    await bot.sendVideoNote(chatId, syncFs.createReadStream(processedFilePath));
 
     await Promise.all([fs.unlink(filePath), fs.unlink(processedFilePath)]);
   } catch (error) {
@@ -50,7 +50,7 @@ export const animationToVideo = async (
       `-f lavfi -i anullsrc -i ${filePath} -c:v copy -c:a aac -map 0:a -map 1:v -shortest ${processedFilePath}`,
     );
 
-    await bot.sendVideo(chatId, processedFilePath);
+    await bot.sendVideo(chatId, syncFs.createReadStream(processedFilePath));
 
     await Promise.all([fs.unlink(filePath), fs.unlink(processedFilePath)]);
   } catch (error) {

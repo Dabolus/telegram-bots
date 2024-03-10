@@ -9,7 +9,10 @@ export const setupBot = (token = process.env.BOT_TOKEN) => {
   }
 
   if (!bot) {
-    bot = new TelegramBot(token, { webHook: true });
+    bot = new TelegramBot(token, {
+      webHook: true,
+      filepath: false,
+    });
   }
 
   return bot;

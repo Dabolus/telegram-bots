@@ -1,5 +1,5 @@
 import os from 'os';
-import { promises as fs } from 'fs';
+import syncFs, { promises as fs } from 'fs';
 import { runFfmpeg } from '@bots/shared/ffmpeg';
 import type TelegramBot from 'node-telegram-bot-api';
 
@@ -18,7 +18,7 @@ export const audioToVoice = async (
       `-i ${filePath} -c:a libopus -b:a 48K -application voip ${processedFilePath}`,
     );
 
-    await bot.sendVoice(chatId, processedFilePath);
+    await bot.sendVoice(chatId, syncFs.createReadStream(processedFilePath));
 
     await Promise.all([fs.unlink(filePath), fs.unlink(processedFilePath)]);
   } catch (error) {
@@ -42,7 +42,7 @@ export const voiceToAudio = async (
 
     await runFfmpeg(`-i ${filePath} -c:a aac -b:a 128K ${processedFilePath}`);
 
-    await bot.sendAudio(chatId, processedFilePath);
+    await bot.sendAudio(chatId, syncFs.createReadStream(processedFilePath));
 
     await Promise.all([fs.unlink(filePath), fs.unlink(processedFilePath)]);
   } catch (error) {
