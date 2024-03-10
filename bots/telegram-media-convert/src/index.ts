@@ -10,7 +10,11 @@ import { downloadFile } from './utils';
 import type { PhotoSize } from 'node-telegram-bot-api';
 
 export const handler = createUpdateHandler(async (update, bot) => {
-  if (update.message?.sticker && !update.message.sticker.is_animated) {
+  if (
+    update.message?.sticker &&
+    !update.message.sticker.is_animated &&
+    !update.message.sticker.is_video
+  ) {
     console.info('Received a sticker, converting it into an image');
     await stickerToImage(
       bot,
