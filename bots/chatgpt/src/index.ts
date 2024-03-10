@@ -15,8 +15,10 @@ import {
 } from '@bots/shared/openai';
 import {
   getChatConfiguration,
+  getChatContext,
   getDenyList,
   getImageSize,
+  getMessageImages,
   parseResponse,
   setChatConfiguration,
   setDenyList,
@@ -26,11 +28,16 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const allowedIds = getAllowedChatIds();
   const botAdmins = getBotAdmins();
 
-  if (!update.message?.text || !allowedIds.includes(update.message.chat.id)) {
-    console.warn('Update is not a text message or chat is not allowed');
+  if (
+    (!update.message?.caption && !update.message?.text) ||
+    !allowedIds.includes(update.message.chat.id)
+  ) {
+    console.warn('Update does not contain text or chat is not allowed');
     return;
   }
 
+  const messageText =
+    (update.message.caption || update.message.text)?.trim() ?? '';
   const denyList = await getDenyList();
   const botUsername = await getBotUsername(bot);
   const isCommand = createCommandChecker(botUsername, update);
@@ -393,7 +400,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
 
   if (
     update.message.chat.id !== update.message.from?.id &&
-    !update.message.text.startsWith(`@${botUsername}`)
+    !messageText.startsWith(`@${botUsername}`)
   ) {
     console.info(
       'Received a message in a group not starting with bot mention, ignoring it.',
@@ -406,58 +413,12 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
   const currentConfig = await getChatConfiguration(update.message.chat.id);
-  if (!currentConfig.context) {
-    await bot.sendChatAction(update.message.chat.id, 'typing');
-    await bot.sendMessage(
-      update.message.chat.id,
-      'No context currently set. Set the context for the bot using the /context command.',
-      {
-        reply_to_message_id: update.message.message_id,
-      },
-    );
-    return;
-  }
-
-  const message = update.message.text.replace(`@${botUsername}`, '').trim();
+  const message = messageText.replace(`@${botUsername}`, '').trim();
   if (!message) {
     console.error('Received empty message');
     return;
   }
-  const fullContext = `You are a bot that behaves according to a user-provided context.
-
-Since your responses will need to be parsed programmatically, you must always respond with a valid JSON.
-The JSON must be provided as-is, without wrapping it in a Markdown code block or anything else.
-
-If the user asks you to generate or to send an image, the response JSON must have a "dalle" property, which must be an object containing the following properties:
-- "prompt": the prompt to be provided to DALL-E to generate the requested image;
-- "caption": (optional) if you think the image should also be associated with a caption, provide it here;
-- "hd": (optional) if the user asks for an HD or high quality image, set this to true;
-- "natural": (optional) if the user asks for an image that looks more natural, set this to true;
-- "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square";
-- "file": (optional) if the user asks for the image to be sent as a file, set this to true.
-
-For any other message, the response JSON must have a "message" property containing the answer to be sent to the user, based on the context you were provided with.
-The "message" property must be written in Telegram's "HTML" format, so you can use the following HTML tags:
-- <b>bold</b>
-- <i>italic</i>
-- <u>underline</u>
-- <s>strikethrough</s>
-- <tg-spoiler>spoiler</tg-spoiler>
-- <a href="http://example.com">URL</a>
-- <code>inline fixed-width code</code>
-- <pre>pre-formatted fixed-width code block</pre>
-- <pre><code class="language-python">pre-formatted fixed-width code block in a specific language</code></pre>
-- <blockquote>Block quotation</blockquote>
-Make sure to escape the reserved HTML entities in the message.
-Also, since the response is inside a JSON field, make sure to escape also the backslashes using another backslash.
-${
-  currentConfig.history?.enabled
-    ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
-    : ''
-}
-The context is:
-${currentConfig.context}`;
-
+  const fullContext = await getChatContext(currentConfig);
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const openai = setupOpenAi();
   const moderationResult = await openai.moderations.create({
@@ -484,11 +445,19 @@ ${currentConfig.context}`;
     currentConfig.history?.messages || [],
     {
       role: 'user',
-      content: message,
+      content: [
+        {
+          type: 'text',
+          text: message,
+        },
+        // If the message contains a photo and/or a video, provide them together with the request
+        ...(await getMessageImages(bot, update)),
+      ],
     },
   );
   const completion = await openai.chat.completions.create({
     model: chatConfig.text.model,
+    max_tokens: chatConfig.text.maxTokens,
     messages: [
       {
         role: 'system',

@@ -786,10 +786,13 @@ __metadata:
   dependencies:
     "@aws-sdk/client-dynamodb": "npm:^3.529.1"
     "@aws-sdk/lib-dynamodb": "npm:^3.529.1"
+    "@types/aws-lambda": "npm:^8.10.136"
     "@types/node-telegram-bot-api": "npm:^0.64.3"
+    "@types/sharp": "npm:^0.32.0"
     gptoken: "npm:^0.1.0"
     node-telegram-bot-api: "npm:^0.65.0"
     openai: "npm:^4.28.4"
+    sharp: "npm:^0.33.2"
   languageName: unknown
   linkType: soft
 

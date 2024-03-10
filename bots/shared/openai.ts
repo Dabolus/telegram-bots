@@ -14,8 +14,8 @@ export interface ChatConfig {
 
 export const chatConfig: ChatConfig = {
   text: {
-    model: 'gpt-4-turbo-preview',
-    maxTokens: 128000,
+    model: 'gpt-4-vision-preview',
+    maxTokens: 4096,
   },
   image: {
     model: 'dall-e-3',
@@ -39,13 +39,32 @@ export const setupOpenAi = (apiKey = process.env.OPENAI_API_KEY) => {
   return openai;
 };
 
+export const computeChatMessageTokens = (
+  message?: OpenAI.ChatCompletionMessageParam,
+): number => {
+  if (!message?.content?.length) {
+    return 0;
+  }
+  if (typeof message.content === 'string') {
+    return countTokens(message.content);
+  }
+  if (typeof message.content === 'string') {
+    return countTokens(message.content);
+  }
+  const mergedMessageText = message.content
+    .filter(
+      (part): part is OpenAI.ChatCompletionContentPartText =>
+        part.type === 'text',
+    )
+    .map(part => part.text)
+    .join('');
+  return countTokens(mergedMessageText);
+};
+
 export const computeChatHistoryTokens = (
   history: OpenAI.ChatCompletionMessageParam[],
 ): number =>
-  history.reduce(
-    (sum, message) => sum + countTokens(`${message.content ?? ''}`),
-    0,
-  );
+  history.reduce((sum, message) => sum + computeChatMessageTokens(message), 0);
 
 export const updateChatHistory = (
   context: string,
