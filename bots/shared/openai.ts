@@ -50,17 +50,18 @@ export const computeChatMessageTokens = (
   if (typeof message.content === 'string') {
     return countTokens(message.content);
   }
-  if (typeof message.content === 'string') {
-    return countTokens(message.content);
-  }
-  const mergedMessageText = message.content
-    .filter(
-      (part): part is OpenAI.ChatCompletionContentPartText =>
-        part.type === 'text',
-    )
-    .map(part => part.text)
-    .join('');
-  return countTokens(mergedMessageText);
+  return message.content.reduce(
+    (sum, part) =>
+      sum +
+      (part.type === 'text'
+        ? // If the part is a text, count its tokens normally
+          countTokens(part.text)
+        : // Otherwise, the part is an image. We currently always provide low resolution images, so
+          // the tokens count is always 65 according to the OpenAI API documentation
+          // See: https://platform.openai.com/docs/guides/vision/low-or-high-fidelity-image-understanding
+          65),
+    0,
+  );
 };
 
 export const computeChatHistoryTokens = (
