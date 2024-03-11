@@ -475,6 +475,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const {
     message: response,
     dalle,
+    tts,
     followup = [],
   } = await parseResponse(rawResponse);
   // If the response starts with "dalle:", we need to generate an image
@@ -516,6 +517,36 @@ export const handler = createUpdateHandler(async (update, bot) => {
       {
         contentType: 'image/png',
         filename: `${prompt.replace(/\s+/g, '_')}.png`,
+      },
+    );
+  } else if (tts?.input) {
+    const input = tts.input.trim() || '';
+    console.info(
+      `Generating voice note for chat ${update.message.chat.id} with input "${input}"`,
+    );
+    await bot.sendChatAction(update.message.chat.id, 'record_voice');
+    const ttsResponse = await openai.audio.speech.create({
+      model: chatConfig.tts.model,
+      input,
+      voice: tts.male ? 'onyx' : 'nova',
+      response_format: 'opus',
+      // @ts-expect-error other APIs provide this parameter, while this one doesn't.
+      // I don't know if it is supported or not, but let's send it anyway for extra safety.
+      user: update.message.from?.id.toString(),
+    });
+    const ttsResponseArrayBuffer = await ttsResponse.arrayBuffer();
+    const ttsResponseBuffer = Buffer.from(
+      new Uint8Array(ttsResponseArrayBuffer),
+    );
+    await bot.sendVoice(
+      update.message.chat.id,
+      ttsResponseBuffer,
+      {
+        reply_to_message_id: update.message.message_id,
+      },
+      {
+        contentType: 'audio/opus',
+        filename: `${input.replace(/\s+/g, '_')}.opus`,
       },
     );
   } else {

@@ -11,6 +11,9 @@ export interface ChatConfig {
     model: NonNullable<OpenAI.ImageGenerateParams['model']>;
     maxInputTokens: number;
   };
+  tts: {
+    model: NonNullable<OpenAI.Audio.SpeechCreateParams['model']>;
+  };
 }
 
 export const chatConfig: ChatConfig = {
@@ -22,6 +25,9 @@ export const chatConfig: ChatConfig = {
   image: {
     model: 'dall-e-3',
     maxInputTokens: 4000,
+  },
+  tts: {
+    model: 'tts-1-hd',
   },
 };
 

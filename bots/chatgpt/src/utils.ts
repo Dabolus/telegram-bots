@@ -75,6 +75,10 @@ export interface GPTResponse {
     orientation?: 'landscape' | 'portrait' | 'square';
     file?: boolean;
   };
+  tts?: {
+    input: string;
+    male?: boolean;
+  };
   followup?: string[];
 }
 
@@ -118,6 +122,9 @@ If the user asks you to generate or to send an image, the response JSON MUST HAV
 - "natural": (optional) if the user asks for an image that looks more natural, set this to true;
 - "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square";
 - "file": (optional) if the user asks for the image to be sent as a file, set this to true.
+If the user asks you to speak or to return an audio, or if they explicitly state that their message is a transcription from an audio, the response JSON MUST HAVE a "tts" property, which MUST BE an object containing the following properties:
+- "input": the text to be spoken by the TTS API;
+- "male": (optional) if the user asks you to be a male or to speak with a male voice, set this to true.
 For any other message, the response JSON MUST HAVE a "message" property containing the answer to be sent to the user, based on the context you were provided with.
 The "message" property MUST BE written in Telegram's "HTML" format, so you can use the following HTML tags:
 - <b>bold</b>
