@@ -221,42 +221,48 @@ export const getMessageImages = async (
   bot: TelegramBot,
   update: TelegramBot.Update,
 ): Promise<OpenAI.ChatCompletionContentPartImage[]> => {
-  const images: OpenAI.ChatCompletionContentPartImage[] = [];
-  if (update.message?.photo) {
-    const photo = update.message.photo[update.message.photo.length - 1];
-    const fileBuffer = await downloadFile(bot, photo.file_id);
-    images.push(await imageToChatCompletionImageContent(fileBuffer));
+  if (
+    update.message?.photo ||
+    (update.message?.sticker &&
+      !update.message.sticker.is_animated &&
+      !update.message.sticker.is_video) ||
+    update.message?.document?.mime_type?.startsWith('image/')
+  ) {
+    const imageFileId =
+      update.message.photo?.at(-1)?.file_id ||
+      update.message.sticker?.file_id ||
+      update.message.document?.file_id ||
+      '';
+    const fileBuffer = await downloadFile(bot, imageFileId);
+    const imageContent = await imageToChatCompletionImageContent(
+      fileBuffer,
+      // If the image is a sticker, we don't need to resize it,
+      // as Telegram stickers are already 512x512 WebPs
+      !update.message.sticker,
+    );
+    return [imageContent];
   }
   if (
-    update.message?.sticker &&
-    !update.message.sticker.is_animated &&
-    !update.message.sticker.is_video
+    update.message?.video ||
+    update.message?.video_note ||
+    update.message?.animation ||
+    update.message?.sticker?.is_video ||
+    update.message?.document?.mime_type?.startsWith('video/')
   ) {
-    const fileBuffer = await downloadFile(bot, update.message.sticker.file_id);
-    // In this case, we don't need to resize the image, as Telegram stickers are already 512x512 WebPs
-    images.push(await imageToChatCompletionImageContent(fileBuffer, false));
-  }
-  if (update.message?.video) {
+    const videoFileId =
+      update.message?.video?.file_id ||
+      update.message?.video_note?.file_id ||
+      update.message?.animation?.file_id ||
+      update.message?.sticker?.file_id ||
+      update.message?.document?.file_id ||
+      '';
     const { filePath, processedFilesPath, videoImages } =
-      await extractVideoFrames(bot, update.message.video.file_id);
-    images.push(...videoImages);
+      await extractVideoFrames(bot, videoFileId);
     await Promise.all([
       fs.unlink(filePath),
       fs.rmdir(processedFilesPath, { recursive: true }),
     ]);
+    return videoImages;
   }
-  if (update.message?.document?.mime_type?.startsWith('image/')) {
-    const fileBuffer = await downloadFile(bot, update.message.document.file_id);
-    images.push(await imageToChatCompletionImageContent(fileBuffer));
-  }
-  if (update.message?.document?.mime_type?.startsWith('video/')) {
-    const { filePath, processedFilesPath, videoImages } =
-      await extractVideoFrames(bot, update.message.document.file_id);
-    images.push(...videoImages);
-    await Promise.all([
-      fs.unlink(filePath),
-      fs.rmdir(processedFilesPath, { recursive: true }),
-    ]);
-  }
-  return images;
+  return [];
 };
