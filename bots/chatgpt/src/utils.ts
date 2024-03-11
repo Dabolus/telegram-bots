@@ -183,7 +183,39 @@ export const imageToChatCompletionImageContent = async (
   };
 };
 
-export const extractVideoFrames = async () => {};
+export const extractVideoFrames = async (
+  bot: TelegramBot,
+  fileId: string,
+): Promise<{
+  filePath: string;
+  processedFilesPath: string;
+  videoImages: OpenAI.ChatCompletionContentPartImage[];
+}> => {
+  const filePath = await bot.downloadFile(fileId, os.tmpdir());
+  const totalPackets = await getFilePackets(filePath);
+  const wantedFrames = 5;
+  const processedFilesPath = path.join(os.tmpdir(), `${fileId}-frames`);
+  const processedFilesNameTemplate = path.join(
+    processedFilesPath,
+    'frame-%d.png',
+  );
+  await fs.mkdir(processedFilesPath);
+  await runFfmpeg(
+    `-i ${filePath} -vf thumbnail=${
+      totalPackets / wantedFrames
+    },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFilesNameTemplate}`,
+  );
+  const processedFiles = await fs.readdir(processedFilesPath);
+  const videoImages = await Promise.all(
+    processedFiles.map(async fileName => {
+      const fileBuffer = await fs.readFile(
+        path.join(processedFilesPath, fileName),
+      );
+      return imageToChatCompletionImageContent(fileBuffer);
+    }),
+  );
+  return { filePath, processedFilesPath, videoImages };
+};
 
 export const getMessageImages = async (
   bot: TelegramBot,
@@ -204,42 +236,23 @@ export const getMessageImages = async (
     // In this case, we don't need to resize the image, as Telegram stickers are already 512x512 WebPs
     images.push(await imageToChatCompletionImageContent(fileBuffer, false));
   }
-  if (update.message?.document?.mime_type?.startsWith('image')) {
+  if (update.message?.video) {
+    const { filePath, processedFilesPath, videoImages } =
+      await extractVideoFrames(bot, update.message.video.file_id);
+    images.push(...videoImages);
+    await Promise.all([
+      fs.unlink(filePath),
+      fs.rmdir(processedFilesPath, { recursive: true }),
+    ]);
+  }
+  if (update.message?.document?.mime_type?.startsWith('image/')) {
     const fileBuffer = await downloadFile(bot, update.message.document.file_id);
     images.push(await imageToChatCompletionImageContent(fileBuffer));
   }
-  if (update.message?.video) {
-    const filePath = await bot.downloadFile(
-      update.message.video.file_id,
-      os.tmpdir(),
-    );
-    const totalPackets = await getFilePackets(filePath);
-    const wantedFrames = 5;
-    const processedFilesPath = path.join(
-      os.tmpdir(),
-      `${update.message.video.file_id}-frames`,
-    );
-    const processedFilesNameTemplate = path.join(
-      processedFilesPath,
-      'frame-%d.png',
-    );
-    await fs.mkdir(processedFilesPath);
-    await runFfmpeg(
-      `-i ${filePath} -vf thumbnail=${
-        totalPackets / wantedFrames
-      },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFilesNameTemplate}`,
-    );
-    const processedFiles = await fs.readdir(processedFilesPath);
-    const videoImages = await Promise.all(
-      processedFiles.map(async fileName => {
-        const fileBuffer = await fs.readFile(
-          path.join(processedFilesPath, fileName),
-        );
-        return imageToChatCompletionImageContent(fileBuffer);
-      }),
-    );
+  if (update.message?.document?.mime_type?.startsWith('video/')) {
+    const { filePath, processedFilesPath, videoImages } =
+      await extractVideoFrames(bot, update.message.document.file_id);
     images.push(...videoImages);
-
     await Promise.all([
       fs.unlink(filePath),
       fs.rmdir(processedFilesPath, { recursive: true }),
