@@ -19,6 +19,7 @@ import {
   getDenyList,
   getImageSize,
   getMessageImages,
+  getMessageText,
   parseResponse,
   setChatConfiguration,
   setDenyList,
@@ -28,18 +29,28 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const allowedIds = getAllowedChatIds();
   const botAdmins = getBotAdmins();
 
-  if (
-    (!update.message?.caption && !update.message?.text) ||
-    !allowedIds.includes(update.message.chat.id)
-  ) {
-    console.warn('Update does not contain text or chat is not allowed');
+  if (!update.message || !allowedIds.includes(update.message.chat.id)) {
+    console.warn('Received a message from an unallowed chat, ignoring it');
     return;
   }
 
-  const messageText =
-    (update.message.caption || update.message.text)?.trim() ?? '';
-  const denyList = await getDenyList();
   const botUsername = await getBotUsername(bot);
+  const isReplyToBot =
+    update.message.reply_to_message?.from?.username === botUsername;
+
+  if (
+    !update.message.caption &&
+    !update.message.text &&
+    !update.message.voice &&
+    !isReplyToBot
+  ) {
+    console.warn(
+      'Update does not contain text, caption, nor voice, and is not a reply to the bot, ignoring it',
+    );
+    return;
+  }
+
+  const denyList = await getDenyList();
   const isCommand = createCommandChecker(botUsername, update);
   const commandArguments = getCommandArguments(update);
 
@@ -398,12 +409,21 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
+  const openai = setupOpenAi();
+  const message = await getMessageText(
+    openai,
+    botUsername,
+    bot,
+    update.message,
+  );
+
   if (
     update.message.chat.id !== update.message.from?.id &&
-    !messageText.startsWith(`@${botUsername}`)
+    !isReplyToBot &&
+    !message.startsWith(`@${botUsername}`)
   ) {
     console.info(
-      'Received a message in a group not starting with bot mention, ignoring it.',
+      'Received a message in a group not starting with bot mention nor replying to the bot, ignoring it',
     );
     return;
   }
@@ -412,15 +432,20 @@ export const handler = createUpdateHandler(async (update, bot) => {
     await answerBlockedUser();
     return;
   }
+
+  const messageText = message.startsWith(`@${botUsername}`)
+    ? message.replace(`@${botUsername}`, '').trim()
+    : message;
   const currentConfig = await getChatConfiguration(update.message.chat.id);
-  const message = messageText.replace(`@${botUsername}`, '').trim();
-  if (!message) {
-    console.error('Received empty message');
+
+  if (!messageText) {
+    console.warn(
+      'Received an empty message not replying to another user, ignoring it',
+    );
     return;
   }
-  const fullContext = await getChatContext(currentConfig);
+
   await bot.sendChatAction(update.message.chat.id, 'typing');
-  const openai = setupOpenAi();
   const moderationResult = await openai.moderations.create({
     input: message,
     model: 'text-moderation-latest',
@@ -440,6 +465,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
     );
     return;
   }
+  const fullContext = await getChatContext(currentConfig);
   const messages = updateChatHistory(
     fullContext,
     currentConfig.history?.messages || [],
@@ -455,6 +481,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
       ],
     },
   );
+  await bot.sendChatAction(update.message.chat.id, 'typing');
   const completion = await openai.chat.completions.create({
     model: chatConfig.text.model,
     max_tokens: chatConfig.text.maxOutputTokens,

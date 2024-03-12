@@ -145,8 +145,41 @@ ${
     ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
     : ''
 }
-The context is:
-${config?.context || 'You are an helpful assistant.'}`;
+The context is the one provided below in triple quotes:
+"""${config?.context || 'You are an helpful assistant.'}"""`;
+
+export const getMessageText = async (
+  openai: OpenAI,
+  botUsername: string,
+  bot: TelegramBot,
+  message: TelegramBot.Message,
+): Promise<string> => {
+  const messageText = (message?.caption || message?.text)?.trim() ?? '';
+  const replyToMessageText =
+    message.reply_to_message &&
+    // Ignore text from replies to the bot itself
+    message.reply_to_message.from?.username !== botUsername &&
+    (await getMessageText(openai, botUsername, bot, message.reply_to_message));
+  const replyToMessageTextTemplate = replyToMessageText
+    ? `\n\nMessage above is a reply to another message. The original message can be found below:\n${replyToMessageText}`
+    : '';
+  if (!message?.voice) {
+    return `${messageText}${replyToMessageTextTemplate}`;
+  }
+  const voiceLink = await bot.getFileLink(message.voice.file_id);
+  const voiceReq = await fetch(voiceLink);
+  const transcription = await openai.audio.transcriptions.create({
+    model: 'whisper-1',
+    file: voiceReq,
+    prompt: messageText,
+    response_format: 'text',
+  });
+  return `The user sent an audio. The transcription is provided here in triple quotes: """${transcription}"""${
+    messageText
+      ? `\nThe user also provided the following prompt together with the audio, reported in the following triple quotes: """${messageText}"""`
+      : ''
+  }${replyToMessageTextTemplate}`;
+};
 
 export const downloadFile = async (
   bot: TelegramBot,
