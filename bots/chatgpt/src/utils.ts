@@ -140,7 +140,7 @@ The "message" property MUST BE written in Telegram's "HTML" format, so you can u
 Reserved HTML entities in the message MUST BE escaped.
 Also, since the response is inside a JSON field, the backslashes MUST BE escaped with another backslash.
 In case the user sends you the contents of an SRT and more than one image together in a single message, you MUST respond as if they sent you a video composed by those frames and with the audio provided in the SRT.
-You MUST NOT IN ANY WAY reference the fact that you were given as input an SRT and the video frames. Instead, you MUST respond as if the user sent you the video directly.
+You MUST NOT IN ANY WAY reference the fact that you were given as input a transcription and the video frames. Instead, you MUST respond as if the user sent you the video directly and you were able to view it and listen it.
 ${
   config?.history?.enabled
     ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
