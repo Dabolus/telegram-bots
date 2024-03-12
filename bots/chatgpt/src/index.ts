@@ -466,7 +466,12 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
   const fullContext = await getChatContext(currentConfig);
-  const { images, extraText } = await getMessageImages(openai, bot, update);
+  const { images, extraText } = await getMessageImages(
+    openai,
+    botUsername,
+    bot,
+    update.message,
+  );
   const messages = updateChatHistory(
     fullContext,
     currentConfig.history?.messages || [],

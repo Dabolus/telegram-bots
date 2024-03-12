@@ -266,48 +266,48 @@ export const extractVideoFrames = async (
   };
 };
 
-export const getMessageImages = async (
+export const extractImagesFromMessage = async (
   openai: OpenAI,
   bot: TelegramBot,
-  update: TelegramBot.Update,
+  message: TelegramBot.Message,
 ): Promise<{
   images: OpenAI.ChatCompletionContentPartImage[];
   extraText?: string;
 }> => {
   if (
-    update.message?.photo ||
-    (update.message?.sticker &&
-      !update.message.sticker.is_animated &&
-      !update.message.sticker.is_video) ||
-    update.message?.document?.mime_type?.startsWith('image/')
+    message?.photo ||
+    (message?.sticker &&
+      !message.sticker.is_animated &&
+      !message.sticker.is_video) ||
+    message?.document?.mime_type?.startsWith('image/')
   ) {
     const imageFileId =
-      update.message.photo?.at(-1)?.file_id ||
-      update.message.sticker?.file_id ||
-      update.message.document?.file_id ||
+      message.photo?.at(-1)?.file_id ||
+      message.sticker?.file_id ||
+      message.document?.file_id ||
       '';
     const fileBuffer = await downloadFile(bot, imageFileId);
     const imageContent = await imageToChatCompletionImageContent(
       fileBuffer,
       // If the image is a sticker, we don't need to resize it,
       // as Telegram stickers are already 512x512 WebPs
-      !update.message.sticker,
+      !message.sticker,
     );
     return { images: [imageContent] };
   }
   if (
-    update.message?.video ||
-    update.message?.video_note ||
-    update.message?.animation ||
-    update.message?.sticker?.is_video ||
-    update.message?.document?.mime_type?.startsWith('video/')
+    message?.video ||
+    message?.video_note ||
+    message?.animation ||
+    message?.sticker?.is_video ||
+    message?.document?.mime_type?.startsWith('video/')
   ) {
     const videoFileId =
-      update.message?.video?.file_id ||
-      update.message?.video_note?.file_id ||
-      update.message?.animation?.file_id ||
-      update.message?.sticker?.file_id ||
-      update.message?.document?.file_id ||
+      message?.video?.file_id ||
+      message?.video_note?.file_id ||
+      message?.animation?.file_id ||
+      message?.sticker?.file_id ||
+      message?.document?.file_id ||
       '';
     const {
       filePath,
@@ -327,4 +327,43 @@ export const getMessageImages = async (
     };
   }
   return { images: [] };
+};
+
+export const getMessageImages = async (
+  openai: OpenAI,
+  botUsername: string,
+  bot: TelegramBot,
+  message: TelegramBot.Message,
+): Promise<{
+  images: OpenAI.ChatCompletionContentPartImage[];
+  extraText?: string;
+}> => {
+  const messageImages = await extractImagesFromMessage(openai, bot, message);
+  const replyToMessageImages =
+    message.reply_to_message &&
+    // Ignore replies to the bot itself
+    message.reply_to_message.from?.username !== botUsername &&
+    (await getMessageImages(
+      openai,
+      botUsername,
+      bot,
+      message.reply_to_message,
+    ));
+  return {
+    images: [
+      ...messageImages.images,
+      ...(replyToMessageImages ? replyToMessageImages.images : []),
+    ],
+    extraText: [
+      ...(messageImages.extraText ? [messageImages.extraText] : []),
+      ...(replyToMessageImages
+        ? [
+            'Message replies to a media from another message, which is also provided together with this message.',
+            ...(replyToMessageImages.extraText
+              ? [replyToMessageImages.extraText]
+              : []),
+          ]
+        : []),
+    ].join('\n\n'),
+  };
 };
