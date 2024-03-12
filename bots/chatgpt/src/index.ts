@@ -466,6 +466,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
   const fullContext = await getChatContext(currentConfig);
+  const { images, extraText } = await getMessageImages(openai, bot, update);
   const messages = updateChatHistory(
     fullContext,
     currentConfig.history?.messages || [],
@@ -474,10 +475,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
       content: [
         {
           type: 'text',
-          text: message,
+          text: extraText ? `${message}\n\n${extraText}` : message,
         },
         // If the message contains a photo and/or a video, provide them together with the request
-        ...(await getMessageImages(bot, update)),
+        ...images,
       ],
     },
   );

@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import os from 'node:os';
 import path from 'node:path';
-import { promises as fs } from 'node:fs';
+import fsSync, { promises as fs } from 'node:fs';
 import { runFfmpeg, getFilePackets } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import type TelegramBot from 'node-telegram-bot-api';
@@ -139,7 +139,8 @@ The "message" property MUST BE written in Telegram's "HTML" format, so you can u
 - <blockquote>Block quotation</blockquote>
 Reserved HTML entities in the message MUST BE escaped.
 Also, since the response is inside a JSON field, the backslashes MUST BE escaped with another backslash.
-If the user sends more than one image together in a single message, you MUST respond as if they sent you a video composed by those frames.
+In case the user sends you the contents of an SRT and more than one image together in a single message, you MUST respond as if they sent you a video composed by those frames and with the audio provided in the SRT.
+You MUST NOT IN ANY WAY reference the fact that you were given as input an SRT and the video frames. Instead, you MUST respond as if the user sent you the video directly.
 ${
   config?.history?.enabled
     ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
@@ -171,7 +172,6 @@ export const getMessageText = async (
   const transcription = await openai.audio.transcriptions.create({
     model: 'whisper-1',
     file: voiceReq,
-    prompt: messageText,
     response_format: 'text',
   });
   return `The user sent an audio. The transcription is provided here in triple quotes: """${transcription}"""${
@@ -217,43 +217,63 @@ export const imageToChatCompletionImageContent = async (
 };
 
 export const extractVideoFrames = async (
+  openai: OpenAI,
   bot: TelegramBot,
   fileId: string,
 ): Promise<{
   filePath: string;
-  processedFilesPath: string;
+  processedFramesPath: string;
+  processedAudioPath: string;
   videoImages: OpenAI.ChatCompletionContentPartImage[];
+  audioTranscription: string;
 }> => {
   const filePath = await bot.downloadFile(fileId, os.tmpdir());
   const totalPackets = await getFilePackets(filePath);
   const wantedFrames = 5;
-  const processedFilesPath = path.join(os.tmpdir(), `${fileId}-frames`);
-  const processedFilesNameTemplate = path.join(
-    processedFilesPath,
+  const processedFramesPath = path.join(os.tmpdir(), `${fileId}-frames`);
+  const processedFramesNameTemplate = path.join(
+    processedFramesPath,
     'frame-%d.png',
   );
-  await fs.mkdir(processedFilesPath);
+  const processedAudioPath = path.join(os.tmpdir(), `${fileId}-audio.ogg`);
+  await fs.mkdir(processedFramesPath);
   await runFfmpeg(
     `-i ${filePath} -vf thumbnail=${
       totalPackets / wantedFrames
-    },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFilesNameTemplate}`,
+    },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFramesNameTemplate} -vn -acodec libopus -b:a 32k -vbr on ${processedAudioPath}`,
   );
-  const processedFiles = await fs.readdir(processedFilesPath);
-  const videoImages = await Promise.all(
-    processedFiles.map(async fileName => {
+  const processedFrames = await fs.readdir(processedFramesPath);
+  const [audioTranscription, ...videoImages] = await Promise.all([
+    openai.audio.transcriptions.create({
+      model: 'whisper-1',
+      file: fsSync.createReadStream(processedAudioPath),
+      response_format: 'srt',
+    }),
+    ...processedFrames.map(async fileName => {
       const fileBuffer = await fs.readFile(
-        path.join(processedFilesPath, fileName),
+        path.join(processedFramesPath, fileName),
       );
       return imageToChatCompletionImageContent(fileBuffer);
     }),
-  );
-  return { filePath, processedFilesPath, videoImages };
+  ]);
+  return {
+    filePath,
+    processedFramesPath,
+    processedAudioPath,
+    videoImages,
+    // @ts-expect-error The OpenAI API typings are wrong, the response when the format is set to SRT is a string
+    audioTranscription: audioTranscription,
+  };
 };
 
 export const getMessageImages = async (
+  openai: OpenAI,
   bot: TelegramBot,
   update: TelegramBot.Update,
-): Promise<OpenAI.ChatCompletionContentPartImage[]> => {
+): Promise<{
+  images: OpenAI.ChatCompletionContentPartImage[];
+  extraText?: string;
+}> => {
   if (
     update.message?.photo ||
     (update.message?.sticker &&
@@ -273,7 +293,7 @@ export const getMessageImages = async (
       // as Telegram stickers are already 512x512 WebPs
       !update.message.sticker,
     );
-    return [imageContent];
+    return { images: [imageContent] };
   }
   if (
     update.message?.video ||
@@ -289,13 +309,22 @@ export const getMessageImages = async (
       update.message?.sticker?.file_id ||
       update.message?.document?.file_id ||
       '';
-    const { filePath, processedFilesPath, videoImages } =
-      await extractVideoFrames(bot, videoFileId);
+    const {
+      filePath,
+      processedFramesPath,
+      processedAudioPath,
+      videoImages,
+      audioTranscription,
+    } = await extractVideoFrames(openai, bot, videoFileId);
     await Promise.all([
       fs.unlink(filePath),
-      fs.rmdir(processedFilesPath, { recursive: true }),
+      fs.rmdir(processedFramesPath, { recursive: true }),
+      fs.unlink(processedAudioPath),
     ]);
-    return videoImages;
+    return {
+      images: videoImages,
+      extraText: `The user sent a video. The transcription of its audio is provided below in SRT format, while some frames samples from the video are provided together with this message:\n${audioTranscription}`,
+    };
   }
-  return [];
+  return { images: [] };
 };
