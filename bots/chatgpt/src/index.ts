@@ -432,7 +432,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
   if (
     update.message.chat.id !== update.message.from?.id &&
     !isReplyToBot &&
-    !message.startsWith(`@${botUsername}`)
+    !isCommand('chat')
   ) {
     console.info(
       'Received a message in a group not starting with bot mention nor replying to the bot, ignoring it',
@@ -445,9 +445,9 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  const messageText = message.startsWith(`@${botUsername}`)
-    ? message.replace(`@${botUsername}`, '').trim()
-    : message;
+  const messageText = message
+    .replace(getCommandRegex(botUsername, 'chat'), '')
+    .trim();
   const currentConfig = await getChatConfiguration(update.message.chat.id);
 
   if (!messageText) {
@@ -606,8 +606,8 @@ export const handler = createUpdateHandler(async (update, bot) => {
                 {
                   text:
                     update.message?.chat?.id !== update.message?.from?.id
-                      ? // If the bot is used in a group, we need to prefix the hint with the bot's username
-                        `@${botUsername} ${hint}`
+                      ? // If the bot is used in a group, we need to prefix the hint with the bot's chat command
+                        `/chat@${botUsername} ${hint}`
                       : // Otherwise, we can just use the hint as is
                         hint,
                 },
