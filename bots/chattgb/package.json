@@ -7,7 +7,7 @@
     "gptoken": "^0.1.0",
     "node-telegram-bot-api": "^0.65.0",
     "openai": "^4.28.4",
-    "sharp": "^0.33.2"
+    "sharp": "0.32.6"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.136",
