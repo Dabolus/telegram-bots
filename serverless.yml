@@ -69,8 +69,8 @@ functions:
   broker:
     handler: bots/broker/src/index.handler
     environment:
-      CHATGPT_BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
-      CHATGPT_QUEUE_URL: ${construct:chatgpt.queueUrl}
+      CHATTGB_BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}
+      CHATTGB_QUEUE_URL: ${construct:chattgb.queueUrl}
       DABBEXT_BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
       DABBEXT_QUEUE_URL: ${construct:dabbext.queueUrl}
       QUOTE_GENERATOR_BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
@@ -111,17 +111,17 @@ functions:
           timezone: Europe/Rome
 
 constructs:
-  chatgpt:
+  chattgb:
     type: queue
     worker:
-      handler: bots/chatgpt/src/index.handler
+      handler: bots/chattgb/src/index.handler
       timeout: 120
       memorySize: 1536
       environment:
-        BOT_TOKEN: ${env:CHATGPT_BOT_TOKEN}
+        BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}
         DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
-        CHAT_IDS_ALLOWLIST: ${env:CHATGPT_CHAT_IDS_ALLOWLIST}
-        ADMIN_USER_IDS: ${env:CHATGPT_ADMIN_USER_IDS}
+        CHAT_IDS_ALLOWLIST: ${env:CHATTGB_CHAT_IDS_ALLOWLIST}
+        ADMIN_USER_IDS: ${env:CHATTGB_ADMIN_USER_IDS}
         OPENAI_API_KEY: ${env:OPENAI_API_KEY}
       layers:
         - { Ref: FfmpegLambdaLayer }

@@ -780,9 +780,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bots/chatgpt@workspace:bots/chatgpt":
+"@bots/chattgb@workspace:bots/chattgb":
   version: 0.0.0-use.local
-  resolution: "@bots/chatgpt@workspace:bots/chatgpt"
+  resolution: "@bots/chattgb@workspace:bots/chattgb"
   dependencies:
     "@aws-sdk/client-dynamodb": "npm:^3.529.1"
     "@aws-sdk/lib-dynamodb": "npm:^3.529.1"
