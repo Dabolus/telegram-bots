@@ -29,8 +29,20 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const allowedIds = getAllowedChatIds();
   const botAdmins = getBotAdmins();
 
-  if (!update.message || !allowedIds.includes(update.message.chat.id)) {
-    console.warn('Received a message from an unallowed chat, ignoring it');
+  if (!update.message) {
+    console.warn('Received an update without message, ignoring it');
+    return;
+  }
+
+  if (!allowedIds.includes(update.message.chat.id)) {
+    console.warn(
+      'Received a message from an unallowed chat, sending greeting message',
+    );
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await bot.sendMessage(
+      update.message.chat.id,
+      "Hi! Looks like I'm not allowed to work in this chat. Please, contact my owner to enable me.",
+    );
     return;
   }
 
