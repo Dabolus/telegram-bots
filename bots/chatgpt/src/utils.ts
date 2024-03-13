@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import os from 'node:os';
 import path from 'node:path';
 import fsSync, { promises as fs } from 'node:fs';
-import { runFfmpeg, getFilePackets } from '@bots/shared/ffmpeg';
+import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
@@ -221,34 +221,45 @@ export const extractVideoFrames = async (
   bot: TelegramBot,
   fileId: string,
 ): Promise<{
-  filePath: string;
-  processedFramesPath: string;
-  processedAudioPath: string;
-  videoImages: OpenAI.ChatCompletionContentPartImage[];
-  audioTranscription: string;
+  video: {
+    filePath: string;
+    processedFramesPath: string;
+    images: OpenAI.ChatCompletionContentPartImage[];
+  };
+  audio?: {
+    filePath: string;
+    transcription: string;
+  };
 }> => {
   const filePath = await bot.downloadFile(fileId, os.tmpdir());
-  const totalPackets = await getFilePackets(filePath);
+  const [totalPackets, hasAudio] = await Promise.all([
+    getFilePackets(filePath),
+    videoHasAudio(filePath),
+  ]);
   const wantedFrames = 5;
   const processedFramesPath = path.join(os.tmpdir(), `${fileId}-frames`);
   const processedFramesNameTemplate = path.join(
     processedFramesPath,
     'frame-%d.png',
   );
-  const processedAudioPath = path.join(os.tmpdir(), `${fileId}-audio.ogg`);
+  const audioPath = path.join(os.tmpdir(), `${fileId}-audio.ogg`);
   await fs.mkdir(processedFramesPath);
   await runFfmpeg(
     `-i ${filePath} -vf thumbnail=${
       totalPackets / wantedFrames
-    },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFramesNameTemplate} -vn -acodec libopus -b:a 32k -vbr on ${processedAudioPath}`,
+    },setpts=N/TB -r 1 -vframes ${wantedFrames} ${processedFramesNameTemplate} ${
+      hasAudio ? `-vn -acodec libopus -b:a 32k -vbr on ${audioPath}` : ''
+    }`,
   );
   const processedFrames = await fs.readdir(processedFramesPath);
   const [audioTranscription, ...videoImages] = await Promise.all([
-    openai.audio.transcriptions.create({
-      model: 'whisper-1',
-      file: fsSync.createReadStream(processedAudioPath),
-      response_format: 'srt',
-    }),
+    hasAudio
+      ? openai.audio.transcriptions.create({
+          model: 'whisper-1',
+          file: fsSync.createReadStream(audioPath),
+          response_format: 'srt',
+        })
+      : Promise.resolve(''),
     ...processedFrames.map(async fileName => {
       const fileBuffer = await fs.readFile(
         path.join(processedFramesPath, fileName),
@@ -257,12 +268,17 @@ export const extractVideoFrames = async (
     }),
   ]);
   return {
-    filePath,
-    processedFramesPath,
-    processedAudioPath,
-    videoImages,
-    // @ts-expect-error The OpenAI API typings are wrong, the response when the format is set to SRT is a string
-    audioTranscription: audioTranscription,
+    video: {
+      filePath,
+      processedFramesPath,
+      images: videoImages,
+    },
+    ...(hasAudio && {
+      audio: {
+        filePath: audioPath,
+        transcription: audioTranscription as string,
+      },
+    }),
   };
 };
 
@@ -310,20 +326,21 @@ export const extractImagesFromMessage = async (
       message?.document?.file_id ||
       '';
     const {
-      filePath,
-      processedFramesPath,
-      processedAudioPath,
-      videoImages,
-      audioTranscription,
+      video: { filePath, processedFramesPath, images: videoImages },
+      audio: { filePath: audioPath, transcription: audioTranscription } = {},
     } = await extractVideoFrames(openai, bot, videoFileId);
     await Promise.all([
       fs.unlink(filePath),
       fs.rmdir(processedFramesPath, { recursive: true }),
-      fs.unlink(processedAudioPath),
+      audioPath && fs.unlink(audioPath),
     ]);
     return {
       images: videoImages,
-      extraText: `The user sent a video. The transcription of its audio is provided below in SRT format, while some frames samples from the video are provided together with this message:\n${audioTranscription}`,
+      extraText: `The user sent a video. ${
+        audioTranscription
+          ? `The transcription of its audio is provided below in SRT format, while some frames samples from the video are provided together with this message:\n${audioTranscription}`
+          : 'The video has no audio. Some frames samples from the video are provided together with this message.'
+      }`,
     };
   }
   return { images: [] };
