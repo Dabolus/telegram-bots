@@ -69,6 +69,9 @@ functions:
   broker:
     handler: bots/broker/src/index.handler
     environment:
+      ENABLE_ANALYTICS: ${env:ENABLE_ANALYTICS}
+      ANALYTICS_API_SECRET: ${env:ANALYTICS_API_SECRET}
+      ANALYTICS_MEASUREMENT_ID: ${env:ANALYTICS_MEASUREMENT_ID}
       CHATTGB_BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}
       CHATTGB_QUEUE_URL: ${construct:chattgb.queueUrl}
       DABBEXT_BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
