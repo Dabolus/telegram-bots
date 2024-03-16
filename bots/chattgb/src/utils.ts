@@ -192,26 +192,53 @@ export const downloadFile = async (
   return Buffer.from(fileArrayBuffer);
 };
 
+export interface ImageToChatCompletionImageContentOptions {
+  transform?: boolean;
+  highDetail?: boolean;
+}
+
+export const getProcessedFileBuffer = async (
+  fileBuffer: Buffer,
+  {
+    transform = true,
+    highDetail = false,
+  }: ImageToChatCompletionImageContentOptions = {},
+): Promise<Buffer> => {
+  if (!transform) {
+    return fileBuffer;
+  }
+  const sharpInstance = sharp(fileBuffer);
+  const { width = 0, height = 0 } = await sharpInstance.metadata();
+  const isLandScape = width > height;
+  return sharpInstance
+    .resize({
+      // For low res mode, we expect a 512px x 512px image.
+      // For high res mode, the short side of the image should be less than 768px and the long side should be less than 2,000px.
+      [isLandScape ? 'width' : 'height']: highDetail ? 2000 : 512,
+      [isLandScape ? 'height' : 'width']: highDetail ? 768 : 512,
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .webp()
+    .toBuffer();
+};
+
 export const imageToChatCompletionImageContent = async (
   fileBuffer: Buffer,
-  resize = true,
+  {
+    transform = true,
+    highDetail = false,
+  }: ImageToChatCompletionImageContentOptions = {},
 ): Promise<OpenAI.ChatCompletionContentPartImage> => {
-  const transformedFileBuffer = resize
-    ? await sharp(fileBuffer)
-        .resize({
-          width: 512,
-          height: 512,
-          fit: 'inside',
-          withoutEnlargement: true,
-        })
-        .webp()
-        .toBuffer()
-    : fileBuffer;
+  const processedFileBuffer = await getProcessedFileBuffer(fileBuffer, {
+    transform,
+    highDetail,
+  });
   return {
     type: 'image_url',
     image_url: {
-      url: `data:image/webp;base64,${transformedFileBuffer.toString('base64')}`,
-      detail: 'low',
+      url: `data:image/webp;base64,${processedFileBuffer.toString('base64')}`,
+      detail: highDetail ? 'high' : 'low',
     },
   };
 };
@@ -220,6 +247,7 @@ export const extractVideoFrames = async (
   openai: OpenAI,
   bot: TelegramBot,
   fileId: string,
+  isDocument = false,
 ): Promise<{
   video: {
     filePath: string;
@@ -264,7 +292,13 @@ export const extractVideoFrames = async (
       const fileBuffer = await fs.readFile(
         path.join(processedFramesPath, fileName),
       );
-      return imageToChatCompletionImageContent(fileBuffer);
+      return imageToChatCompletionImageContent(fileBuffer, {
+        // We always transform video frames
+        transform: true,
+        // If the video was sent as a file, we assume the user wants
+        // a highly detailed analysis of its content
+        highDetail: isDocument,
+      });
     }),
   ]);
   return {
@@ -303,12 +337,14 @@ export const extractImagesFromMessage = async (
       message.document?.file_id ||
       '';
     const fileBuffer = await downloadFile(bot, imageFileId);
-    const imageContent = await imageToChatCompletionImageContent(
-      fileBuffer,
-      // If the image is a sticker, we don't need to resize it,
+    const imageContent = await imageToChatCompletionImageContent(fileBuffer, {
+      // If the image is a sticker, we don't need to transform it,
       // as Telegram stickers are already 512x512 WebPs
-      !message.sticker,
-    );
+      transform: !message.sticker,
+      // If the image was sent as a file, we assume the user wants
+      // a highly detailed analysis of its content
+      highDetail: !!message.document,
+    });
     return { images: [imageContent] };
   }
   if (
@@ -328,7 +364,7 @@ export const extractImagesFromMessage = async (
     const {
       video: { filePath, processedFramesPath, images: videoImages },
       audio: { filePath: audioPath, transcription: audioTranscription } = {},
-    } = await extractVideoFrames(openai, bot, videoFileId);
+    } = await extractVideoFrames(openai, bot, videoFileId, !!message.document);
     await Promise.all([
       fs.unlink(filePath),
       fs.rmdir(processedFramesPath, { recursive: true }),
