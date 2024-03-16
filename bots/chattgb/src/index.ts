@@ -336,12 +336,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
     return;
   }
 
-  if (
-    isCommand('importhistory') ||
-    getCommandRegex(botUsername, 'importhistory').test(
-      update.message?.caption || '',
-    )
-  ) {
+  if (isCommand('importhistory', true)) {
     if (isBlocked) {
       await answerBlockedUser();
       return;
@@ -432,7 +427,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
   if (
     update.message.chat.id !== update.message.from?.id &&
     !isReplyToBot &&
-    !isCommand('chat')
+    !isCommand('chat', true)
   ) {
     console.info(
       'Received a message in a group not starting with bot mention nor replying to the bot, ignoring it',

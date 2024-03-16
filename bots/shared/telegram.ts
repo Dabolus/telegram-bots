@@ -33,8 +33,13 @@ export const getCommandRegex = (username: string, command: string) =>
 
 export const createCommandChecker =
   (username: string, update: Update) =>
-  (command: string): boolean =>
-    getCommandRegex(username, command).test(update.message?.text || '');
+  (command: string, checkCaption?: boolean): boolean => {
+    const commandRegex = getCommandRegex(username, command);
+    return (
+      (checkCaption && commandRegex.test(update.message?.caption || '')) ||
+      commandRegex.test(update.message?.text || '')
+    );
+  };
 
 export const getCommandArguments = (update: Update): string =>
   update.message?.text?.match(/^\/\w+(?:@\w+)?\s+(.+)/)?.[1]?.trim() || '';
