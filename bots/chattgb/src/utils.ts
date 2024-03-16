@@ -112,7 +112,7 @@ export const getChatContext = async (
   config?: ChatConfiguration,
 ): Promise<string> => `You are a bot that behaves according to a user-provided context.
 Since your responses will need to be parsed programmatically, you MUST ALWAYS respond with a valid JSON.
-The JSON MUST be provided as-is. It MUST NOT be wrapped in a Markdown code block nor anything else.
+The JSON MUST be provided as-is, without being wrapped in a Markdown code block nor anything else, and it MUST be minified.
 If the user asks you to generate or to send an image, the response JSON MUST HAVE a "dalle" property, which MUST BE an object containing the following properties:
 - "prompt": the prompt to be provided to DALL-E to generate the requested image. This prompt MUST have a maximum length of ${
   chatConfig.image.maxInputTokens
