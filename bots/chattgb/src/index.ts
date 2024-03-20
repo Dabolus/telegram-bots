@@ -9,10 +9,11 @@ import {
   parseIds,
 } from '@bots/shared/telegram';
 import {
-  chatConfig,
+  chatConfigs,
+  setupGenkit,
   setupOpenAi,
   updateChatHistory,
-} from '@bots/shared/openai';
+} from '@bots/shared/genkit';
 import {
   getChatConfiguration,
   getChatContext,
@@ -20,7 +21,7 @@ import {
   getImageSize,
   getMessageImages,
   getMessageText,
-  parseResponse,
+  parseJsonResponse,
   setChatConfiguration,
   setDenyList,
 } from './utils';
@@ -447,6 +448,8 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   const openai = setupOpenAi();
+  const genkit = setupGenkit();
+
   const message = await getMessageText(
     openai,
     botUsername,
@@ -509,14 +512,13 @@ export const handler = createUpdateHandler(async (update, bot) => {
     bot,
     update.message,
   );
-  const messages = updateChatHistory(
+  const updatedMessages = updateChatHistory(
     fullContext,
     currentConfig.history?.messages || [],
     {
       role: 'user',
       content: [
         {
-          type: 'text',
           text: extraText ? `${message}\n\n${extraText}` : message,
         },
         // If the message contains a photo and/or a video, provide them together with the request
@@ -524,133 +526,144 @@ export const handler = createUpdateHandler(async (update, bot) => {
       ],
     },
   );
+  const previousMessages = updatedMessages.slice(0, -1);
+  const newMessage = updatedMessages.at(-1)!;
   await bot.sendChatAction(update.message.chat.id, 'typing');
-  const completion = await openai.chat.completions.create({
-    model: chatConfig.text.model,
-    max_tokens: chatConfig.text.maxOutputTokens,
-    messages: [
+  const completion = await genkit.generate({
+    model: chatConfigs.openai.text.model,
+    output: { format: 'text' },
+    config: {
+      maxOutputTokens: chatConfigs.openai.text.maxOutputTokens,
+      custom: {
+        user: update.message.from?.id.toString(),
+      },
+    },
+    history: [
       {
         role: 'system',
-        content: fullContext,
+        content: [{ text: fullContext }],
       },
-      ...messages,
+      ...previousMessages,
     ],
-    user: update.message.from?.id.toString(),
+    prompt: newMessage.content,
   });
-  const rawResponse = completion.choices?.[0]?.message?.content;
-  if (!rawResponse) {
-    console.error('No response received from OpenAI');
+  const rawResponseParts = completion.candidates?.[0]?.message?.content;
+  if (!rawResponseParts?.length) {
+    console.error('No responses received from Genkit');
     return;
   }
-  const {
-    message: response,
-    dalle,
-    tts,
-    followup = [],
-  } = await parseResponse(rawResponse);
-  // If the response starts with "dalle:", we need to generate an image
-  // using the DALL-E API
-  if (dalle?.prompt) {
-    const prompt = dalle.prompt.trim() || '';
-    console.info(
-      `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
-    );
-    const chatAction = dalle.file ? 'upload_document' : 'upload_photo';
-    await bot.sendChatAction(update.message.chat.id, chatAction);
-    const imageResponse = await openai.images.generate({
-      model: chatConfig.image.model,
-      prompt,
-      quality: dalle.hd ? 'hd' : 'standard',
-      style: dalle.natural ? 'natural' : 'vivid',
-      size: getImageSize(dalle.orientation),
-      n: 1,
-      response_format: 'b64_json',
-      user: update.message.from?.id.toString(),
-    });
-    const images =
-      imageResponse.data
-        ?.filter(image => !!image.b64_json)
-        .map(image => Buffer.from(image.b64_json!, 'base64')) || [];
-    if (images.length < 1) {
-      console.error('No image received from DALL-E');
-      return;
-    }
-    const methodToUse = dalle.file ? 'sendDocument' : 'sendPhoto';
-    await bot[methodToUse](
-      update.message.chat.id,
-      images[0],
-      {
+  for (const rawResponse of rawResponseParts) {
+    const {
+      message: response,
+      dalle,
+      tts,
+      followup = [],
+    } = await parseJsonResponse(rawResponse);
+    // If the response starts with "dalle:", we need to generate an image
+    // using the DALL-E API
+    if (dalle?.prompt) {
+      const prompt = dalle.prompt.trim() || '';
+      console.info(
+        `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
+      );
+      const chatAction = dalle.file ? 'upload_document' : 'upload_photo';
+      await bot.sendChatAction(update.message.chat.id, chatAction);
+      const imageResponse = await openai.images.generate({
+        model: 'dall-e-3',
+        prompt,
+        quality: dalle.hd ? 'hd' : 'standard',
+        style: dalle.natural ? 'natural' : 'vivid',
+        size: getImageSize(dalle.orientation),
+        n: 1,
+        response_format: 'b64_json',
+        user: update.message.from?.id.toString(),
+      });
+      const images =
+        imageResponse.data
+          ?.filter(image => !!image.b64_json)
+          .map(image => Buffer.from(image.b64_json!, 'base64')) || [];
+      if (images.length < 1) {
+        console.error('No image received from DALL-E');
+        return;
+      }
+      const methodToUse = dalle.file ? 'sendDocument' : 'sendPhoto';
+      await bot[methodToUse](
+        update.message.chat.id,
+        images[0],
+        {
+          reply_to_message_id: update.message.message_id,
+          parse_mode: 'HTML',
+          caption: dalle.caption || response,
+        },
+        {
+          contentType: 'image/png',
+          filename: `${prompt.replace(/\s+/g, '_')}.png`,
+        },
+      );
+    } else if (tts?.input) {
+      const input = tts.input.trim() || '';
+      console.info(
+        `Generating voice note for chat ${update.message.chat.id} with input "${input}"`,
+      );
+      await bot.sendChatAction(update.message.chat.id, 'record_voice');
+      const ttsResponse = await openai.audio.speech.create({
+        model: chatConfigs.openai.tts.model,
+        input,
+        voice: tts.male ? 'onyx' : 'nova',
+        response_format: 'opus',
+        // @ts-expect-error other APIs provide this parameter, while this one doesn't.
+        // I don't know if it is supported or not, but let's send it anyway for extra safety.
+        user: update.message.from?.id.toString(),
+      });
+      const ttsResponseArrayBuffer = await ttsResponse.arrayBuffer();
+      const ttsResponseBuffer = Buffer.from(
+        new Uint8Array(ttsResponseArrayBuffer),
+      );
+      await bot.sendVoice(
+        update.message.chat.id,
+        ttsResponseBuffer,
+        {
+          reply_to_message_id: update.message.message_id,
+        },
+        {
+          contentType: 'audio/opus',
+          filename: `${input.replace(/\s+/g, '_')}.opus`,
+        },
+      );
+    } else {
+      await bot.sendMessage(update.message.chat.id, response, {
         reply_to_message_id: update.message.message_id,
         parse_mode: 'HTML',
-        caption: dalle.caption || response,
-      },
-      {
-        contentType: 'image/png',
-        filename: `${prompt.replace(/\s+/g, '_')}.png`,
-      },
-    );
-  } else if (tts?.input) {
-    const input = tts.input.trim() || '';
-    console.info(
-      `Generating voice note for chat ${update.message.chat.id} with input "${input}"`,
-    );
-    await bot.sendChatAction(update.message.chat.id, 'record_voice');
-    const ttsResponse = await openai.audio.speech.create({
-      model: chatConfig.tts.model,
-      input,
-      voice: tts.male ? 'onyx' : 'nova',
-      response_format: 'opus',
-      // @ts-expect-error other APIs provide this parameter, while this one doesn't.
-      // I don't know if it is supported or not, but let's send it anyway for extra safety.
-      user: update.message.from?.id.toString(),
-    });
-    const ttsResponseArrayBuffer = await ttsResponse.arrayBuffer();
-    const ttsResponseBuffer = Buffer.from(
-      new Uint8Array(ttsResponseArrayBuffer),
-    );
-    await bot.sendVoice(
-      update.message.chat.id,
-      ttsResponseBuffer,
-      {
-        reply_to_message_id: update.message.message_id,
-      },
-      {
-        contentType: 'audio/opus',
-        filename: `${input.replace(/\s+/g, '_')}.opus`,
-      },
-    );
-  } else {
-    await bot.sendMessage(update.message.chat.id, response, {
-      reply_to_message_id: update.message.message_id,
-      parse_mode: 'HTML',
-      reply_markup: {
-        selective: true,
-        ...(followup.length > 0
-          ? {
-              keyboard: followup.map(hint => [
-                {
-                  text:
-                    update.message?.chat?.id !== update.message?.from?.id
-                      ? // If the bot is used in a group, we need to prefix the hint with the bot's chat command
-                        `/chat@${botUsername} ${hint}`
-                      : // Otherwise, we can just use the hint as is
-                        hint,
-                },
-              ]),
-              one_time_keyboard: true,
-            }
-          : {
-              remove_keyboard: true,
-            }),
-      },
-    });
+        reply_markup: {
+          selective: true,
+          ...(followup.length > 0
+            ? {
+                keyboard: followup.map(hint => [
+                  {
+                    text:
+                      update.message?.chat?.id !== update.message?.from?.id
+                        ? // If the bot is used in a group, we need to prefix the hint with the bot's chat command
+                          `/chat@${botUsername} ${hint}`
+                        : // Otherwise, we can just use the hint as is
+                          hint,
+                  },
+                ]),
+                one_time_keyboard: true,
+              }
+            : {
+                remove_keyboard: true,
+              }),
+        },
+      });
+    }
   }
+
   if (currentConfig.history?.enabled) {
     await setChatConfiguration(update.message.chat.id, {
       ...currentConfig,
       history: {
         ...currentConfig.history,
-        messages: [...messages, completion.choices[0].message!],
+        messages: [...updatedMessages, completion.candidates[0].message],
       },
     });
   }

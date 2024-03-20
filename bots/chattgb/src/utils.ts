@@ -6,11 +6,12 @@ import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
-import { chatConfig } from '@bots/shared/openai';
+import { chatConfigs } from '@bots/shared/genkit';
+import { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
 
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
-  messages?: OpenAI.ChatCompletionMessageParam[];
+  messages?: MessageData[];
 }
 
 export interface ChatConfiguration {
@@ -95,16 +96,21 @@ export const getImageSize = (
   }
 };
 
-export const parseResponse = async (message: string): Promise<GPTResponse> => {
+export const parseJsonResponse = async (
+  message: Part,
+): Promise<GPTResponse> => {
+  if (!message.text) {
+    return { message: '' };
+  }
   try {
     const parsed = JSON.parse(
       // Sometimes GPT-4 decides to ignore our instructions and wrap the JSON in a Markdown code block,
       // so we need to remove it before parsing the JSON
-      message.replace(/^`{3}json\n(.+)`{3}$/s, '$1'),
+      message.text.replace(/^`{3}json\n(.+)`{3}$/s, '$1'),
     );
     return parsed;
   } catch {
-    return { message: message };
+    return { message: message.text };
   }
 };
 
@@ -115,7 +121,7 @@ Since your responses will need to be parsed programmatically, you MUST ALWAYS re
 The JSON MUST be provided as-is, without being wrapped in a Markdown code block nor anything else, and it MUST be minified.
 If the user asks you to generate or to send an image, the response JSON MUST HAVE a "dalle" property, which MUST BE an object containing the following properties:
 - "prompt": the prompt to be provided to DALL-E to generate the requested image. This prompt MUST have a maximum length of ${
-  chatConfig.image.maxInputTokens
+  chatConfigs.openai.image.maxInputTokens
 } tokens;
 - "caption": (optional) if you think the image should also be associated with a caption, provide it here;
 - "hd": (optional) if the user asks for an HD or high quality image, set this to true;
@@ -229,15 +235,17 @@ export const imageToChatCompletionImageContent = async (
     transform = true,
     highDetail = false,
   }: ImageToChatCompletionImageContentOptions = {},
-): Promise<OpenAI.ChatCompletionContentPartImage> => {
+): Promise<MediaPart> => {
   const processedFileBuffer = await getProcessedFileBuffer(fileBuffer, {
     transform,
     highDetail,
   });
   return {
-    type: 'image_url',
-    image_url: {
+    media: {
       url: `data:image/webp;base64,${processedFileBuffer.toString('base64')}`,
+      contentType: 'image/webp',
+    },
+    metadata: {
       detail: highDetail ? 'high' : 'low',
     },
   };
@@ -252,7 +260,7 @@ export const extractVideoFrames = async (
   video: {
     filePath: string;
     processedFramesPath: string;
-    images: OpenAI.ChatCompletionContentPartImage[];
+    images: MediaPart[];
   };
   audio?: {
     filePath: string;
@@ -321,7 +329,7 @@ export const extractImagesFromMessage = async (
   bot: TelegramBot,
   message: TelegramBot.Message,
 ): Promise<{
-  images: OpenAI.ChatCompletionContentPartImage[];
+  images: MediaPart[];
   extraText?: string;
 }> => {
   if (
@@ -388,7 +396,7 @@ export const getMessageImages = async (
   bot: TelegramBot,
   message: TelegramBot.Message,
 ): Promise<{
-  images: OpenAI.ChatCompletionContentPartImage[];
+  images: MediaPart[];
   extraText?: string;
 }> => {
   const messageImages = await extractImagesFromMessage(openai, bot, message);
