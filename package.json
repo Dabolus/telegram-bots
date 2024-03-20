@@ -25,7 +25,7 @@
   "packageManager": "yarn@4.1.1",
   "resolutions": {
     "@genkit-ai/ai": "file:./genkit-dist/genkit-ai-ai-0.0.3.tgz",
-    "@genkit-ai/common": "file:./genkit-dist/genkit-ai-common-0.0.3.tgz",
+    "@genkit-ai/common": "patch:@genkit-ai/common@file%3A./genkit-dist/genkit-ai-common-0.0.3.tgz%23./genkit-dist/genkit-ai-common-0.0.3.tgz%3A%3Ahash=256970&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-common-file-33a0940182.patch",
     "@genkit-ai/dotprompt": "file:./genkit-dist/genkit-ai-dotprompt-0.0.3.tgz",
     "@genkit-ai/flow": "file:./genkit-dist/genkit-ai-flow-0.0.3.tgz",
     "@genkit-ai/plugin-chroma": "file:./genkit-dist/genkit-ai-plugin-chroma-0.0.3.tgz",
@@ -41,6 +41,7 @@
     "@genkit-ai/tools-plugin-firebase": "file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.3.tgz",
     "@genkit-ai/tools-plugin-google-cloud": "file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.3.tgz",
     "@genkit-ai/tools-plugins": "file:./genkit-dist/genkit-ai-tools-plugins-0.0.3.tgz",
-    "genkit-cli": "file:./genkit-dist/genkit-cli-0.0.3.tgz"
+    "genkit-cli": "file:./genkit-dist/genkit-cli-0.0.3.tgz",
+    "@genkit-ai/common@npm:*": "patch:@genkit-ai/common@file%3A./genkit-dist/genkit-ai-common-0.0.3.tgz%23./genkit-dist/genkit-ai-common-0.0.3.tgz%3A%3Ahash=256970&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-common-file-33a0940182.patch"
   }
 }
