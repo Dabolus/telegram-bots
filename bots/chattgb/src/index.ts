@@ -533,19 +533,31 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const newMessage = updatedMessages.at(-1)!;
   await bot.sendChatAction(update.message.chat.id, 'typing');
   const completion = await genkit.generate({
-    model: chatConfigs.openai.text.model,
+    model: chatConfigs[currentConfig.models?.text ?? 'openai'].text.model,
     output: { format: 'text' },
     config: {
-      maxOutputTokens: chatConfigs.openai.text.maxOutputTokens,
+      maxOutputTokens:
+        chatConfigs[currentConfig.models?.text ?? 'openai'].text
+          .maxOutputTokens,
       custom: {
         user: update.message.from?.id.toString(),
       },
     },
     history: [
       {
-        role: 'system',
+        role: currentConfig.models?.text === 'google' ? 'user' : 'system',
         content: [{ text: fullContext }],
       },
+      ...(currentConfig.models?.text === 'google'
+        ? [
+            {
+              role: 'model' as const,
+              content: [
+                { text: 'Got it, I will do everything you requested.' },
+              ],
+            },
+          ]
+        : []),
       ...previousMessages,
     ],
     prompt: newMessage.content,
