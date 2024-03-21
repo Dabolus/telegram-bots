@@ -15,6 +15,10 @@ export const googleCredentialsPath = path.resolve(
   '../static/service-account.json',
 );
 
+export type ChatModelsConfiguration = Partial<
+  Record<keyof (typeof chatConfigs)['openai'], keyof typeof chatConfigs>
+>;
+
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
   messages?: MessageData[];
@@ -22,6 +26,7 @@ export interface ChatHistoryConfiguration {
 
 export interface ChatConfiguration {
   context?: string;
+  models?: ChatModelsConfiguration;
   history?: ChatHistoryConfiguration;
 }
 
