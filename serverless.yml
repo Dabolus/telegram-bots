@@ -132,6 +132,11 @@ constructs:
         CHAT_IDS_ALLOWLIST: ${env:CHATTGB_CHAT_IDS_ALLOWLIST}
         ADMIN_USER_IDS: ${env:CHATTGB_ADMIN_USER_IDS}
         OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+        GCLOUD_LOCATION: ${env:GCLOUD_LOCATION}
+        GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
+      package:
+        patterns:
+          - 'bots/chattgb/static/**'
       layers:
         - { Ref: FfmpegLambdaLayer }
         - { Ref: SharpLambdaLayer }

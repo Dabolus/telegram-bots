@@ -21,3 +21,5 @@ layers/*/build
 !.yarn/versions
 
 genkit-dist/
+
+service-account.json

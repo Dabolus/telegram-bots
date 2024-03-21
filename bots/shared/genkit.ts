@@ -62,6 +62,7 @@ export interface SetupGenkitOptions {
   gcloud?: {
     location?: string;
     projectId?: string;
+    credentialsPath?: string;
   };
 }
 
@@ -72,6 +73,7 @@ export const setupGenkit = ({
   gcloud: {
     location = process.env.GCLOUD_LOCATION,
     projectId = process.env.GCLOUD_PROJECT_ID,
+    credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS,
   } = {},
 }: SetupGenkitOptions = {}) => {
   if (!apiKey) {
@@ -81,6 +83,13 @@ export const setupGenkit = ({
   if (!location || !projectId) {
     throw new Error('Google Cloud location and project ID not provided!');
   }
+
+  if (!credentialsPath) {
+    throw new Error('Google Cloud credentials path not provided!');
+  }
+
+  // Explicitly set the environment variable for the Google Cloud credentials
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
 
   if (!genkitConfigured) {
     configureGenkit({

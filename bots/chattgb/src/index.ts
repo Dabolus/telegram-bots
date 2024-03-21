@@ -21,6 +21,7 @@ import {
   getImageSize,
   getMessageImages,
   getMessageText,
+  googleCredentialsPath,
   parseJsonResponse,
   setChatConfiguration,
   setDenyList,
@@ -448,7 +449,9 @@ export const handler = createUpdateHandler(async (update, bot) => {
   }
 
   const openai = setupOpenAi();
-  const genkit = setupGenkit();
+  const genkit = setupGenkit({
+    gcloud: { credentialsPath: googleCredentialsPath },
+  });
 
   const message = await getMessageText(
     openai,

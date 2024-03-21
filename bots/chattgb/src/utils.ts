@@ -1,3 +1,4 @@
+import url from 'node:url';
 import sharp from 'sharp';
 import os from 'node:os';
 import path from 'node:path';
@@ -8,6 +9,11 @@ import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
 import { chatConfigs } from '@bots/shared/genkit';
 import { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
+
+export const googleCredentialsPath = path.resolve(
+  path.dirname(url.fileURLToPath(import.meta.url)),
+  '../static/service-account.json',
+);
 
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
