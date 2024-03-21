@@ -1,5 +1,6 @@
 {
   "name": "@bots/quote-generator",
+  "type": "module",
   "version": "0.1.0",
   "dependencies": {
     "@google-cloud/speech": "^6.3.0",

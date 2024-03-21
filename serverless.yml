@@ -42,8 +42,14 @@ plugins:
 custom:
   esbuild:
     bundle: true
-    minify: false
+    minify: true
     sourcemap: true
+    format: esm
+    platform: node
+    target: node20
+    outputFileExtension: '.mjs'
+    resolveExtensions: ['.ts', '.mjs', '.js', '.json']
+    inject: ['cjs-shim.ts']
     plugins: esbuild-plugins.cjs
     packager: yarn
     exclude:

@@ -1,5 +1,6 @@
 {
   "name": "@bots/chattgb",
+  "type": "module",
   "version": "0.1.0",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.529.1",

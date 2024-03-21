@@ -1,5 +1,6 @@
 {
   "name": "@bots/telegram-media-convert",
+  "type": "module",
   "version": "0.1.0",
   "dependencies": {
     "node-telegram-bot-api": "^0.65.0",
