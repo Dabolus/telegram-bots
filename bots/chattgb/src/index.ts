@@ -24,10 +24,29 @@ import {
   setChatConfiguration,
   setDenyList,
 } from './utils';
+import { handleSettings } from './settings';
 
 export const handler = createUpdateHandler(async (update, bot) => {
   const allowedIds = getAllowedChatIds();
   const botAdmins = getBotAdmins();
+
+  if (update.callback_query) {
+    if (
+      update.callback_query.from.id !==
+      update.callback_query.message?.reply_to_message?.from?.id
+    ) {
+      console.info(
+        'Received a callback query from a user different from the one that requested the settings, ignoring them',
+      );
+      return;
+    }
+    console.info('Handling settings callback');
+    const config = await getChatConfiguration(
+      update.callback_query.message!.chat.id,
+    );
+    await handleSettings(update, bot, config);
+    return;
+  }
 
   if (!update.message) {
     console.warn('Received an update without message, ignoring it');
@@ -148,6 +167,17 @@ export const handler = createUpdateHandler(async (update, bot) => {
       update.message.chat.id,
       'Welcome! Set the context for the bot using the /context command to get started.',
     );
+    return;
+  }
+
+  if (isCommand('settings')) {
+    if (isBlocked) {
+      await answerBlockedUser();
+      return;
+    }
+    console.info('Sending settings message');
+    await bot.sendChatAction(update.message.chat.id, 'typing');
+    await handleSettings(update, bot);
     return;
   }
 
