@@ -847,7 +847,7 @@ __metadata:
     "@genkit-ai/plugin-openai": "npm:0.0.4"
     "@genkit-ai/plugin-pinecone": "npm:0.0.4"
     "@genkit-ai/plugin-ragas": "npm:0.0.4"
-    "@genkit-ai/plugin-vertex-ai": "patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch"
+    "@genkit-ai/plugin-vertex-ai": "npm:0.0.4"
     "@genkit-ai/tools-plugin-firebase": "npm:0.0.4"
     "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.4"
     "@genkit-ai/tools-plugins": "npm:0.0.4"
@@ -1479,7 +1479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::hash=1450f5&locator=telegram-bots%40workspace%3A.":
   version: 0.0.4
   resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::hash=1450f5&locator=telegram-bots%40workspace%3A."
   dependencies:
@@ -1489,6 +1489,19 @@ __metadata:
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
   checksum: 10c0/976bdc4f28f799e44401e078d904dab4fb0d11fb8a940f67e406a2702d7dcd2fcd536b2b435c07f130061257d89533b6e03c213fa2d48cc99bb3e5c48cb9a3f8
+  languageName: node
+  linkType: hard
+
+"@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch::version=0.0.4&hash=be9620"
+  dependencies:
+    "@genkit-ai/ai": "npm:*"
+    "@genkit-ai/common": "npm:*"
+    "@google-cloud/vertexai": "npm:^0.5.0"
+    google-auth-library: "npm:^9.6.3"
+    node-fetch: "npm:^3.3.2"
+  checksum: 10c0/b67cc6167ebe7bca9fae07cb6aaf1dd08bdfea59e9d843ba150a730a3e35ad6b125bcb95fc1ec14cc68a948c923c857549db7230457224e0874a2dc711fd0806
   languageName: node
   linkType: hard
 
