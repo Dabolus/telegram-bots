@@ -1,54 +1,46 @@
 import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 import { generate } from '@genkit-ai/ai/generate';
-import { ModelReference, MessageData } from '@genkit-ai/ai/model';
+import { MessageData } from '@genkit-ai/ai/model';
 import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/plugin-openai';
 import { geminiProVision, imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import { vertexAI } from '@genkit-ai/plugin-vertex-ai';
 import { configureGenkit } from '@genkit-ai/common/config';
 
-export interface ChatConfig {
-  text: {
-    model: ModelReference<ZodTypeAny>;
-    maxHistoryTokens: number;
-    maxOutputTokens: number;
-  };
-  image: {
-    model: ModelReference<ZodTypeAny>;
-    maxInputTokens: number;
-  };
-  tts: {
-    model: NonNullable<OpenAI.Audio.SpeechCreateParams['model']>;
-  };
-}
-
 export const chatConfigs = {
   openai: {
     text: {
       model: gpt4Vision,
+      displayName: 'GPT-4 Turbo with Vision',
       maxHistoryTokens: 128000,
       maxOutputTokens: 4096,
     },
     image: {
       model: dallE3,
+      displayName: 'DALL·E 3',
       maxInputTokens: 4000,
     },
     tts: {
       model: 'tts-1-hd',
+      displayName: 'Text-to-speech 1 HD',
     },
   },
-  vertexai: {
+  google: {
     text: {
       model: geminiProVision,
-      maxHistoryTokens: 128000,
-      maxOutputTokens: 4096,
+      displayName: 'Gemini Pro Vision',
+      maxHistoryTokens: 12288,
+      maxOutputTokens: 2048,
     },
     image: {
       model: imagen2,
+      displayName: 'Imagen 2',
       maxInputTokens: 4000,
     },
     tts: {
+      // TODO: Actually add support for Google Text-to-Speech AI
       model: 'tts-1-hd',
+      displayName: 'Text-to-Speech AI',
     },
   },
 } as const;

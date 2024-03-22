@@ -1,5 +1,6 @@
 import type TelegramBot from 'node-telegram-bot-api';
 import { ChatConfiguration, setChatConfiguration } from './utils';
+import { chatConfigs } from '@bots/shared/genkit';
 
 const getEditedMessage = (
   callbackQuery: Pick<TelegramBot.CallbackQuery, 'data' | 'message'>,
@@ -16,6 +17,10 @@ const getEditedMessage = (
             {
               text: 'History',
               callback_data: 'history',
+            },
+            {
+              text: 'Models',
+              callback_data: 'models',
             },
           ],
         ],
@@ -58,6 +63,129 @@ const getEditedMessage = (
         ],
       };
     }
+    case 'models': {
+      return {
+        text: 'Which model do you want to configure?',
+        keyboard: [
+          [
+            {
+              text: 'Text',
+              callback_data: 'models:text',
+            },
+          ],
+          [
+            {
+              text: 'Image',
+              callback_data: 'models:image',
+            },
+          ],
+          [
+            {
+              text: 'TTS',
+              callback_data: 'models:tts',
+            },
+          ],
+          [
+            {
+              text: '⬅️ Back',
+              callback_data: 'models',
+            },
+          ],
+        ],
+      };
+    }
+    case 'models:text': {
+      const currentTextModel =
+        currentChatConfiguration?.models?.text ?? 'openai';
+      return {
+        text: `Text model is currently <b>${chatConfigs[currentTextModel].text.displayName}</b>.`,
+        keyboard: [
+          [
+            {
+              text: `${currentTextModel === 'openai' ? '✅ ' : ''}${
+                chatConfigs.openai.text.displayName
+              }`,
+              callback_data: 'models:text:openai',
+            },
+          ],
+          [
+            {
+              text: `${currentTextModel === 'google' ? '✅ ' : ''}${
+                chatConfigs.google.text.displayName
+              }`,
+              callback_data: 'models:text:google',
+            },
+          ],
+          [
+            {
+              text: '⬅️ Back',
+              callback_data: 'models',
+            },
+          ],
+        ],
+      };
+    }
+    case 'models:image': {
+      const currentImageModel =
+        currentChatConfiguration?.models?.image ?? 'openai';
+      return {
+        text: `Image model is currently <b>${chatConfigs[currentImageModel].image.displayName}</b>.`,
+        keyboard: [
+          [
+            {
+              text: `${currentImageModel === 'openai' ? '✅ ' : ''}${
+                chatConfigs.openai.image.displayName
+              }`,
+              callback_data: 'models:image:openai',
+            },
+          ],
+          [
+            {
+              text: `${currentImageModel === 'google' ? '✅ ' : ''}${
+                chatConfigs.google.image.displayName
+              }`,
+              callback_data: 'models:image:google',
+            },
+          ],
+          [
+            {
+              text: '⬅️ Back',
+              callback_data: 'models',
+            },
+          ],
+        ],
+      };
+    }
+    case 'models:tts': {
+      const currentTtsModel = currentChatConfiguration?.models?.tts ?? 'openai';
+      return {
+        text: `Image model is currently <b>${chatConfigs[currentTtsModel].tts.displayName}</b>.`,
+        keyboard: [
+          [
+            {
+              text: `${currentTtsModel === 'openai' ? '✅ ' : ''}${
+                chatConfigs.openai.tts.displayName
+              }`,
+              callback_data: 'models:tts:openai',
+            },
+          ],
+          [
+            {
+              text: `${currentTtsModel === 'google' ? '✅ ' : ''}${
+                chatConfigs.google.tts.displayName
+              }`,
+              callback_data: 'models:tts:google',
+            },
+          ],
+          [
+            {
+              text: '⬅️ Back',
+              callback_data: 'models',
+            },
+          ],
+        ],
+      };
+    }
   }
 };
 
@@ -95,6 +223,46 @@ export const handleSettings = async (
         },
       };
       callbackQuery.data = 'history';
+      break;
+    case 'models:text:openai':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          text: 'openai',
+        },
+      };
+      callbackQuery.data = 'models:text';
+      break;
+    case 'models:text:google':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          text: 'google',
+        },
+      };
+      callbackQuery.data = 'models:text';
+      break;
+    case 'models:image:openai':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          image: 'openai',
+        },
+      };
+      callbackQuery.data = 'models:image';
+      break;
+    case 'models:image:google':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          image: 'google',
+        },
+      };
+      callbackQuery.data = 'models:image';
       break;
   }
   if (newConfig !== currentChatConfiguration) {
