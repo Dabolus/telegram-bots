@@ -1,8 +1,8 @@
 diff --git a/lib/index.js b/lib/index.js
-index fcf8aa85e8e7b99a0d9d3eef1b26504dc9519f72..492421285be3beb2bc12f2502bee76eed0fde164 100644
+index a455a6352d181b3226d8a779bdbfd03415bb2e10..024b3e66c46d8bb556c43ddce7feba553f1b0f92 100644
 --- a/lib/index.js
 +++ b/lib/index.js
-@@ -56,7 +56,9 @@ var import_google_auth_library = require("google-auth-library");
+@@ -56,7 +56,9 @@ var import_imagen = require("./imagen");
  const vertexAI = (0, import_config.genkitPlugin)(
    "vertex-ai",
    (options) => __async(void 0, null, function* () {
@@ -10,14 +10,14 @@ index fcf8aa85e8e7b99a0d9d3eef1b26504dc9519f72..492421285be3beb2bc12f2502bee76ee
 +    const authClient = new import_google_auth_library.GoogleAuth({
 +      scopes: 'https://www.googleapis.com/auth/cloud-platform'
 +    });
-     const project = options.projectId || (0, import_common.getProjectId)();
-     const location = options.location || (0, import_common.getLocation)();
+     const projectId = (options == null ? void 0 : options.projectId) || (0, import_common.getProjectId)();
+     const location = (options == null ? void 0 : options.location) || (0, import_common.getLocation)();
      const confError = (parameter, envVariableName) => {
 diff --git a/lib/index.mjs b/lib/index.mjs
-index 622f87b6391ebcf4feac5ed038b0e83f3aa72a1f..f2b1ed5b3fa313d43e2405e56bfea7021028ca24 100644
+index 9baf7e5cba943887c2e0b3430a1113bfc55c5220..b02da91867c48509fd9f2d9de4218b9708517f8d 100644
 --- a/lib/index.mjs
 +++ b/lib/index.mjs
-@@ -16,7 +16,9 @@ import { GoogleAuth } from "google-auth-library";
+@@ -16,7 +16,9 @@ import { imagen2, imagen2Model } from "./imagen";
  const vertexAI = genkitPlugin(
    "vertex-ai",
    (options) => __async(void 0, null, function* () {
@@ -25,21 +25,21 @@ index 622f87b6391ebcf4feac5ed038b0e83f3aa72a1f..f2b1ed5b3fa313d43e2405e56bfea702
 +    const authClient = new GoogleAuth({
 +      scopes: 'https://www.googleapis.com/auth/cloud-platform'
 +    });
-     const project = options.projectId || getProjectId();
-     const location = options.location || getLocation();
+     const projectId = (options == null ? void 0 : options.projectId) || getProjectId();
+     const location = (options == null ? void 0 : options.location) || getLocation();
      const confError = (parameter, envVariableName) => {
 diff --git a/src/index.ts b/src/index.ts
-index 79f862df0217b1f7575e3e5681cb281fe98ac66a..382cf1b5f76b7a925ae7806ba48e45060fb0f66d 100644
+index a7031cedffd7066389a63f697cdc7612b3df3428..85609a5237eefe7a6ac1563b387265315f50d80a 100644
 --- a/src/index.ts
 +++ b/src/index.ts
 @@ -37,7 +37,9 @@ export interface PluginOptions {
- export const vertexAI: Plugin<[PluginOptions]> = genkitPlugin(
+ export const vertexAI: Plugin<[PluginOptions] | []> = genkitPlugin(
    'vertex-ai',
-   async (options: PluginOptions) => {
+   async (options?: PluginOptions) => {
 -    const authClient = new GoogleAuth();
 +    const authClient = new GoogleAuth({
-+      scopes: 'https://www.googleapis.com/auth/cloud-platform',
++      scopes: 'https://www.googleapis.com/auth/cloud-platform'
 +    });
-     const project = options.projectId || getProjectId();
-     const location = options.location || getLocation();
+     const projectId = options?.projectId || getProjectId();
+     const location = options?.location || getLocation();
  

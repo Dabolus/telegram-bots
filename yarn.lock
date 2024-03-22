@@ -834,23 +834,23 @@ __metadata:
   dependencies:
     "@aws-sdk/client-dynamodb": "npm:^3.529.1"
     "@aws-sdk/lib-dynamodb": "npm:^3.529.1"
-    "@genkit-ai/ai": "npm:0.0.3"
-    "@genkit-ai/common": "npm:0.0.3"
-    "@genkit-ai/dotprompt": "npm:0.0.3"
-    "@genkit-ai/flow": "npm:0.0.3"
-    "@genkit-ai/plugin-chroma": "npm:0.0.3"
-    "@genkit-ai/plugin-dev-local-vectorstore": "npm:0.0.3"
-    "@genkit-ai/plugin-firebase": "npm:0.0.3"
-    "@genkit-ai/plugin-gcp": "npm:0.0.3"
-    "@genkit-ai/plugin-google-genai": "npm:0.0.3"
-    "@genkit-ai/plugin-ollama": "npm:0.0.3"
-    "@genkit-ai/plugin-openai": "npm:0.0.3"
-    "@genkit-ai/plugin-pinecone": "npm:0.0.3"
-    "@genkit-ai/plugin-ragas": "npm:0.0.3"
-    "@genkit-ai/plugin-vertex-ai": "npm:0.0.3"
-    "@genkit-ai/tools-plugin-firebase": "npm:0.0.3"
-    "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.3"
-    "@genkit-ai/tools-plugins": "npm:0.0.3"
+    "@genkit-ai/ai": "npm:0.0.4"
+    "@genkit-ai/common": "npm:0.0.4"
+    "@genkit-ai/dotprompt": "npm:0.0.4"
+    "@genkit-ai/flow": "npm:0.0.4"
+    "@genkit-ai/plugin-chroma": "npm:0.0.4"
+    "@genkit-ai/plugin-dev-local-vectorstore": "npm:0.0.4"
+    "@genkit-ai/plugin-firebase": "npm:0.0.4"
+    "@genkit-ai/plugin-gcp": "npm:0.0.4"
+    "@genkit-ai/plugin-google-genai": "npm:0.0.4"
+    "@genkit-ai/plugin-ollama": "npm:0.0.4"
+    "@genkit-ai/plugin-openai": "npm:0.0.4"
+    "@genkit-ai/plugin-pinecone": "npm:0.0.4"
+    "@genkit-ai/plugin-ragas": "npm:0.0.4"
+    "@genkit-ai/plugin-vertex-ai": "patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch"
+    "@genkit-ai/tools-plugin-firebase": "npm:0.0.4"
+    "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.4"
+    "@genkit-ai/tools-plugins": "npm:0.0.4"
     "@types/aws-lambda": "npm:^8.10.136"
     "@types/node-telegram-bot-api": "npm:^0.64.3"
     "@types/sharp": "npm:^0.32.0"
@@ -1295,9 +1295,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.3.tgz#./genkit-dist/genkit-ai-ai-0.0.3.tgz::hash=f315c9&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.4.tgz#./genkit-dist/genkit-ai-ai-0.0.4.tgz::hash=849dde&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     "@types/node": "npm:^20.11.19"
@@ -1305,13 +1305,13 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.21.4"
-  checksum: 10c0/f2c8cc9136fb8ebb9b128937e08961f69a6fff91e2dcbba541369982b036fa21d4ee99101a97e0b6d7b7366d63381f2d08f8d99515adc37f581e3a575f8f5ac7
+  checksum: 10c0/c589d1bfb4f32f11974e479eeb61a6d26b5499b1767401f52818c8de4a46a3f174960175d10ce8f54a0177ef7bdbf56d1c947911db2934a491d48bbd59bac7ac
   languageName: node
   linkType: hard
 
-"@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.3.tgz#./genkit-dist/genkit-ai-common-0.0.3.tgz::hash=256970&locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.3.tgz#./genkit-dist/genkit-ai-common-0.0.3.tgz::hash=256970&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.4.tgz#./genkit-dist/genkit-ai-common-0.0.4.tgz::hash=6a6028&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@google-cloud/monitoring": "npm:^4.0.0"
     "@google-cloud/opentelemetry-cloud-monitoring-exporter": "npm:^0.17.0"
@@ -1325,41 +1325,16 @@ __metadata:
     express-openapi-validator: "npm:^5.1.3"
     firebase-admin: "npm:^11.11.0"
     json-schema: "npm:^0.4.0"
-    pino: "npm:^8.17.2"
-    pino-pretty: "npm:^10.3.1"
+    winston: "npm:^3.12.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.22.4"
-  checksum: 10c0/f6ce767f7457434c68cf12d45047ca453e27c67728ef11b1271e3a1476ed9ea728f699abb879a0a9d06c6657e9069427f5c21fc98d5116d68be5bee6e81cd433
+  checksum: 10c0/f4dd762fc7b1d17ac941f59213c5f477e4b81d53cf2612c1c318c36f02fae6d2c607c8e98c6c6e66eae2c58fa9a606f5ae715a05f4fc082feb1a4a7914dc8bf4
   languageName: node
   linkType: hard
 
-"@genkit-ai/common@patch:@genkit-ai/common@file%3A./genkit-dist/genkit-ai-common-0.0.3.tgz%23./genkit-dist/genkit-ai-common-0.0.3.tgz%3A%3Ahash=256970&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-common-file-33a0940182.patch":
-  version: 0.0.3
-  resolution: "@genkit-ai/common@patch:@genkit-ai/common@file%3A./genkit-dist/genkit-ai-common-0.0.3.tgz%23./genkit-dist/genkit-ai-common-0.0.3.tgz%3A%3Ahash=256970&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-common-file-33a0940182.patch::version=0.0.3&hash=09a15c"
-  dependencies:
-    "@google-cloud/monitoring": "npm:^4.0.0"
-    "@google-cloud/opentelemetry-cloud-monitoring-exporter": "npm:^0.17.0"
-    "@google-cloud/trace-agent": "npm:^7.1.2"
-    "@opentelemetry/api": "npm:^1.7.0"
-    "@opentelemetry/context-async-hooks": "npm:^1.20.0"
-    "@opentelemetry/sdk-metrics": "npm:^1.22.0"
-    "@opentelemetry/sdk-node": "npm:^0.49.0"
-    "@opentelemetry/sdk-trace-base": "npm:^1.22.0"
-    express: "npm:^4.18.2"
-    express-openapi-validator: "npm:^5.1.3"
-    firebase-admin: "npm:^11.11.0"
-    json-schema: "npm:^0.4.0"
-    pino: "npm:^8.17.2"
-    pino-pretty: "npm:^10.3.1"
-    zod: "npm:^3.22.4"
-    zod-to-json-schema: "npm:^3.22.4"
-  checksum: 10c0/4c86dee5d3e7ffac6c41f7716c8d08b6090aa26e36003c9a4dea106b1e8570789724ea914fd96f56de9a7b8ae96477e844c01ffd55c00938fc2af08f3cbcb197
-  languageName: node
-  linkType: hard
-
-"@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.3.tgz#./genkit-dist/genkit-ai-dotprompt-0.0.3.tgz::hash=7000d1&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz#./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz::hash=a4be59&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
@@ -1368,13 +1343,14 @@ __metadata:
     handlebars: "npm:^4.7.8"
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
-  checksum: 10c0/966199428cf3ffcd465661dc710718c345f104549b671eb6a44b6285eaeb30f8148d2333ed3acfc5132c26bcdb18fe0bc415be5c25aecb08e61e2ea9fcc62ebc
+    zod-to-json-schema: "npm:^3.22.4"
+  checksum: 10c0/5c2b68a907d83058787a8a29b5125609f00b1eda059ef32fc3333cffc989acce17a3213a6c13af4ce488e1a4714d5e555a362a6394dd225efdf1e6d4d34033ce
   languageName: node
   linkType: hard
 
-"@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.3.tgz#./genkit-dist/genkit-ai-flow-0.0.3.tgz::hash=b08ae7&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.4.tgz#./genkit-dist/genkit-ai-flow-0.0.4.tgz::hash=c268f5&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     "@types/cors": "npm:^2.8.17"
@@ -1382,53 +1358,54 @@ __metadata:
     uuid: "npm:^9.0.1"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.21.4"
-  checksum: 10c0/7367cf677a1c95543e09c810cecab57be9276c990d4750b8ea6daa3ef3b9ef74ede36e7423148f764ef837a0c558446ab6f0202221e20b43189b4f7594e6d99e
+  checksum: 10c0/26a2c7eb26e5b7b6c4bd06c9f0fc337362f2120ca1420ff03154e0e5dfabfe0fa2160a696489aa69a5542277853092148ef08806d3ca2a3c0579b914eb96b0e8
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-chroma-0.0.3.tgz::hash=ea575c&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz::hash=b98344&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     chromadb: "npm:^1.7.3"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/8112e6266daa96f030289ba680afa606055b4067b316cc6943b05dc4c86c306641318d428fb68f1b320e518c2fcc6bf15269d0651e745c239d42eebf6b8ff639
+  checksum: 10c0/c2ab386e03c2b4a7adf92fbf3339bdac4afdf3ba3e378b87f26c0b55739225ac4b284ed5d3707b982f8e5782659629097e3cd19b0bffca74e32b26858cad5e72
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.3.tgz::hash=7c6639&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz::hash=5cf31c&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     compute-cosine-similarity: "npm:^1.1.0"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/d532a0675758afc33c9e68f3edfb269bde82b18b7d3c6813e6f286b56ecedf93ec8b7fd4d225aa8bb44a8ee6e38e2c2ff6f8e6c3a5ad21a030099cf08787e50f
+  checksum: 10c0/4492264514c17cd47c5898306a0379b8fadb0e30bb5736f6991a7be1eb11844fa6e794394aec24ca1a91d51364766e480a0bf1f1cd084adde942592caff771f2
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-firebase-0.0.3.tgz::hash=715fea&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz::hash=f9064d&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     firebase-admin: "npm:^11.11.0"
     firebase-functions: "npm:^4.3.1"
-  checksum: 10c0/f60f621eb6f0ae68966d086f3d216f80269f52e0274bfa0bf653b905d41def00dda676b8fe8324021a0c7e1b7625a24ac17c52067887e4ec929630c6407cb36e
+  checksum: 10c0/2a14585867cb3ca0593a4d178ad6bf9a7f18d4ab415a4e65dea5051c09d597a8e39940891421531a90c96477c1cacc0bd7dc43012739bce37d8831c97ddda3d3
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-gcp-0.0.3.tgz::hash=1898f4&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz::hash=fe83a8&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
+    "@google-cloud/logging-winston": "npm:^6.0.0"
     "@google-cloud/opentelemetry-cloud-monitoring-exporter": "npm:^0.17.0"
     "@google-cloud/opentelemetry-cloud-trace-exporter": "npm:*"
     "@opentelemetry/api-metrics": "npm:^0.33.0"
@@ -1439,117 +1416,104 @@ __metadata:
     "@opentelemetry/sdk-node": "npm:^0.49.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/fdc2ca9aac48178c57ce61d8ab09c4c5506a7123d39b868c6cc51c7d8b3960d592e54ef2fa79b7c39932691a5b42cdcc59e40bb62dd616c3ae0ec8e7db900e31
+  checksum: 10c0/e84ab9fd4b27e0438a1eb1dfa156a68833698590b4a80af916f01c192be434b4d194c37d874df5b7761d759073477224902f2e969e74aa7665a5e64f56f0340f
   languageName: node
   linkType: hard
 
 "@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz::locator=telegram-bots%40workspace%3A.":
   version: 0.0.1
-  resolution: "@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz#./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz::hash=4a5428&locator=telegram-bots%40workspace%3A."
+  resolution: "@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz#./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz::hash=eb562d&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@google/generative-ai": "npm:^0.2.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/31e9187714083dea8cb81c2e4e34ced4b698993b70584cd4ef3692693e72e37b97b811f5c888a0cbcaf09c13b7d111e8342fcff8e2d4e97d7e043dff16913deb
+  checksum: 10c0/673b2e2411427f67bb6bdb0a99628ef1ad74d6144f328badaf48286e64c324ad5198d2c4a53d0e5b02cf9eca79eef4f227f52017a164a5b6027132398ed44fa6
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-ollama-0.0.3.tgz::hash=ede7db&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz::hash=6721f0&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
-  checksum: 10c0/15dd1466b90e851eeb866e642620ac75f3480e3cdf1e6ce17dd1a0ad35c5d47437cb5251f526507eb7bc9ee1d12090028de6be49014d95dd98415f85d1091e42
+  checksum: 10c0/4de1a2a17ffdc04f0e87ee23ee7934479225f5a3c41667ddc239e298218568668483cffdb040e3b490ba6436c5437ce869c59bd781f4cbb8f5b3aa90ed2d8345
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-openai-0.0.3.tgz::hash=36dad6&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz::hash=9e37e0&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     openai: "npm:^4.28.4"
-  checksum: 10c0/996ae6b310d76995d57f4d4210b380377006a5039f99ea8d8bb4f0beb682f978ffd068547364899d565875b6b903d8e1b13869f0a71e8993f8eaf58198e9bc77
+  checksum: 10c0/ad72fa6ac1ba6d331f9b79ad3929b33e5c645008b6c77740c31df9f89f1507cdf7aa04c7da39e2031cf7c47341729c25876cf3ca5734a4290d2d14f2cf9ec868
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-pinecone-0.0.3.tgz::hash=53874d&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz::hash=47d086&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@pinecone-database/pinecone": "npm:^2.0.1"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/2788122fabe34a7ff6e0953a92af56c3fb49cd2954f732f6d9ef1623f27224f34e04f9b5e7fd06bb2b59eb9feb1adaa127655b4e3e237bb67fdc313b4a0d40ef
+  checksum: 10c0/8e00a0d287c98c5d7e7ed3a23858e70f6dca2d1821b6dca0152ae444c1ebc11b28e7582c8cb7641c64c351489a4273a9e369d391d019972a37c4e4c277240cfc
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-ragas-0.0.3.tgz::hash=df7a13&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz::hash=b055ae&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     handlebars: "npm:^4.7.8"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/b5778cdb472e278898d8a0015a3ba359c979de591a92b19cbb6431d4860dd79bc404bb0ee53fac2ebc727297095180ee1dc265556ddb5cacc14ef21b3bfca62f
+  checksum: 10c0/91d9008b6d0615da7ce1aeca9c1d7eea2ee769bdfbcaf54ea8f62b713551f808f08b177500351de04cf40b24c3dd128e90db4209a6206cedf04a04cf348def7c
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz::hash=0aa29a&locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz::hash=0aa29a&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::hash=1450f5&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@google-cloud/vertexai": "npm:^0.5.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/97a452c77d2176f14533d61891b0dd4ceefe4ecd1f1d0297fd3fb9cce7feb3dbe9b69758f981bad442cb3c212c350586dcb839fda6fedd179b56c2d819e9f66d
+  checksum: 10c0/976bdc4f28f799e44401e078d904dab4fb0d11fb8a940f67e406a2702d7dcd2fcd536b2b435c07f130061257d89533b6e03c213fa2d48cc99bb3e5c48cb9a3f8
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%3A%3Ahash=0aa29a&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-d238677dc9.patch":
-  version: 0.0.3
-  resolution: "@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%3A%3Ahash=0aa29a&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-d238677dc9.patch::version=0.0.3&hash=fc2e13"
-  dependencies:
-    "@genkit-ai/ai": "npm:*"
-    "@genkit-ai/common": "npm:*"
-    "@google-cloud/vertexai": "npm:^0.5.0"
-    google-auth-library: "npm:^9.6.3"
-    node-fetch: "npm:^3.3.2"
-  checksum: 10c0/96100021c7839db50fce1b342f1d86c07dee545f25e9f8cbbeb0acb92e6de21537e4b73963051a45a2fff3f917e26510b5473d30999b547ea7e15de90b4ba878
-  languageName: node
-  linkType: hard
-
-"@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.3.tgz#./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.3.tgz::hash=2ce12e&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz::hash=9f225b&locator=telegram-bots%40workspace%3A."
   dependencies:
     colorette: "npm:^2.0.20"
-  checksum: 10c0/51fa7eba521acc757a057f55e255c49d46c7930d07b147284d1c8cae705a0b8a9a6c93250eb4f7182c3cef59568eb38e60efaa5a572edfd5362a5e2222c8794e
+  checksum: 10c0/83fee6de86bb328b382156eb4402adae93f6b2870323a1d0d025c108233f1bb1246c5f718de73a11d7ecd73fbd05a7882fb6b5334114cfed252a29b2552a9580
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.3.tgz#./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.3.tgz::hash=09932d&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz::hash=e2fcfd&locator=telegram-bots%40workspace%3A."
   dependencies:
     colorette: "npm:^2.0.20"
-  checksum: 10c0/666e1f7787d2fcb283f6c43e4d6c0876e436fe2b421520c5bb574f0937b61356bf8355fb43a0bf7bc429d80b73ff70fae4d366b5674b3ec927a07ffb10e15fa9
+  checksum: 10c0/3f31f7b02052ca32b45b04ff47a6333da1b79b43a2c4ffd9dc44450feb0bc80a17f442d678cc88377bd0ea34717a77c24e5f5b14666ee267c4dd5bcd8e07cfc4
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.3.tgz#./genkit-dist/genkit-ai-tools-plugins-0.0.3.tgz::hash=33ed36&locator=telegram-bots%40workspace%3A."
-  checksum: 10c0/c78489b5bc7c320a8014ecfa9ce46ee39658055882b7f0de772dfd92da24d1e8b9567a32b3ae3ad47e22e87906668492c886695e0dbe82d29250490655eb97c6
+"@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz::hash=d5128e&locator=telegram-bots%40workspace%3A."
+  checksum: 10c0/5615a8745a2b91b9f7a174b04505a23e7b85f36c2298941eae7dc2bd568b594ef1b3b746440dab3159264512bf98c9c91861d1fc975bb45f5475756b1a99001b
   languageName: node
   linkType: hard
 
@@ -1608,6 +1572,43 @@ __metadata:
     google-gax: "npm:^4.0.4"
     protobufjs: "npm:^7.2.5"
   checksum: 10c0/8f4ab78de142377bfd4dcbe78f0c9c75c6a8f1a97f36aba6e70909a0666fe8a02fad5da8acd6ac15d9ef0cb0a736d8f58e59ee5e68c088ff4117a71035cfd2d7
+  languageName: node
+  linkType: hard
+
+"@google-cloud/logging-winston@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@google-cloud/logging-winston@npm:6.0.0"
+  dependencies:
+    "@google-cloud/logging": "npm:^11.0.0"
+    google-auth-library: "npm:^9.0.0"
+    lodash.mapvalues: "npm:^4.6.0"
+    winston-transport: "npm:^4.3.0"
+  peerDependencies:
+    winston: ">=3.2.1"
+  checksum: 10c0/5cd9910c0e3a9562b385cf4ae1e6bc908bcbcd4800c6565c3b1576960bfc590c49865757e4fb676a775de02f072470af53b87d9909c82abb663d683140dda61f
+  languageName: node
+  linkType: hard
+
+"@google-cloud/logging@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@google-cloud/logging@npm:11.0.0"
+  dependencies:
+    "@google-cloud/common": "npm:^5.0.0"
+    "@google-cloud/paginator": "npm:^5.0.0"
+    "@google-cloud/projectify": "npm:^4.0.0"
+    "@google-cloud/promisify": "npm:^4.0.0"
+    arrify: "npm:^2.0.1"
+    dot-prop: "npm:^6.0.0"
+    eventid: "npm:^2.0.0"
+    extend: "npm:^3.0.2"
+    gcp-metadata: "npm:^6.0.0"
+    google-auth-library: "npm:^9.0.0"
+    google-gax: "npm:^4.0.3"
+    on-finished: "npm:^2.3.0"
+    pumpify: "npm:^2.0.1"
+    stream-events: "npm:^1.0.5"
+    uuid: "npm:^9.0.0"
+  checksum: 10c0/78c068d4cbff70218b566a7a3262a6e9f9680c855c0bc5a0f620fc35707f53f834c026a18b4da7b310ddffb10d97a427b14bf20a2a96ab90f04f97f84d87e198
   languageName: node
   linkType: hard
 
@@ -4991,13 +4992,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"atomic-sleep@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "atomic-sleep@npm:1.0.0"
-  checksum: 10c0/e329a6665512736a9bbb073e1761b4ec102f7926cce35037753146a9db9c8104f5044c1662e4a863576ce544fb8be27cd2be6bc8c1a40147d03f31eb1cfb6e8a
-  languageName: node
-  linkType: hard
-
 "available-typed-arrays@npm:^1.0.7":
   version: 1.0.7
   resolution: "available-typed-arrays@npm:1.0.7"
@@ -5335,16 +5329,6 @@ __metadata:
     base64-js: "npm:^1.3.1"
     ieee754: "npm:^1.1.13"
   checksum: 10c0/27cac81cff434ed2876058d72e7c4789d11ff1120ef32c9de48f59eab58179b66710c488987d295ae89a228f835fc66d088652dffeb8e3ba8659f80eb091d55e
-  languageName: node
-  linkType: hard
-
-"buffer@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "buffer@npm:6.0.3"
-  dependencies:
-    base64-js: "npm:^1.3.1"
-    ieee754: "npm:^1.2.1"
-  checksum: 10c0/2a905fbbcde73cc5d8bd18d1caa23715d5f83a5935867c2329f0ac06104204ba7947be098fe1317fbd8830e26090ff8e764f08cd14fefc977bb248c3487bcbd0
   languageName: node
   linkType: hard
 
@@ -5832,7 +5816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^2.0.20, colorette@npm:^2.0.7":
+"colorette@npm:^2.0.20":
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 10c0/e94116ff33b0ff56f3b83b9ace895e5bf87c2a7a47b3401b8c3f3226e050d5ef76cf4072fb3325f9dc24d1698f9b730baf4e05eeaf861d74a1883073f4c98a40
@@ -5955,6 +5939,20 @@ __metadata:
     readable-stream: "npm:^2.2.2"
     typedarray: "npm:^0.0.6"
   checksum: 10c0/2e9864e18282946dabbccb212c5c7cec0702745e3671679eb8291812ca7fd12023f7d8cb36493942a62f770ac96a7f90009dc5c82ad69893438371720fa92617
+  languageName: node
+  linkType: hard
+
+"configstore@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "configstore@npm:5.0.1"
+  dependencies:
+    dot-prop: "npm:^5.2.0"
+    graceful-fs: "npm:^4.1.2"
+    make-dir: "npm:^3.0.0"
+    unique-string: "npm:^2.0.0"
+    write-file-atomic: "npm:^3.0.0"
+    xdg-basedir: "npm:^4.0.0"
+  checksum: 10c0/5af23830e78bdc56cbe92a2f81e87f1d3a39e96e51a0ab2a8bc79bbbc5d4440a48d92833b3fd9c6d34b4a9c4c5853c8487b8e6e68593e7ecbc7434822f7aced3
   languageName: node
   linkType: hard
 
@@ -6113,6 +6111,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto-random-string@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "crypto-random-string@npm:2.0.0"
+  checksum: 10c0/288589b2484fe787f9e146f56c4be90b940018f17af1b152e4dde12309042ff5a2bf69e949aab8b8ac253948381529cc6f3e5a2427b73643a71ff177fa122b37
+  languageName: node
+  linkType: hard
+
 "d@npm:1, d@npm:^1.0.1, d@npm:^1.0.2":
   version: 1.0.2
   resolution: "d@npm:1.0.2"
@@ -6176,13 +6181,6 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-data-view: "npm:^1.0.1"
   checksum: 10c0/21b0d2e53fd6e20cc4257c873bf6d36d77bd6185624b84076c0a1ddaa757b49aaf076254006341d35568e89f52eecd1ccb1a502cfb620f2beca04f48a6a62a8f
-  languageName: node
-  linkType: hard
-
-"dateformat@npm:^4.6.3":
-  version: 4.6.3
-  resolution: "dateformat@npm:4.6.3"
-  checksum: 10c0/e2023b905e8cfe2eb8444fb558562b524807a51cdfe712570f360f873271600b5c94aebffaf11efb285e2c072264a7cf243eadb68f3eba0f8cc85fb86cd25df6
   languageName: node
   linkType: hard
 
@@ -6449,6 +6447,24 @@ __metadata:
     no-case: "npm:^3.0.4"
     tslib: "npm:^2.0.3"
   checksum: 10c0/5b859ea65097a7ea870e2c91b5768b72ddf7fa947223fd29e167bcdff58fe731d941c48e47a38ec8aa8e43044c8fbd15cd8fa21689a526bc34b6548197cd5b05
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:^5.2.0":
+  version: 5.3.0
+  resolution: "dot-prop@npm:5.3.0"
+  dependencies:
+    is-obj: "npm:^2.0.0"
+  checksum: 10c0/93f0d343ef87fe8869320e62f2459f7e70f49c6098d948cc47e060f4a3f827d0ad61e83cb82f2bd90cd5b9571b8d334289978a43c0f98fea4f0e99ee8faa0599
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "dot-prop@npm:6.0.1"
+  dependencies:
+    is-obj: "npm:^2.0.0"
+  checksum: 10c0/30e51ec6408978a6951b21e7bc4938aad01a86f2fdf779efe52330205c6bb8a8ea12f35925c2029d6dc9d1df22f916f32f828ce1e9b259b1371c580541c22b5a
   languageName: node
   linkType: hard
 
@@ -7050,17 +7066,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eventid@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "eventid@npm:2.0.1"
+  dependencies:
+    uuid: "npm:^8.0.0"
+  checksum: 10c0/9b110094bb2e97d1ccfc04bcc26e9986c35d18e5e44c64b850c59b8c6beec06448b1e2eb7a3438d8f8fae9d82d84d6ad1f2369b76e8561854c1df502d6fcb3d4
+  languageName: node
+  linkType: hard
+
 "events@npm:1.1.1":
   version: 1.1.1
   resolution: "events@npm:1.1.1"
   checksum: 10c0/29ba5a4c7d03dd2f4a2d3d9d4dfd8332225256f666cd69f490975d2eff8d7c73f1fb4872877b2c1f3b485e8fb42462153d65e5a21ea994eb928c3bec9e0c826e
-  languageName: node
-  linkType: hard
-
-"events@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "events@npm:3.3.0"
-  checksum: 10c0/d6b6f2adbccbcda74ddbab52ed07db727ef52e31a61ed26db9feb7dc62af7fc8e060defa65e5f8af9449b86b52cc1a1f6a79f2eafcf4e62add2b7a1fa4a432f6
   languageName: node
   linkType: hard
 
@@ -7232,13 +7250,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-copy@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "fast-copy@npm:3.0.2"
-  checksum: 10c0/02e8b9fd03c8c024d2987760ce126456a0e17470850b51e11a1c3254eed6832e4733ded2d93316c82bc0b36aeb991ad1ff48d1ba95effe7add7c3ab8d8eb554a
-  languageName: node
-  linkType: hard
-
 "fast-deep-equal@npm:^3.1.1":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -7270,13 +7281,6 @@ __metadata:
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: 10c0/111972b37338bcb88f7d9e2c5907862c280ebf4234433b95bc611e518d192ccb2d38119c4ac86e26b668d75f7f3894f4ff5c4982899afced7ca78633b08287c4
-  languageName: node
-  linkType: hard
-
-"fast-redact@npm:^3.1.1":
-  version: 3.5.0
-  resolution: "fast-redact@npm:3.5.0"
-  checksum: 10c0/7e2ce4aad6e7535e0775bf12bd3e4f2e53d8051d8b630e0fa9e67f68cb0b0e6070d2f7a94b1d0522ef07e32f7c7cda5755e2b677a6538f1e9070ca053c42343a
   languageName: node
   linkType: hard
 
@@ -7918,9 +7922,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"genkit-cli@file:./genkit-dist/genkit-cli-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.3
-  resolution: "genkit-cli@file:./genkit-dist/genkit-cli-0.0.3.tgz#./genkit-dist/genkit-cli-0.0.3.tgz::hash=51fbe5&locator=telegram-bots%40workspace%3A."
+"genkit-cli@file:./genkit-dist/genkit-cli-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.4
+  resolution: "genkit-cli@file:./genkit-dist/genkit-cli-0.0.4.tgz#./genkit-dist/genkit-cli-0.0.4.tgz::hash=4c8628&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@asteasolutions/zod-to-openapi": "npm:^6.3.1"
     "@trpc/server": "npm:10.45.0"
@@ -7928,8 +7932,10 @@ __metadata:
     chokidar: "npm:^3.5.3"
     colorette: "npm:^2.0.20"
     commander: "npm:^11.1.0"
+    configstore: "npm:^5.0.1"
     express: "npm:^4.18.2"
     firebase-admin: "npm:^12.0.0"
+    inquirer: "npm:^8.2.0"
     js-yaml: "npm:^4.1.0"
     json-schema: "npm:^0.4.0"
     open: "npm:^6.3.0"
@@ -7937,7 +7943,7 @@ __metadata:
     zod: "npm:^3.22.4"
   bin:
     genkit: dist/bin/genkit.js
-  checksum: 10c0/2e5d83d9a8bbb0c28a73dbfe9586ad981e9f0825ad618583e070853252c26a9a8697902ff9043875e2f45028a5a422783bfb46d71415d8e431ac9a5396f44dbf
+  checksum: 10c0/f9a8412f92442900e22d4c8beb64cab0b7a98aac38b5102d24b7d25c765ffbe7261c68f048f7d779b7d972e32f628b2947748e93e93b91b45581dcc19da26fac
   languageName: node
   linkType: hard
 
@@ -8306,7 +8312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.10, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.6":
+"graceful-fs@npm:^4.1.10, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
@@ -8448,13 +8454,6 @@ __metadata:
     capital-case: "npm:^1.0.4"
     tslib: "npm:^2.0.3"
   checksum: 10c0/c9f295d9d8e38fa50679281fd70d80726962256e888a76c8e72e526453da7a1832dcb427caa716c1ad5d79841d4537301b90156fa30298fefd3d68f4ea2181bb
-  languageName: node
-  linkType: hard
-
-"help-me@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "help-me@npm:5.0.0"
-  checksum: 10c0/054c0e2e9ae2231c85ab5e04f75109b9d068ffcc54e58fb22079822a5ace8ff3d02c66fd45379c902ad5ab825e5d2e1451fcc2f7eab1eb49e7d488133ba4cacb
   languageName: node
   linkType: hard
 
@@ -8694,7 +8693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inquirer@npm:^8.2.5":
+"inquirer@npm:^8.2.0, inquirer@npm:^8.2.5":
   version: 8.2.6
   resolution: "inquirer@npm:8.2.6"
   dependencies:
@@ -8926,6 +8925,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-obj@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "is-obj@npm:2.0.0"
+  checksum: 10c0/85044ed7ba8bd169e2c2af3a178cacb92a97aa75de9569d02efef7f443a824b5e153eba72b9ae3aca6f8ce81955271aa2dc7da67a8b720575d3e38104208cb4e
+  languageName: node
+  linkType: hard
+
 "is-plain-obj@npm:^1.0.0":
   version: 1.1.0
   resolution: "is-plain-obj@npm:1.1.0"
@@ -9007,7 +9013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-typedarray@npm:~1.0.0":
+"is-typedarray@npm:^1.0.0, is-typedarray@npm:~1.0.0":
   version: 1.0.0
   resolution: "is-typedarray@npm:1.0.0"
   checksum: 10c0/4c096275ba041a17a13cca33ac21c16bc4fd2d7d7eb94525e7cd2c2f2c1a3ab956e37622290642501ff4310601e413b675cf399ad6db49855527d2163b3eeeec
@@ -9158,13 +9164,6 @@ __metadata:
   version: 4.15.5
   resolution: "jose@npm:4.15.5"
   checksum: 10c0/9f208492f55ae9c547fd407c36f67ec3385051b5ca390e24f5449740f17359640b3f96fabfd38bc132cc4292b964c31b921bf356253373b1bd3eb6df799b7433
-  languageName: node
-  linkType: hard
-
-"joycon@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "joycon@npm:3.1.1"
-  checksum: 10c0/131fb1e98c9065d067fd49b6e685487ac4ad4d254191d7aa2c9e3b90f4e9ca70430c43cad001602bdbdabcf58717d3b5c5b7461c1bd8e39478c8de706b3fe6ae
   languageName: node
   linkType: hard
 
@@ -9596,6 +9595,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.mapvalues@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "lodash.mapvalues@npm:4.6.0"
+  checksum: 10c0/a976bfc3923d4d8d2034e049ec4700e3aaf141a6143c973d06be3b2c87697923cd0158ee770484ad1af52dfed93ae90d2b76268413db95a42a2f46d7e1754828
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -9776,6 +9782,15 @@ __metadata:
   dependencies:
     pify: "npm:^3.0.0"
   checksum: 10c0/5eb94f47d7ef41d89d1b8eef6539b8950d5bd99eeba093a942bfd327faa37d2d62227526b88b73633243a2ec7972d21eb0f4e5d62ae4e02a79e389f4a7bb3022
+  languageName: node
+  linkType: hard
+
+"make-dir@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "make-dir@npm:3.1.0"
+  dependencies:
+    semver: "npm:^6.0.0"
+  checksum: 10c0/56aaafefc49c2dfef02c5c95f9b196c4eb6988040cf2c712185c7fe5c99b4091591a7fc4d4eafaaefa70ff763a26f6ab8c3ff60b9e75ea19876f49b18667ecaa
   languageName: node
   linkType: hard
 
@@ -10483,14 +10498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"on-exit-leak-free@npm:^2.1.0":
-  version: 2.1.2
-  resolution: "on-exit-leak-free@npm:2.1.2"
-  checksum: 10c0/faea2e1c9d696ecee919026c32be8d6a633a7ac1240b3b87e944a380e8a11dc9c95c4a1f8fb0568de7ab8db3823e790f12bda45296b1d111e341aad3922a0570
-  languageName: node
-  linkType: hard
-
-"on-finished@npm:2.4.1":
+"on-finished@npm:2.4.1, on-finished@npm:^2.3.0":
   version: 2.4.1
   resolution: "on-finished@npm:2.4.1"
   dependencies:
@@ -10934,68 +10942,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-abstract-transport@npm:^1.0.0, pino-abstract-transport@npm:v1.1.0":
-  version: 1.1.0
-  resolution: "pino-abstract-transport@npm:1.1.0"
-  dependencies:
-    readable-stream: "npm:^4.0.0"
-    split2: "npm:^4.0.0"
-  checksum: 10c0/6e9b9d5a2c0a37f91ecaf224d335daae1ae682b1c79a05b06ef9e0f0a5d289f8e597992217efc857796dae6f1067e9b4882f95c6228ff433ddc153532cae8aca
-  languageName: node
-  linkType: hard
-
-"pino-pretty@npm:^10.3.1":
-  version: 10.3.1
-  resolution: "pino-pretty@npm:10.3.1"
-  dependencies:
-    colorette: "npm:^2.0.7"
-    dateformat: "npm:^4.6.3"
-    fast-copy: "npm:^3.0.0"
-    fast-safe-stringify: "npm:^2.1.1"
-    help-me: "npm:^5.0.0"
-    joycon: "npm:^3.1.1"
-    minimist: "npm:^1.2.6"
-    on-exit-leak-free: "npm:^2.1.0"
-    pino-abstract-transport: "npm:^1.0.0"
-    pump: "npm:^3.0.0"
-    readable-stream: "npm:^4.0.0"
-    secure-json-parse: "npm:^2.4.0"
-    sonic-boom: "npm:^3.0.0"
-    strip-json-comments: "npm:^3.1.1"
-  bin:
-    pino-pretty: bin.js
-  checksum: 10c0/6964fba5acc7a9f112e4c6738d602e123daf16cb5f6ddc56ab4b6bb05059f28876d51da8f72358cf1172e95fa12496b70465431a0836df693c462986d050686b
-  languageName: node
-  linkType: hard
-
-"pino-std-serializers@npm:^6.0.0":
-  version: 6.2.2
-  resolution: "pino-std-serializers@npm:6.2.2"
-  checksum: 10c0/8f1c7f0f0d8f91e6c6b5b2a6bfb48f06441abeb85f1c2288319f736f9c6d814fbeebe928d2314efc2ba6018fa7db9357a105eca9fc99fc1f28945a8a8b28d3d5
-  languageName: node
-  linkType: hard
-
-"pino@npm:^8.17.2":
-  version: 8.19.0
-  resolution: "pino@npm:8.19.0"
-  dependencies:
-    atomic-sleep: "npm:^1.0.0"
-    fast-redact: "npm:^3.1.1"
-    on-exit-leak-free: "npm:^2.1.0"
-    pino-abstract-transport: "npm:v1.1.0"
-    pino-std-serializers: "npm:^6.0.0"
-    process-warning: "npm:^3.0.0"
-    quick-format-unescaped: "npm:^4.0.3"
-    real-require: "npm:^0.2.0"
-    safe-stable-stringify: "npm:^2.3.1"
-    sonic-boom: "npm:^3.7.0"
-    thread-stream: "npm:^2.0.0"
-  bin:
-    pino: bin.js
-  checksum: 10c0/53e6e9db91e451163e93294b0a7c5c8135742d58909dfc4a6fa1afc155b2b0dc44448ec3d057e08351951f9a3ea67e6ea8e72e952b64a1d889f4d5376cbd1a5d
-  languageName: node
-  linkType: hard
-
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -11122,20 +11068,6 @@ __metadata:
     memoizee: "npm:^0.4.14"
     type: "npm:^2.1.0"
   checksum: 10c0/31ff8ff7d62bfd8d768c917f1a523757188062f6fa1762fa44f815bf1adcde5b03d547f13d3dc40f63682fdfeccdccd958c1451701fd468ff24313ed301930d5
-  languageName: node
-  linkType: hard
-
-"process-warning@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "process-warning@npm:3.0.0"
-  checksum: 10c0/60f3c8ddee586f0706c1e6cb5aa9c86df05774b9330d792d7c8851cf0031afd759d665404d07037e0b4901b55c44a423f07bdc465c63de07d8d23196bb403622
-  languageName: node
-  linkType: hard
-
-"process@npm:^0.11.10":
-  version: 0.11.10
-  resolution: "process@npm:0.11.10"
-  checksum: 10c0/40c3ce4b7e6d4b8c3355479df77aeed46f81b279818ccdc500124e6a5ab882c0cc81ff7ea16384873a95a74c4570b01b120f287abbdd4c877931460eca6084b3
   languageName: node
   linkType: hard
 
@@ -11311,7 +11243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pumpify@npm:^2.0.0":
+"pumpify@npm:^2.0.0, pumpify@npm:^2.0.1":
   version: 2.0.1
   resolution: "pumpify@npm:2.0.1"
   dependencies:
@@ -11411,13 +11343,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quick-format-unescaped@npm:^4.0.3":
-  version: 4.0.4
-  resolution: "quick-format-unescaped@npm:4.0.4"
-  checksum: 10c0/fe5acc6f775b172ca5b4373df26f7e4fd347975578199e7d74b2ae4077f0af05baa27d231de1e80e8f72d88275ccc6028568a7a8c9ee5e7368ace0e18eff93a4
-  languageName: node
-  linkType: hard
-
 "quick-lru@npm:^5.1.1":
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
@@ -11491,19 +11416,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^4.0.0":
-  version: 4.5.2
-  resolution: "readable-stream@npm:4.5.2"
-  dependencies:
-    abort-controller: "npm:^3.0.0"
-    buffer: "npm:^6.0.3"
-    events: "npm:^3.3.0"
-    process: "npm:^0.11.10"
-    string_decoder: "npm:^1.3.0"
-  checksum: 10c0/a2c80e0e53aabd91d7df0330929e32d0a73219f9477dbbb18472f6fdd6a11a699fc5d172a1beff98d50eae4f1496c950ffa85b7cc2c4c196963f289a5f39275d
-  languageName: node
-  linkType: hard
-
 "readable-web-to-node-stream@npm:^3.0.0":
   version: 3.0.2
   resolution: "readable-web-to-node-stream@npm:3.0.2"
@@ -11528,13 +11440,6 @@ __metadata:
   dependencies:
     picomatch: "npm:^2.2.1"
   checksum: 10c0/6fa848cf63d1b82ab4e985f4cf72bd55b7dcfd8e0a376905804e48c3634b7e749170940ba77b32804d5fe93b3cc521aa95a8d7e7d725f830da6d93f3669ce66b
-  languageName: node
-  linkType: hard
-
-"real-require@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "real-require@npm:0.2.0"
-  checksum: 10c0/23eea5623642f0477412ef8b91acd3969015a1501ed34992ada0e3af521d3c865bb2fe4cdbfec5fe4b505f6d1ef6a03e5c3652520837a8c3b53decff7e74b6a0
   languageName: node
   linkType: hard
 
@@ -11824,13 +11729,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secure-json-parse@npm:^2.4.0":
-  version: 2.7.0
-  resolution: "secure-json-parse@npm:2.7.0"
-  checksum: 10c0/f57eb6a44a38a3eeaf3548228585d769d788f59007454214fab9ed7f01fbf2e0f1929111da6db28cf0bcc1a2e89db5219a59e83eeaec3a54e413a0197ce879e4
-  languageName: node
-  linkType: hard
-
 "seek-bzip@npm:^1.0.5":
   version: 1.0.6
   resolution: "seek-bzip@npm:1.0.6"
@@ -11860,6 +11758,15 @@ __metadata:
   bin:
     semver: bin/semver
   checksum: 10c0/e4cf10f86f168db772ae95d86ba65b3fd6c5967c94d97c708ccb463b778c2ee53b914cd7167620950fc07faf5a564e6efe903836639e512a1aa15fbc9667fa25
+  languageName: node
+  linkType: hard
+
+"semver@npm:^6.0.0":
+  version: 6.3.1
+  resolution: "semver@npm:6.3.1"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/e3d79b609071caa78bcb6ce2ad81c7966a46a7431d9d58b8800cfa9cb6a63699b3899a0e4bcce36167a284578212d9ae6942b6929ba4aa5015c079a67751d42d
   languageName: node
   linkType: hard
 
@@ -12325,15 +12232,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sonic-boom@npm:^3.0.0, sonic-boom@npm:^3.7.0":
-  version: 3.8.0
-  resolution: "sonic-boom@npm:3.8.0"
-  dependencies:
-    atomic-sleep: "npm:^1.0.0"
-  checksum: 10c0/f3f61cb3fd5d4aad862dd957f22318ef85bf47d4f12ba27b915112908449f752dbdfc95a4739d2b4a9b2770e1e08d349adae9d1030fdab2a3d86128c6773a7f4
-  languageName: node
-  linkType: hard
-
 "sort-keys-length@npm:^1.0.0":
   version: 1.0.1
   resolution: "sort-keys-length@npm:1.0.1"
@@ -12375,13 +12273,6 @@ __metadata:
   dependencies:
     readable-stream: "npm:^3.0.0"
   checksum: 10c0/2dad5603c52b353939befa3e2f108f6e3aff42b204ad0f5f16dd12fd7c2beab48d117184ce6f7c8854f9ee5ffec6faae70d243711dd7d143a9f635b4a285de4e
-  languageName: node
-  linkType: hard
-
-"split2@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "split2@npm:4.2.0"
-  checksum: 10c0/b292beb8ce9215f8c642bb68be6249c5a4c7f332fc8ecadae7be5cbdf1ea95addc95f0459ef2e7ad9d45fd1064698a097e4eb211c83e772b49bc0ee423e91534
   languageName: node
   linkType: hard
 
@@ -12577,7 +12468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string_decoder@npm:^1.1.1, string_decoder@npm:^1.3.0":
+"string_decoder@npm:^1.1.1":
   version: 1.3.0
   resolution: "string_decoder@npm:1.3.0"
   dependencies:
@@ -12629,7 +12520,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-json-comments@npm:^3.1.0, strip-json-comments@npm:^3.1.1":
+"strip-json-comments@npm:^3.1.0":
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: 10c0/9681a6257b925a7fa0f285851c0e613cc934a50661fa7bb41ca9cbbff89686bb4a0ee366e6ecedc4daafd01e83eee0720111ab294366fe7c185e935475ebcecd
@@ -12900,15 +12791,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"thread-stream@npm:^2.0.0":
-  version: 2.4.1
-  resolution: "thread-stream@npm:2.4.1"
-  dependencies:
-    real-require: "npm:^0.2.0"
-  checksum: 10c0/ce29265810b9550ce896726301ff006ebfe96b90292728f07cfa4c379740585583046e2a8018afc53aca66b18fed12b33a84f3883e7ebc317185f6682898b8f8
-  languageName: node
-  linkType: hard
-
 "throat@npm:^5.0.0":
   version: 5.0.0
   resolution: "throat@npm:5.0.0"
@@ -13160,6 +13042,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typedarray-to-buffer@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "typedarray-to-buffer@npm:3.1.5"
+  dependencies:
+    is-typedarray: "npm:^1.0.0"
+  checksum: 10c0/4ac5b7a93d604edabf3ac58d3a2f7e07487e9f6e98195a080e81dbffdc4127817f470f219d794a843b87052cedef102b53ac9b539855380b8c2172054b7d5027
+  languageName: node
+  linkType: hard
+
 "typedarray@npm:^0.0.6":
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
@@ -13270,6 +13161,15 @@ __metadata:
   dependencies:
     imurmurhash: "npm:^0.1.4"
   checksum: 10c0/cb811d9d54eb5821b81b18205750be84cb015c20a4a44280794e915f5a0a70223ce39066781a354e872df3572e8155c228f43ff0cce94c7cbf4da2cc7cbdd635
+  languageName: node
+  linkType: hard
+
+"unique-string@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "unique-string@npm:2.0.0"
+  dependencies:
+    crypto-random-string: "npm:^2.0.0"
+  checksum: 10c0/11820db0a4ba069d174bedfa96c588fc2c96b083066fafa186851e563951d0de78181ac79c744c1ed28b51f9d82ac5b8196ff3e4560d0178046ef455d8c2244b
   languageName: node
   linkType: hard
 
@@ -13595,7 +13495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston-transport@npm:^4.7.0":
+"winston-transport@npm:^4.3.0, winston-transport@npm:^4.7.0":
   version: 4.7.0
   resolution: "winston-transport@npm:4.7.0"
   dependencies:
@@ -13606,7 +13506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:^3.11.0":
+"winston@npm:^3.11.0, winston@npm:^3.12.0":
   version: 3.12.0
   resolution: "winston@npm:3.12.0"
   dependencies:
@@ -13679,6 +13579,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"write-file-atomic@npm:^3.0.0":
+  version: 3.0.3
+  resolution: "write-file-atomic@npm:3.0.3"
+  dependencies:
+    imurmurhash: "npm:^0.1.4"
+    is-typedarray: "npm:^1.0.0"
+    signal-exit: "npm:^3.0.2"
+    typedarray-to-buffer: "npm:^3.1.5"
+  checksum: 10c0/7fb67affd811c7a1221bed0c905c26e28f0041e138fb19ccf02db57a0ef93ea69220959af3906b920f9b0411d1914474cdd90b93a96e5cd9e8368d9777caac0e
+  languageName: node
+  linkType: hard
+
 "write-file-atomic@npm:^4.0.2":
   version: 4.0.2
   resolution: "write-file-atomic@npm:4.0.2"
@@ -13716,6 +13628,13 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/aec4ef4eb65821a7dde7b44790f8699cfafb7978c9b080f6d7a98a7f8fc0ce674c027073a78574c94786ba7112cc90fa2cc94fc224ceba4d4b1030cff9662494
+  languageName: node
+  linkType: hard
+
+"xdg-basedir@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "xdg-basedir@npm:4.0.0"
+  checksum: 10c0/1b5d70d58355af90363a4e0a51c992e77fc5a1d8de5822699c7d6e96a6afea9a1e048cb93312be6870f338ca45ebe97f000425028fa149c1e87d1b5b8b212a06
   languageName: node
   linkType: hard
 
