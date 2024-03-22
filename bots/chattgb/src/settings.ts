@@ -18,6 +18,12 @@ const getEditedMessage = (
               callback_data: 'history',
             },
           ],
+          [
+            {
+              text: '❌ Close',
+              callback_data: 'close',
+            },
+          ],
         ],
       };
     }
@@ -102,6 +108,7 @@ export const handleSettings = async (
   }
   const { text = '', keyboard } =
     getEditedMessage(callbackQuery, newConfig) || {};
+  // If the update is of type message, send the message with the settings
   if (update.message) {
     await bot.sendMessage(update.message.chat.id, text, {
       parse_mode: 'HTML',
@@ -110,7 +117,19 @@ export const handleSettings = async (
         reply_markup: { inline_keyboard: keyboard },
       }),
     });
-  } else if (text !== callbackQuery.message?.text) {
+    return;
+  }
+  // Otherwise, it means that the message is a callback query
+  // If its data is "close", delete the settings message
+  if (callbackQuery.data === 'close') {
+    await bot.deleteMessage(
+      callbackQuery.message!.chat.id,
+      callbackQuery.message!.message_id,
+    );
+    return;
+  }
+  // Otherwise, update the message according to the provided data
+  if (text !== callbackQuery.message?.text) {
     await bot.editMessageText(text, {
       parse_mode: 'HTML',
       chat_id: callbackQuery.message!.chat.id,
