@@ -93,7 +93,7 @@ export const setupGenkit = ({
     configureGenkit({
       plugins: [openAI({ apiKey }), vertexAI({ location, projectId })],
       enableTracingAndMetrics: false,
-      logLevel: 'warn',
+      logLevel: 'error',
     });
     genkitConfigured = true;
   }
