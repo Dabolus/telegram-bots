@@ -18,7 +18,8 @@ import {
   getChatConfiguration,
   getChatContext,
   getDenyList,
-  getImageSize,
+  getDalleImageSize,
+  getImagenImageSize,
   getMessageImages,
   getMessageText,
   googleCredentialsPath,
@@ -570,49 +571,66 @@ export const handler = createUpdateHandler(async (update, bot) => {
   for (const rawResponse of rawResponseParts) {
     const {
       message: response,
-      dalle,
+      image,
       tts,
       followup = [],
     } = await parseJsonResponse(rawResponse);
-    // If the response starts with "dalle:", we need to generate an image
-    // using the DALL-E API
-    if (dalle?.prompt) {
-      const prompt = dalle.prompt.trim() || '';
+    // If the response contains the field "image", we need to generate an image
+    // using the configured image API
+    if (image?.prompt) {
+      const prompt = image.prompt.trim() || '';
       console.info(
         `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
       );
-      const chatAction = dalle.file ? 'upload_document' : 'upload_photo';
+      const chatAction = image.file ? 'upload_document' : 'upload_photo';
       await bot.sendChatAction(update.message.chat.id, chatAction);
-      const imageResponse = await openai.images.generate({
-        model: 'dall-e-3',
+
+      const imageModelConfig = currentConfig.models?.image ?? 'openai';
+      const imageResponse = await genkit.generate({
+        model: chatConfigs[imageModelConfig].image.model,
         prompt,
-        quality: dalle.hd ? 'hd' : 'standard',
-        style: dalle.natural ? 'natural' : 'vivid',
-        size: getImageSize(dalle.orientation),
-        n: 1,
-        response_format: 'b64_json',
-        user: update.message.from?.id.toString(),
+        config: {
+          custom:
+            imageModelConfig === 'openai'
+              ? {
+                  n: 1,
+                  quality: image.hd ? 'hd' : 'standard',
+                  style: image.natural ? 'natural' : 'vivid',
+                  size: getDalleImageSize(image.orientation),
+                  user: update.message.from?.id.toString(),
+                }
+              : {
+                  aspectRatio: getImagenImageSize(image.orientation),
+                },
+        },
+        output: {
+          format: 'media',
+        },
       });
-      const images =
-        imageResponse.data
-          ?.filter(image => !!image.b64_json)
-          .map(image => Buffer.from(image.b64_json!, 'base64')) || [];
-      if (images.length < 1) {
+      const imageMedia = imageResponse.media();
+      if (!imageMedia) {
         console.error('No image received from DALL-E');
         return;
       }
-      const methodToUse = dalle.file ? 'sendDocument' : 'sendPhoto';
+      const imageContentType = imageMedia.contentType ?? 'image/png';
+      const imageBuffer = Buffer.from(
+        imageMedia.url.slice(imageMedia.url.indexOf(',') + 1),
+        'base64',
+      );
+      const methodToUse = image.file ? 'sendDocument' : 'sendPhoto';
       await bot[methodToUse](
         update.message.chat.id,
-        images[0],
+        imageBuffer,
         {
           reply_to_message_id: update.message.message_id,
           parse_mode: 'HTML',
-          caption: dalle.caption || response,
+          caption: image.caption || response,
         },
         {
-          contentType: 'image/png',
-          filename: `${prompt.replace(/\s+/g, '_')}.png`,
+          contentType: imageContentType,
+          filename: `${prompt.replace(/\s+/g, '_')}.${imageContentType.slice(
+            imageContentType.indexOf('/') + 1,
+          )}`,
         },
       );
     } else if (tts?.input) {

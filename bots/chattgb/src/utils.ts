@@ -5,10 +5,10 @@ import path from 'node:path';
 import fsSync, { promises as fs } from 'node:fs';
 import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
-import type TelegramBot from 'node-telegram-bot-api';
-import type { OpenAI } from 'openai';
 import { chatConfigs } from '@bots/shared/genkit';
 import { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
+import type TelegramBot from 'node-telegram-bot-api';
+import type { OpenAI } from 'openai';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -79,7 +79,7 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
 
 export interface GPTResponse {
   message: string;
-  dalle?: {
+  image?: {
     prompt: string;
     caption?: string;
     hd?: boolean;
@@ -94,9 +94,9 @@ export interface GPTResponse {
   followup?: string[];
 }
 
-export const getImageSize = (
-  orientation?: NonNullable<GPTResponse['dalle']>['orientation'],
-): OpenAI.ImageGenerateParams['size'] => {
+export const getDalleImageSize = (
+  orientation?: NonNullable<GPTResponse['image']>['orientation'],
+): '1792x1024' | '1024x1792' | '1024x1024' => {
   switch (orientation) {
     case 'landscape':
       return '1792x1024';
@@ -104,6 +104,19 @@ export const getImageSize = (
       return '1024x1792';
     default:
       return '1024x1024';
+  }
+};
+
+export const getImagenImageSize = (
+  orientation?: NonNullable<GPTResponse['image']>['orientation'],
+): '1:1' | '9:16' | '16:9' => {
+  switch (orientation) {
+    case 'landscape':
+      return '16:9';
+    case 'portrait':
+      return '9:16';
+    default:
+      return '1:1';
   }
 };
 
