@@ -1502,7 +1502,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz::locator=telegram-bots%40workspace%3A.":
+"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz::hash=0aa29a&locator=telegram-bots%40workspace%3A.":
   version: 0.0.3
   resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz::hash=0aa29a&locator=telegram-bots%40workspace%3A."
   dependencies:
@@ -1512,6 +1512,19 @@ __metadata:
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
   checksum: 10c0/97a452c77d2176f14533d61891b0dd4ceefe4ecd1f1d0297fd3fb9cce7feb3dbe9b69758f981bad442cb3c212c350586dcb839fda6fedd179b56c2d819e9f66d
+  languageName: node
+  linkType: hard
+
+"@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%3A%3Ahash=0aa29a&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-d238677dc9.patch":
+  version: 0.0.3
+  resolution: "@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.3.tgz%3A%3Ahash=0aa29a&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-d238677dc9.patch::version=0.0.3&hash=fc2e13"
+  dependencies:
+    "@genkit-ai/ai": "npm:*"
+    "@genkit-ai/common": "npm:*"
+    "@google-cloud/vertexai": "npm:^0.5.0"
+    google-auth-library: "npm:^9.6.3"
+    node-fetch: "npm:^3.3.2"
+  checksum: 10c0/96100021c7839db50fce1b342f1d86c07dee545f25e9f8cbbeb0acb92e6de21537e4b73963051a45a2fff3f917e26510b5473d30999b547ea7e15de90b4ba878
   languageName: node
   linkType: hard
 
