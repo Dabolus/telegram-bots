@@ -48,6 +48,8 @@ const DalleConfigSchema = z.object({
   user: z.string().optional(),
 });
 
+export type DalleConfig = z.infer<typeof DalleConfigSchema>;
+
 export const dalle3 = modelRef({
   name: 'openai-extensions/dall-e-3',
   info: {

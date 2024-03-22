@@ -5,8 +5,7 @@ import { ModelReference, MessageData } from '@genkit-ai/ai/model';
 import { openAI, gpt4Vision } from '@genkit-ai/plugin-openai';
 import { geminiProVision, imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import { vertexAI } from '@genkit-ai/plugin-vertex-ai';
-import type { ZodTypeAny } from 'zod';
-import openAIExtensions, { dalle3 } from './genkit-plugins/openai-extended';
+import openAIExtensions, { dalle3 } from './genkit-plugins/openai-extensions';
 import { configureGenkit } from '@genkit-ai/common/config';
 
 export interface ChatConfig {

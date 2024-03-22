@@ -42,7 +42,7 @@ plugins:
 custom:
   esbuild:
     bundle: true
-    minify: true
+    minify: false
     sourcemap: true
     format: esm
     platform: node

@@ -12,7 +12,7 @@ export interface PluginOptions {
 }
 
 export const openAIExtensions: Plugin<[PluginOptions] | []> = genkitPlugin(
-  'openai-extended',
+  'openai-extensions',
   async (options?: PluginOptions) => ({
     models: Object.keys(SUPPORTED_DALLE_MODELS).map(name =>
       dalleModel(name, options),
