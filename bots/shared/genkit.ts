@@ -2,10 +2,9 @@ import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 import { generate } from '@genkit-ai/ai/generate';
 import { ModelReference, MessageData } from '@genkit-ai/ai/model';
-import { openAI, gpt4Vision } from '@genkit-ai/plugin-openai';
+import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/plugin-openai';
 import { geminiProVision, imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import { vertexAI } from '@genkit-ai/plugin-vertex-ai';
-import openAIExtensions, { dalle3 } from './genkit-plugins/openai-extensions';
 import { configureGenkit } from '@genkit-ai/common/config';
 
 export interface ChatConfig {
@@ -31,7 +30,7 @@ export const chatConfigs = {
       maxOutputTokens: 4096,
     },
     image: {
-      model: dalle3,
+      model: dallE3,
       maxInputTokens: 4000,
     },
     tts: {
@@ -92,11 +91,7 @@ export const setupGenkit = ({
 
   if (!genkitConfigured) {
     configureGenkit({
-      plugins: [
-        openAI({ apiKey }),
-        openAIExtensions({ apiKey }),
-        vertexAI({ location, projectId }),
-      ],
+      plugins: [openAI({ apiKey }), vertexAI({ location, projectId })],
       enableTracingAndMetrics: false,
       logLevel: 'warn',
     });
