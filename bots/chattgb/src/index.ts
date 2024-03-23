@@ -694,7 +694,10 @@ export const handler = createUpdateHandler(async (update, bot) => {
       ...currentConfig,
       history: {
         ...currentConfig.history,
-        messages: [...updatedMessages, completion.candidates[0].message],
+        messages: [
+          ...updatedMessages,
+          completion.candidates[0].message.toJSON(),
+        ],
       },
     });
   }
