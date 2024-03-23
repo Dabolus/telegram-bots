@@ -15,6 +15,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anthropic-ai/sdk@npm:^0.19.0":
+  version: 0.19.0
+  resolution: "@anthropic-ai/sdk@npm:0.19.0"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    digest-fetch: "npm:^1.3.0"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+    web-streams-polyfill: "npm:^3.2.1"
+  checksum: 10c0/5b3242683b1e2388f2f56e159720e62caa3c23b35c2ae7349c7b21f09d48fb08233c4491f39d07f420e3c724e17e2a16808bccd2f96994369d14f75b58ea316b
+  languageName: node
+  linkType: hard
+
 "@apidevtools/json-schema-ref-parser@npm:^9.1.2":
   version: 9.1.2
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.1.2"
@@ -832,6 +849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bots/chattgb@workspace:bots/chattgb"
   dependencies:
+    "@anthropic-ai/sdk": "npm:^0.19.0"
     "@aws-sdk/client-dynamodb": "npm:^3.529.1"
     "@aws-sdk/lib-dynamodb": "npm:^3.529.1"
     "@genkit-ai/ai": "npm:0.0.4"

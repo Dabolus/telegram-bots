@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.19.0",
     "@aws-sdk/client-dynamodb": "^3.529.1",
     "@aws-sdk/lib-dynamodb": "^3.529.1",
     "@genkit-ai/ai": "0.0.4",
