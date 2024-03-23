@@ -60,6 +60,10 @@ const getEditedMessage = (
               text: '⬅️ Back',
               callback_data: 'settings',
             },
+            {
+              text: '❌ Close',
+              callback_data: 'close',
+            },
           ],
         ],
       };
