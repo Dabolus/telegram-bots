@@ -6,6 +6,8 @@ import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/plugin-openai';
 import { geminiProVision, imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import { vertexAI } from '@genkit-ai/plugin-vertex-ai';
 import { configureGenkit } from '@genkit-ai/common/config';
+import { claude3Opus } from './genkit-plugins/anthropic/claude';
+import anthropic from './genkit-plugins/anthropic';
 
 export const chatConfigs = {
   openai: {
@@ -43,30 +45,42 @@ export const chatConfigs = {
       displayName: 'Text-to-Speech AI',
     },
   },
+  anthropic: {
+    text: {
+      model: claude3Opus,
+      displayName: 'Claude 3 Opus',
+      maxHistoryTokens: 200000,
+      maxOutputTokens: 4096,
+    },
+  },
 } as const;
 
 export interface SetupGenkitOptions {
   openai?: {
     apiKey?: string;
   };
-  gcloud?: {
+  google?: {
     location?: string;
     projectId?: string;
     credentialsPath?: string;
+  };
+  anthropic?: {
+    apiKey?: string;
   };
 }
 
 let genkitConfigured = false;
 
 export const setupGenkit = ({
-  openai: { apiKey = process.env.OPENAI_API_KEY } = {},
-  gcloud: {
+  openai: { apiKey: openaiApiKey = process.env.OPENAI_API_KEY } = {},
+  google: {
     location = process.env.GCLOUD_LOCATION,
     projectId = process.env.GCLOUD_PROJECT_ID,
     credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS,
   } = {},
+  anthropic: { apiKey: anthropicApiKey = process.env.ANTHROPIC_API_KEY } = {},
 }: SetupGenkitOptions = {}) => {
-  if (!apiKey) {
+  if (!openaiApiKey) {
     throw new Error('OpenAI API key not provided!');
   }
 
@@ -78,12 +92,20 @@ export const setupGenkit = ({
     throw new Error('Google Cloud credentials path not provided!');
   }
 
+  if (!anthropicApiKey) {
+    throw new Error('Anthropic API key not provided!');
+  }
+
   // Explicitly set the environment variable for the Google Cloud credentials
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
 
   if (!genkitConfigured) {
     configureGenkit({
-      plugins: [openAI({ apiKey }), vertexAI({ location, projectId })],
+      plugins: [
+        openAI({ apiKey: openaiApiKey }),
+        vertexAI({ location, projectId }),
+        anthropic({ apiKey: anthropicApiKey }),
+      ],
       enableTracingAndMetrics: false,
       logLevel: 'error',
     });

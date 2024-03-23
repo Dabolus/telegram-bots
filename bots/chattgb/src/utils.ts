@@ -7,6 +7,9 @@ import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import { chatConfigs } from '@bots/shared/genkit';
 import { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
+import type { z } from 'zod';
+import type { dallE3 } from '@genkit-ai/plugin-openai';
+import type { imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
 
@@ -15,9 +18,11 @@ export const googleCredentialsPath = path.resolve(
   '../static/service-account.json',
 );
 
-export type ChatModelsConfiguration = Partial<
-  Record<keyof (typeof chatConfigs)['openai'], keyof typeof chatConfigs>
->;
+export interface ChatModelsConfiguration {
+  text?: 'openai' | 'google' | 'anthropic';
+  image?: 'openai' | 'google';
+  tts?: 'openai' | 'google';
+}
 
 export interface ChatHistoryConfiguration {
   enabled?: boolean;
@@ -117,6 +122,26 @@ export const getImagenImageSize = (
       return '9:16';
     default:
       return '1:1';
+  }
+};
+
+export const getImageCustomConfig = (
+  modelConfig: ChatModelsConfiguration['image'],
+  imageGenerationConfig: NonNullable<GPTResponse['image']>,
+  userId?: number,
+) => {
+  switch (modelConfig) {
+    case 'openai':
+      return {
+        quality: imageGenerationConfig.hd ? 'hd' : 'standard',
+        style: imageGenerationConfig.natural ? 'natural' : 'vivid',
+        size: getDalleImageSize(imageGenerationConfig.orientation),
+        user: userId?.toString(),
+      } satisfies z.infer<NonNullable<(typeof dallE3)['configSchema']>>;
+    case 'google':
+      return {
+        aspectRatio: getImagenImageSize(imageGenerationConfig.orientation),
+      } satisfies z.infer<NonNullable<(typeof imagen2)['configSchema']>>;
   }
 };
 

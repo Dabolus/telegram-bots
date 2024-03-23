@@ -98,7 +98,11 @@ const getEditedMessage = (
           [
             {
               text: '⬅️ Back',
-              callback_data: 'models',
+              callback_data: 'settings',
+            },
+            {
+              text: '❌ Close',
+              callback_data: 'close',
             },
           ],
         ],
@@ -128,8 +132,20 @@ const getEditedMessage = (
           ],
           [
             {
+              text: `${currentTextModel === 'anthropic' ? '✅ ' : ''}${
+                chatConfigs.anthropic.text.displayName
+              }`,
+              callback_data: 'models:text:anthropic',
+            },
+          ],
+          [
+            {
               text: '⬅️ Back',
               callback_data: 'models',
+            },
+            {
+              text: '❌ Close',
+              callback_data: 'close',
             },
           ],
         ],
@@ -162,6 +178,10 @@ const getEditedMessage = (
               text: '⬅️ Back',
               callback_data: 'models',
             },
+            {
+              text: '❌ Close',
+              callback_data: 'close',
+            },
           ],
         ],
       };
@@ -191,6 +211,10 @@ const getEditedMessage = (
             {
               text: '⬅️ Back',
               callback_data: 'models',
+            },
+            {
+              text: '❌ Close',
+              callback_data: 'close',
             },
           ],
         ],
@@ -250,6 +274,16 @@ export const handleSettings = async (
         models: {
           ...currentChatConfiguration?.models,
           text: 'google',
+        },
+      };
+      callbackQuery.data = 'models:text';
+      break;
+    case 'models:text:anthropic':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          text: 'anthropic',
         },
       };
       callbackQuery.data = 'models:text';

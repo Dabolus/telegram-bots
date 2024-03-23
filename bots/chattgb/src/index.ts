@@ -18,14 +18,13 @@ import {
   getChatConfiguration,
   getChatContext,
   getDenyList,
-  getDalleImageSize,
-  getImagenImageSize,
   getMessageImages,
   getMessageText,
   googleCredentialsPath,
   parseJsonResponse,
   setChatConfiguration,
   setDenyList,
+  getImageCustomConfig,
 } from './utils';
 import { handleSettings } from './settings';
 
@@ -451,7 +450,7 @@ export const handler = createUpdateHandler(async (update, bot) => {
 
   const openai = setupOpenAi();
   const genkit = setupGenkit({
-    gcloud: { credentialsPath: googleCredentialsPath },
+    google: { credentialsPath: googleCredentialsPath },
   });
 
   const message = await getMessageText(
@@ -533,16 +532,22 @@ export const handler = createUpdateHandler(async (update, bot) => {
   const previousMessages = updatedMessages.slice(0, -1);
   const newMessage = updatedMessages.at(-1)!;
   await bot.sendChatAction(update.message.chat.id, 'typing');
+  const textModelConfig = currentConfig.models?.text ?? 'openai';
   const completion = await genkit.generate({
-    model: chatConfigs[currentConfig.models?.text ?? 'openai'].text.model,
+    model: chatConfigs[textModelConfig].text.model,
     output: { format: 'text' },
     config: {
-      maxOutputTokens:
-        chatConfigs[currentConfig.models?.text ?? 'openai'].text
-          .maxOutputTokens,
-      custom: {
-        user: update.message.from?.id.toString(),
-      },
+      maxOutputTokens: chatConfigs[textModelConfig].text.maxOutputTokens,
+      custom:
+        textModelConfig === 'openai'
+          ? {
+              user: update.message.from?.id.toString(),
+            }
+          : {
+              metadata: {
+                user_id: update.message.from?.id.toString(),
+              },
+            },
     },
     history: [
       {
@@ -590,18 +595,11 @@ export const handler = createUpdateHandler(async (update, bot) => {
         model: chatConfigs[imageModelConfig].image.model,
         prompt,
         config: {
-          custom:
-            imageModelConfig === 'openai'
-              ? {
-                  n: 1,
-                  quality: image.hd ? 'hd' : 'standard',
-                  style: image.natural ? 'natural' : 'vivid',
-                  size: getDalleImageSize(image.orientation),
-                  user: update.message.from?.id.toString(),
-                }
-              : {
-                  aspectRatio: getImagenImageSize(image.orientation),
-                },
+          custom: getImageCustomConfig(
+            imageModelConfig,
+            image,
+            update.message.from?.id,
+          ),
         },
         output: {
           format: 'media',
