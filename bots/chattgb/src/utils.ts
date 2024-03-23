@@ -137,6 +137,7 @@ The "message" property MUST BE written in Telegram's "HTML" format, so you can u
 - <pre>pre-formatted fixed-width code block</pre>
 - <pre><code class="language-python">pre-formatted fixed-width code block in a specific language</code></pre>
 - <blockquote>Block quotation</blockquote>
+You MUST NOT use any other HTML tags.
 Reserved HTML entities in the message MUST BE escaped.
 Also, since the response is inside a JSON field, the backslashes MUST BE escaped with another backslash.
 In case the user sends you the contents of an SRT and more than one image together in a single message, you MUST respond as if they sent you a video composed by those frames and with the audio provided in the SRT.
