@@ -1,5 +1,10 @@
 import TelegramBot, { Update } from 'node-telegram-bot-api';
-import type { SQSEvent, Context } from 'aws-lambda';
+import type {
+  SQSEvent,
+  Context,
+  SQSBatchItemFailure,
+  SQSBatchResponse,
+} from 'aws-lambda';
 
 let bot: TelegramBot;
 
@@ -27,6 +32,9 @@ export const getBotUsername = async (bot: TelegramBot) => {
 
   return username;
 };
+
+export const escapeStringForMarkdownV2 = (string: string): string =>
+  string.replace(/[\_\*\[\]\(\)\~\`\>\#\+\-\=\|\{\}\.\!\\]/g, '\\$&');
 
 export const getCommandRegex = (username: string, command: string) =>
   new RegExp(`^\\/${command}(?:@${username})?(?:\\s|$)`);
@@ -124,13 +132,76 @@ export const getAllUpdates = async (
   });
 };
 
+export type Handler = (update: Update, bot: TelegramBot) => Promise<void>;
+
 export const createUpdateHandler =
-  (handler: (update: Update, bot: TelegramBot) => void | Promise<void>) =>
-  async (event: SQSEvent, ctx: Context) => {
+  (handler: Handler) =>
+  async (event: SQSEvent, ctx: Context): Promise<SQSBatchResponse> => {
     ctx.callbackWaitsForEmptyEventLoop = false;
-    for (const record of event.Records) {
-      const update: Update = JSON.parse(record.body);
-      const bot = setupBot();
+    const batchItemFailures = await event.Records.reduce(
+      async (previousPromise, record) => {
+        const failures = await previousPromise;
+        try {
+          const update: Update = JSON.parse(record.body);
+          const bot = setupBot();
+          await handler(update, bot);
+        } catch (error) {
+          console.error('Error occurred while processing update:', error);
+          return [...failures, { itemIdentifier: record.messageId }];
+        }
+        return failures;
+      },
+      Promise.resolve<SQSBatchItemFailure[]>([]),
+    );
+    return { batchItemFailures };
+  };
+
+export const withErrorLogging =
+  (handler: Handler): Handler =>
+  async (update, bot) => {
+    try {
+      if (
+        update.callback_query?.message &&
+        update.callback_query?.data === 'error_handler:delete'
+      ) {
+        await bot.deleteMessage(
+          update.callback_query.message.chat.id,
+          update.callback_query.message.message_id,
+        );
+        return;
+      }
       await handler(update, bot);
+    } catch (error) {
+      if (!update.message) {
+        console.error('Error occurred without an update message:', error);
+        return;
+      }
+      console.error('Error! Logging it to chat:', (error as Error).message);
+      await bot.sendChatAction(update.message.chat.id, 'typing');
+      await bot.sendMessage(
+        update.message.chat.id,
+        'An error occurred while processing your message:\n```' +
+          escapeStringForMarkdownV2(
+            (error as Error).stack?.replace(
+              /((?:node_modules|node:)[^\n]+).+/s,
+              '$1\n...',
+            ) || `${error}`,
+          ) +
+          '```',
+        {
+          parse_mode: 'MarkdownV2',
+          reply_to_message_id: update.message.message_id,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '❌ Delete',
+                  callback_data: 'error_handler:delete',
+                },
+              ],
+            ],
+          },
+        },
+      );
     }
   };
