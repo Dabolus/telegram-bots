@@ -182,6 +182,32 @@ function fromAnthropicContentBlock(
   };
 }
 
+function fromAnthropicContentBlockChunk(
+  choice: Anthropic.MessageStreamEvent,
+): CandidateData | undefined {
+  if (
+    choice.type !== 'content_block_start' &&
+    choice.type !== 'content_block_delta'
+  ) {
+    return;
+  }
+  return {
+    index: choice.index,
+    finishReason: 'unknown',
+    message: {
+      role: 'model',
+      content: [
+        {
+          text:
+            choice.type === 'content_block_start'
+              ? choice.content_block.text
+              : choice.delta.text,
+        },
+      ],
+    },
+  };
+}
+
 export function toAnthropicRequestBody(
   modelName: string,
   request: GenerationRequest,
@@ -236,17 +262,11 @@ export function claudeModel(name: string, client: Anthropic) {
       if (streamingCallback) {
         const stream = client.messages.stream(body);
         for await (const chunk of stream) {
-          if (chunk.type === 'message_start') {
-            chunk.message.content.forEach((content, index) => {
-              const c = fromAnthropicContentBlock(
-                content,
-                index,
-                chunk.message.stop_reason,
-              );
-              streamingCallback({
-                index: c.index,
-                content: c.message.content,
-              });
+          const c = fromAnthropicContentBlockChunk(chunk);
+          if (c) {
+            streamingCallback({
+              index: c.index,
+              content: c.message.content,
             });
           }
         }
