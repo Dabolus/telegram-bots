@@ -41,7 +41,7 @@ export const chatConfigs = {
     },
     tts: {
       // TODO: Actually add support for Google Text-to-Speech AI
-      model: 'tts-1-hd',
+      model: 'text-to-speech',
       displayName: 'Text-to-Speech AI',
     },
   },

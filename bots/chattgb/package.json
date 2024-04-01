@@ -23,6 +23,7 @@
     "@genkit-ai/tools-plugin-firebase": "0.0.4",
     "@genkit-ai/tools-plugin-google-cloud": "0.0.4",
     "@genkit-ai/tools-plugins": "0.0.4",
+    "@google-cloud/text-to-speech": "^5.1.0",
     "gptoken": "^0.1.0",
     "node-telegram-bot-api": "^0.65.0",
     "openai": "^4.28.4",

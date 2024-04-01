@@ -7,11 +7,13 @@ import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import { chatConfigs } from '@bots/shared/genkit';
 import { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
+import { speak as googleSpeak } from '@bots/shared/tts';
 import type { z } from 'zod';
 import type { dallE3 } from '@genkit-ai/plugin-openai';
 import type { imagen2 } from '@genkit-ai/plugin-vertex-ai';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
+import type { SpeakOptions } from '@bots/shared/tts';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -95,6 +97,7 @@ export interface GPTResponse {
   tts?: {
     input: string;
     male?: boolean;
+    language?: string;
   };
   followup?: string[];
 }
@@ -168,10 +171,11 @@ export const getChatContext = async (
 ): Promise<string> => {
   const textModel = chatConfigs[config?.models?.text ?? 'openai'].text;
   const imageModel = chatConfigs[config?.models?.image ?? 'openai'].image;
-  const ttsModel = chatConfigs[config?.models?.tts ?? 'openai'].tts;
+  const ttsModelConfig = config?.models?.tts ?? 'openai';
+  const ttsModel = chatConfigs[ttsModelConfig].tts;
 
   return `You are a Telegram bot called ChatTGB that behaves according to a user-provided context.
-Since your responses will need to be parsed programmatically, you MUST ALWAYS respond with a valid JSON.
+You MUST ALWAYS respond with a valid JSON.
 The JSON MUST be provided as-is, without being wrapped in a Markdown code block nor anything else, and it MUST be minified.
 If the user asks you to generate or to send an image, the response JSON MUST HAVE an "image" property, which MUST BE an object containing the following properties:
 - "prompt": the prompt to be provided to ${
@@ -188,7 +192,15 @@ When asked which technology you use to generate images, you MUST respond with "$
     imageModel.displayName
   }".
 If the user asks you to speak or to return an audio, or if they explicitly state that their message is a transcription from an audio, the response JSON MUST HAVE a "tts" property, which MUST BE an object containing the following properties:
-- "input": the text to be spoken by the TTS API;
+- "input": the content to be spoken by ${ttsModel.displayName}. This MUST be ${
+    ttsModelConfig === 'google'
+      ? 'valid SSML with the appropriate emphasis and pauses'
+      : 'plain text'
+  };${
+    ttsModelConfig === 'google'
+      ? '\n- "language": the main language code of the text to be spoken (e.g. "en-US");'
+      : ''
+  }
 - "male": (optional) if the user asks you to be a male or to speak with a male voice, set this to true.
 When asked which technology you use to generate audio, you MUST respond with "${
     ttsModel.displayName
@@ -253,6 +265,33 @@ export const getMessageText = async (
       : ''
   }${replyToMessageTextTemplate}`;
 };
+
+export const openaiSpeak = async (
+  openai: OpenAI,
+  input: string,
+  { male }: SpeakOptions = {},
+): Promise<Buffer> => {
+  const response = await openai.audio.speech.create({
+    model: chatConfigs.openai.tts.model,
+    input,
+    voice: male ? 'onyx' : 'nova',
+    response_format: 'opus',
+  });
+  const responseArrayBuffer = await response.arrayBuffer();
+  return Buffer.from(new Uint8Array(responseArrayBuffer));
+};
+
+export const speak = async (
+  openai: OpenAI,
+  input: string,
+  {
+    modelConfig = 'openai',
+    ...options
+  }: Omit<SpeakOptions, 'ssml'> & { modelConfig?: 'openai' | 'google' } = {},
+) =>
+  modelConfig === 'openai'
+    ? openaiSpeak(openai, input, { ...options, ssml: false })
+    : googleSpeak(input, { ...options, ssml: true });
 
 export const downloadFile = async (
   bot: TelegramBot,

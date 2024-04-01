@@ -869,6 +869,7 @@ __metadata:
     "@genkit-ai/tools-plugin-firebase": "npm:0.0.4"
     "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.4"
     "@genkit-ai/tools-plugins": "npm:0.0.4"
+    "@google-cloud/text-to-speech": "npm:^5.1.0"
     "@types/aws-lambda": "npm:^8.10.136"
     "@types/node-telegram-bot-api": "npm:^0.64.3"
     "@types/sharp": "npm:^0.32.0"
@@ -1817,6 +1818,15 @@ __metadata:
     teeny-request: "npm:^9.0.0"
     uuid: "npm:^8.0.0"
   checksum: 10c0/20d4acfb2104ca2e1b167e4cc43f1303fb006fd546b7e76962789d1636e06a659f46be6db64333c4bc073f27962970de72593321f3578dcf5d5e567a0bc0c0d8
+  languageName: node
+  linkType: hard
+
+"@google-cloud/text-to-speech@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@google-cloud/text-to-speech@npm:5.1.0"
+  dependencies:
+    google-gax: "npm:^4.0.3"
+  checksum: 10c0/97cab0cce41def5aeaa2241376584300e234075605d748f95317fa9962e0278ce8640386ceaa74d6b318c4cd57b27d7716a75a88d8b2a6890a2ea183dd7134b0
   languageName: node
   linkType: hard
 

@@ -308,6 +308,26 @@ export const handleSettings = async (
       };
       callbackQuery.data = 'models:image';
       break;
+    case 'models:tts:openai':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          tts: 'openai',
+        },
+      };
+      callbackQuery.data = 'models:tts';
+      break;
+    case 'models:tts:google':
+      newConfig = {
+        ...currentChatConfiguration,
+        models: {
+          ...currentChatConfiguration?.models,
+          tts: 'google',
+        },
+      };
+      callbackQuery.data = 'models:tts';
+      break;
   }
   if (newConfig !== currentChatConfiguration) {
     await setChatConfiguration(callbackQuery.message!.chat.id, newConfig!);

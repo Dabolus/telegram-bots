@@ -132,8 +132,11 @@ constructs:
         CHAT_IDS_ALLOWLIST: ${env:CHATTGB_CHAT_IDS_ALLOWLIST}
         ADMIN_USER_IDS: ${env:CHATTGB_ADMIN_USER_IDS}
         OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+        ANTHROPIC_API_KEY: ${env:ANTHROPIC_API_KEY}
         GCLOUD_LOCATION: ${env:GCLOUD_LOCATION}
         GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
+        GCLOUD_CLIENT_EMAIL: ${env:CHATTGB_GCLOUD_CLIENT_EMAIL}
+        GCLOUD_PRIVATE_KEY: ${env:CHATTGB_GCLOUD_PRIVATE_KEY}
       package:
         patterns:
           - 'bots/chattgb/static/**'

@@ -26,6 +26,7 @@ import {
   setChatConfiguration,
   setDenyList,
   getImageCustomConfig,
+  speak,
 } from './utils';
 import { handleSettings } from './settings';
 
@@ -643,19 +644,11 @@ export const handler = createUpdateHandler(
           `Generating voice note for chat ${update.message.chat.id} with input "${input}"`,
         );
         await bot.sendChatAction(update.message.chat.id, 'record_voice');
-        const ttsResponse = await openai.audio.speech.create({
-          model: chatConfigs.openai.tts.model,
-          input,
-          voice: tts.male ? 'onyx' : 'nova',
-          response_format: 'opus',
-          // @ts-expect-error other APIs provide this parameter, while this one doesn't.
-          // I don't know if it is supported or not, but let's send it anyway for extra safety.
-          user: update.message.from?.id.toString(),
+        const ttsResponseBuffer = await speak(openai, input, {
+          modelConfig: currentConfig.models?.tts ?? 'openai',
+          male: tts.male,
+          languageCode: tts.language ?? update.message.from?.language_code,
         });
-        const ttsResponseArrayBuffer = await ttsResponse.arrayBuffer();
-        const ttsResponseBuffer = Buffer.from(
-          new Uint8Array(ttsResponseArrayBuffer),
-        );
         await bot.sendVoice(
           update.message.chat.id,
           ttsResponseBuffer,
