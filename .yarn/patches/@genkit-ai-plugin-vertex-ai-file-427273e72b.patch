@@ -29,7 +29,7 @@ index 9baf7e5cba943887c2e0b3430a1113bfc55c5220..b02da91867c48509fd9f2d9de4218b97
      const location = (options == null ? void 0 : options.location) || getLocation();
      const confError = (parameter, envVariableName) => {
 diff --git a/src/index.ts b/src/index.ts
-index a7031cedffd7066389a63f697cdc7612b3df3428..85609a5237eefe7a6ac1563b387265315f50d80a 100644
+index a7031cedffd7066389a63f697cdc7612b3df3428..958d29fb34b20281a5c1563e18b85b26bb8ade28 100644
 --- a/src/index.ts
 +++ b/src/index.ts
 @@ -37,7 +37,9 @@ export interface PluginOptions {
@@ -38,7 +38,7 @@ index a7031cedffd7066389a63f697cdc7612b3df3428..85609a5237eefe7a6ac1563b38726531
    async (options?: PluginOptions) => {
 -    const authClient = new GoogleAuth();
 +    const authClient = new GoogleAuth({
-+      scopes: 'https://www.googleapis.com/auth/cloud-platform'
++      scopes: 'https://www.googleapis.com/auth/cloud-platform',
 +    });
      const projectId = options?.projectId || getProjectId();
      const location = options?.location || getLocation();

@@ -852,23 +852,23 @@ __metadata:
     "@anthropic-ai/sdk": "npm:^0.19.0"
     "@aws-sdk/client-dynamodb": "npm:^3.529.1"
     "@aws-sdk/lib-dynamodb": "npm:^3.529.1"
-    "@genkit-ai/ai": "npm:0.0.4"
-    "@genkit-ai/common": "npm:0.0.4"
-    "@genkit-ai/dotprompt": "npm:0.0.4"
-    "@genkit-ai/flow": "npm:0.0.4"
-    "@genkit-ai/plugin-chroma": "npm:0.0.4"
-    "@genkit-ai/plugin-dev-local-vectorstore": "npm:0.0.4"
-    "@genkit-ai/plugin-firebase": "npm:0.0.4"
-    "@genkit-ai/plugin-gcp": "npm:0.0.4"
-    "@genkit-ai/plugin-google-genai": "npm:0.0.4"
-    "@genkit-ai/plugin-ollama": "npm:0.0.4"
-    "@genkit-ai/plugin-openai": "npm:0.0.4"
-    "@genkit-ai/plugin-pinecone": "npm:0.0.4"
+    "@genkit-ai/ai": "npm:0.0.5"
+    "@genkit-ai/common": "npm:0.0.5"
+    "@genkit-ai/dotprompt": "npm:0.0.5"
+    "@genkit-ai/flow": "npm:0.0.5"
+    "@genkit-ai/plugin-chroma": "npm:0.0.5"
+    "@genkit-ai/plugin-dev-local-vectorstore": "npm:0.0.5"
+    "@genkit-ai/plugin-firebase": "npm:0.0.5"
+    "@genkit-ai/plugin-gcp": "npm:0.0.5"
+    "@genkit-ai/plugin-google-genai": "npm:0.0.5"
+    "@genkit-ai/plugin-ollama": "npm:0.0.5"
+    "@genkit-ai/plugin-openai": "npm:0.0.5"
+    "@genkit-ai/plugin-pinecone": "npm:0.0.5"
     "@genkit-ai/plugin-ragas": "npm:0.0.4"
-    "@genkit-ai/plugin-vertex-ai": "npm:0.0.4"
-    "@genkit-ai/tools-plugin-firebase": "npm:0.0.4"
-    "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.4"
-    "@genkit-ai/tools-plugins": "npm:0.0.4"
+    "@genkit-ai/plugin-vertex-ai": "npm:0.0.5"
+    "@genkit-ai/tools-plugin-firebase": "npm:0.0.5"
+    "@genkit-ai/tools-plugin-google-cloud": "npm:0.0.5"
+    "@genkit-ai/tools-plugins": "npm:0.0.5"
     "@google-cloud/text-to-speech": "npm:^5.1.0"
     "@types/aws-lambda": "npm:^8.10.136"
     "@types/node-telegram-bot-api": "npm:^0.64.3"
@@ -1314,23 +1314,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.4.tgz#./genkit-dist/genkit-ai-ai-0.0.4.tgz::hash=849dde&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/ai@file:./genkit-dist/genkit-ai-ai-0.0.5.tgz#./genkit-dist/genkit-ai-ai-0.0.5.tgz::hash=13fb4a&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     "@types/node": "npm:^20.11.19"
+    crypto: "npm:^1.0.1"
     front-matter: "npm:^4.0.2"
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.21.4"
-  checksum: 10c0/c589d1bfb4f32f11974e479eeb61a6d26b5499b1767401f52818c8de4a46a3f174960175d10ce8f54a0177ef7bdbf56d1c947911db2934a491d48bbd59bac7ac
+  checksum: 10c0/5369d4c76a3d2ec311bfe8b88a900eaa57acaa8f2a4048f8f9204ee29d2711edd7dea35ced2d9fb4e594b17c4fd28474ab2e41b65ecae9df8fc5ac303da12c31
   languageName: node
   linkType: hard
 
-"@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.4.tgz#./genkit-dist/genkit-ai-common-0.0.4.tgz::hash=6a6028&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/common@file:./genkit-dist/genkit-ai-common-0.0.5.tgz#./genkit-dist/genkit-ai-common-0.0.5.tgz::hash=1a2d69&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@google-cloud/monitoring": "npm:^4.0.0"
     "@google-cloud/opentelemetry-cloud-monitoring-exporter": "npm:^0.17.0"
@@ -1347,13 +1348,13 @@ __metadata:
     winston: "npm:^3.12.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.22.4"
-  checksum: 10c0/f4dd762fc7b1d17ac941f59213c5f477e4b81d53cf2612c1c318c36f02fae6d2c607c8e98c6c6e66eae2c58fa9a606f5ae715a05f4fc082feb1a4a7914dc8bf4
+  checksum: 10c0/5bbed23f7df573851e73752f01d953a2d20668da60dad53283215b0b17cf7f217ab3197a4d1d3866f818ad3d964cbc6fbbf8a5c97e9e45f5d0048c58066e30ca
   languageName: node
   linkType: hard
 
-"@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz#./genkit-dist/genkit-ai-dotprompt-0.0.4.tgz::hash=a4be59&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/dotprompt@file:./genkit-dist/genkit-ai-dotprompt-0.0.5.tgz#./genkit-dist/genkit-ai-dotprompt-0.0.5.tgz::hash=81579f&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
@@ -1363,13 +1364,13 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.22.4"
-  checksum: 10c0/5c2b68a907d83058787a8a29b5125609f00b1eda059ef32fc3333cffc989acce17a3213a6c13af4ce488e1a4714d5e555a362a6394dd225efdf1e6d4d34033ce
+  checksum: 10c0/cdfa09415769249f4856f61d277bd41fafef7874ef21be7e73ec98fdb2d898895e97da1245a76b91e579ec28faac0f459983ffa28a4b3938089ae30356b51263
   languageName: node
   linkType: hard
 
-"@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.4.tgz#./genkit-dist/genkit-ai-flow-0.0.4.tgz::hash=c268f5&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/flow@file:./genkit-dist/genkit-ai-flow-0.0.5.tgz#./genkit-dist/genkit-ai-flow-0.0.5.tgz::hash=70747f&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     "@types/cors": "npm:^2.8.17"
@@ -1377,50 +1378,50 @@ __metadata:
     uuid: "npm:^9.0.1"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.21.4"
-  checksum: 10c0/26a2c7eb26e5b7b6c4bd06c9f0fc337362f2120ca1420ff03154e0e5dfabfe0fa2160a696489aa69a5542277853092148ef08806d3ca2a3c0579b914eb96b0e8
+  checksum: 10c0/6a72151a13a0eb084fe2b244da8c76f3d60ab0ad4fedb09fcd8ff52b539d2960510e2ef5b68c40dd186d9cc9a8f24b75e2ecce3e48d27aeff316902b79f2bf59
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-chroma-0.0.4.tgz::hash=b98344&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-chroma@file:./genkit-dist/genkit-ai-plugin-chroma-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-chroma-0.0.5.tgz::hash=618d26&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     chromadb: "npm:^1.7.3"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/c2ab386e03c2b4a7adf92fbf3339bdac4afdf3ba3e378b87f26c0b55739225ac4b284ed5d3707b982f8e5782659629097e3cd19b0bffca74e32b26858cad5e72
+  checksum: 10c0/c66aff324157eccd69d0d54445d40cdf65d19de3c756534c1c79c3d9e8906e9b80f20a91579502bb2269457e5b185759fb510fc93299f9c945db2381f6e81fd7
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.4.tgz::hash=5cf31c&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-dev-local-vectorstore@file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.5.tgz::hash=8c694d&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     compute-cosine-similarity: "npm:^1.1.0"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/4492264514c17cd47c5898306a0379b8fadb0e30bb5736f6991a7be1eb11844fa6e794394aec24ca1a91d51364766e480a0bf1f1cd084adde942592caff771f2
+  checksum: 10c0/8da64a074710ceba7401dc76e8a68579aa8953391b836cd913d5e084dd31b8148bd566c6ffce8e421583b41beb1d1ec9824d46776e279d3b71ca970ee80f346a
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-firebase-0.0.4.tgz::hash=f9064d&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-firebase@file:./genkit-dist/genkit-ai-plugin-firebase-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-firebase-0.0.5.tgz::hash=4d2e65&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/common": "npm:*"
     firebase-admin: "npm:^11.11.0"
     firebase-functions: "npm:^4.3.1"
-  checksum: 10c0/2a14585867cb3ca0593a4d178ad6bf9a7f18d4ab415a4e65dea5051c09d597a8e39940891421531a90c96477c1cacc0bd7dc43012739bce37d8831c97ddda3d3
+  checksum: 10c0/5cdc93a5106e61804b6f794abc2933bc983149a5dce014d79f29508f9dcf801369ff1ade6f7b0e65556381818e6da58047c05d8dcdc0d5912daf923cbc5bc8c2
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-gcp-0.0.4.tgz::hash=fe83a8&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-gcp@file:./genkit-dist/genkit-ai-plugin-gcp-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-gcp-0.0.5.tgz::hash=ffaa6e&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
@@ -1435,117 +1436,118 @@ __metadata:
     "@opentelemetry/sdk-node": "npm:^0.49.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/e84ab9fd4b27e0438a1eb1dfa156a68833698590b4a80af916f01c192be434b4d194c37d874df5b7761d759073477224902f2e969e74aa7665a5e64f56f0340f
+    prettier-plugin-organize-imports: "npm:^3.2.4"
+  checksum: 10c0/9370c6118f2146e6d5fe643d8d1ce83ee512ad1c6cb13e5751f3558dec2fbe92b0a79467ede167102608b1e42036040532ebd19f3b61af73528717a5a106bd93
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.1
-  resolution: "@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz#./genkit-dist/genkit-ai-plugin-google-genai-0.0.1.tgz::hash=eb562d&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-google-genai@file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-google-genai-0.0.5.tgz::hash=c90a73&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@google/generative-ai": "npm:^0.2.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/673b2e2411427f67bb6bdb0a99628ef1ad74d6144f328badaf48286e64c324ad5198d2c4a53d0e5b02cf9eca79eef4f227f52017a164a5b6027132398ed44fa6
+  checksum: 10c0/24e9b41ccdb4765906edc9b316adc39d5257a7f745481c4916dea026bee7312c06f801239bb63c92b439b5d6e71a85639c618480a90e44e07a59330fbad07b2c
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-ollama-0.0.4.tgz::hash=6721f0&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-ollama@file:./genkit-dist/genkit-ai-plugin-ollama-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-ollama-0.0.5.tgz::hash=b482d8&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
-  checksum: 10c0/4de1a2a17ffdc04f0e87ee23ee7934479225f5a3c41667ddc239e298218568668483cffdb040e3b490ba6436c5437ce869c59bd781f4cbb8f5b3aa90ed2d8345
+  checksum: 10c0/4f01ea0475b4b8b92fde3ed4604e8b6e574c4a79b32811d892be7b82e69abb48671892c005807bdb077a383b72aa5f32ec5586429566e2ff08acd5518a9d64e3
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-openai-0.0.4.tgz::hash=9e37e0&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-openai@file:./genkit-dist/genkit-ai-plugin-openai-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-openai-0.0.5.tgz::hash=05c915&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     openai: "npm:^4.28.4"
-  checksum: 10c0/ad72fa6ac1ba6d331f9b79ad3929b33e5c645008b6c77740c31df9f89f1507cdf7aa04c7da39e2031cf7c47341729c25876cf3ca5734a4290d2d14f2cf9ec868
+  checksum: 10c0/2d0648f05bc4377eb5cfd142ac2afdbae90231a53aa98dbedcfc638f35289799318d1ef80926f067cc55add4409fc6c2f457b8078e84191e130cfdc7ad591af9
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-pinecone-0.0.4.tgz::hash=47d086&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-pinecone@file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-pinecone-0.0.5.tgz::hash=56fc62&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@pinecone-database/pinecone": "npm:^2.0.1"
     ts-md5: "npm:^1.3.1"
     zod: "npm:^3.22.4"
-  checksum: 10c0/8e00a0d287c98c5d7e7ed3a23858e70f6dca2d1821b6dca0152ae444c1ebc11b28e7582c8cb7641c64c351489a4273a9e369d391d019972a37c4e4c277240cfc
+  checksum: 10c0/16ac4c27ce3a021af3f3d7ba1507f0014fcd9ae973b2c544c179abb6662f4e2789ada8ec1e14bcae65d769e5732edac9c9758abbfae76dc2bc1bb2a326bcf1c8
   languageName: node
   linkType: hard
 
 "@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
   version: 0.0.4
-  resolution: "@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz::hash=b055ae&locator=telegram-bots%40workspace%3A."
+  resolution: "@genkit-ai/plugin-ragas@file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz::hash=eb1e8c&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     handlebars: "npm:^4.7.8"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/91d9008b6d0615da7ce1aeca9c1d7eea2ee769bdfbcaf54ea8f62b713551f808f08b177500351de04cf40b24c3dd128e90db4209a6206cedf04a04cf348def7c
+  checksum: 10c0/9dcd674176395e9365dc59c8ee42e5a2ed01503a4880c495e1f697c7ad0f321fa2f9e3557c9dfbc7ce1e182fd8382f1bdd64e80e4315a100a0af5a2945729fb9
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::hash=1450f5&locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz::hash=1450f5&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz::hash=153492&locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-vertex-ai@file:./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz#./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz::hash=153492&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@google-cloud/vertexai": "npm:^0.5.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/976bdc4f28f799e44401e078d904dab4fb0d11fb8a940f67e406a2702d7dcd2fcd536b2b435c07f130061257d89533b6e03c213fa2d48cc99bb3e5c48cb9a3f8
+  checksum: 10c0/d3aa37bf0efe48ac858aab5e260ad4b60d9b7e5e2d465f4231b62b873b65346ea8afbfb457da3d289ea9e1da616c5400594cc29a05f1b5514a70750b3ebfd7ba
   languageName: node
   linkType: hard
 
-"@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch":
-  version: 0.0.4
-  resolution: "@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.4.tgz%3A%3Ahash=1450f5&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-37287517cc.patch::version=0.0.4&hash=be9620"
+"@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%3A%3Ahash=153492&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-427273e72b.patch":
+  version: 0.0.5
+  resolution: "@genkit-ai/plugin-vertex-ai@patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%3A%3Ahash=153492&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-427273e72b.patch::version=0.0.5&hash=b603c8"
   dependencies:
     "@genkit-ai/ai": "npm:*"
     "@genkit-ai/common": "npm:*"
     "@google-cloud/vertexai": "npm:^0.5.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
-  checksum: 10c0/b67cc6167ebe7bca9fae07cb6aaf1dd08bdfea59e9d843ba150a730a3e35ad6b125bcb95fc1ec14cc68a948c923c857549db7230457224e0874a2dc711fd0806
+  checksum: 10c0/175191edd7bbcadc3792b200c8a75036b8f8a3b6eaf718db830ec79bc200691ae35eda2c10003575256323ba99ee011a41df508fafc75f8e58093b944690d324
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.4.tgz::hash=9f225b&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/tools-plugin-firebase@file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.5.tgz#./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.5.tgz::hash=b5ff05&locator=telegram-bots%40workspace%3A."
   dependencies:
     colorette: "npm:^2.0.20"
-  checksum: 10c0/83fee6de86bb328b382156eb4402adae93f6b2870323a1d0d025c108233f1bb1246c5f718de73a11d7ecd73fbd05a7882fb6b5334114cfed252a29b2552a9580
+  checksum: 10c0/63bc02e4f680c3106b23e58636ef06328975ef0a6ebbb6d959d409183ed27af407e3969d56ac5d80c97cdd7f66d8246f3e647bfa17b8f0a5029921332ba5b92e
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.4.tgz::hash=e2fcfd&locator=telegram-bots%40workspace%3A."
+"@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/tools-plugin-google-cloud@file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.5.tgz#./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.5.tgz::hash=c3aee5&locator=telegram-bots%40workspace%3A."
   dependencies:
     colorette: "npm:^2.0.20"
-  checksum: 10c0/3f31f7b02052ca32b45b04ff47a6333da1b79b43a2c4ffd9dc44450feb0bc80a17f442d678cc88377bd0ea34717a77c24e5f5b14666ee267c4dd5bcd8e07cfc4
+  checksum: 10c0/49a4e6507080e6324d78f7c9c466210d4434b56a7c79646f0bd532029dd05cc0d8c673d34e2a4df35321401e08148feb8448f87b2ad259d0deefa1d53d4c6898
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz#./genkit-dist/genkit-ai-tools-plugins-0.0.4.tgz::hash=d5128e&locator=telegram-bots%40workspace%3A."
-  checksum: 10c0/5615a8745a2b91b9f7a174b04505a23e7b85f36c2298941eae7dc2bd568b594ef1b3b746440dab3159264512bf98c9c91861d1fc975bb45f5475756b1a99001b
+"@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "@genkit-ai/tools-plugins@file:./genkit-dist/genkit-ai-tools-plugins-0.0.5.tgz#./genkit-dist/genkit-ai-tools-plugins-0.0.5.tgz::hash=550c12&locator=telegram-bots%40workspace%3A."
+  checksum: 10c0/8a310c2d05c0ce195a9dca0fef29b2beebe6ef4e8ae820d7d931ff412c2136a2ff20aeecc544132c7e758e7c1158376f95d3845fe0187ff219964cb749de5d65
   languageName: node
   linkType: hard
 
@@ -6159,6 +6161,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "crypto@npm:1.0.1"
+  checksum: 10c0/fcf7dbd68ac5415b7fde7d7208fe203038e92e83e8a8fcf6e86ab4771ce3dd026d6967a990ba56b9d1c771378210814d5c90d907d3739fbd1723d552ad6c8ab8
+  languageName: node
+  linkType: hard
+
 "d@npm:1, d@npm:^1.0.1, d@npm:^1.0.2":
   version: 1.0.2
   resolution: "d@npm:1.0.2"
@@ -7963,9 +7972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"genkit-cli@file:./genkit-dist/genkit-cli-0.0.4.tgz::locator=telegram-bots%40workspace%3A.":
-  version: 0.0.4
-  resolution: "genkit-cli@file:./genkit-dist/genkit-cli-0.0.4.tgz#./genkit-dist/genkit-cli-0.0.4.tgz::hash=4c8628&locator=telegram-bots%40workspace%3A."
+"genkit-cli@file:./genkit-dist/genkit-cli-0.0.5.tgz::locator=telegram-bots%40workspace%3A.":
+  version: 0.0.5
+  resolution: "genkit-cli@file:./genkit-dist/genkit-cli-0.0.5.tgz#./genkit-dist/genkit-cli-0.0.5.tgz::hash=ed3c74&locator=telegram-bots%40workspace%3A."
   dependencies:
     "@asteasolutions/zod-to-openapi": "npm:^6.3.1"
     "@trpc/server": "npm:10.45.0"
@@ -7980,11 +7989,13 @@ __metadata:
     js-yaml: "npm:^4.1.0"
     json-schema: "npm:^0.4.0"
     open: "npm:^6.3.0"
+    uuid: "npm:^9.0.1"
     winston: "npm:^3.11.0"
     zod: "npm:^3.22.4"
+    zod-to-json-schema: "npm:^3.22.4"
   bin:
     genkit: dist/bin/genkit.js
-  checksum: 10c0/f9a8412f92442900e22d4c8beb64cab0b7a98aac38b5102d24b7d25c765ffbe7261c68f048f7d779b7d972e32f628b2947748e93e93b91b45581dcc19da26fac
+  checksum: 10c0/c41112c11c4e81a6d3691548eeb4092b37a34d19d06585129194c21a5e740d167bb78f8ae264f3a67a7a2c6dfa8caf7f9a1bba2fdd1394dfb878c8cb43199b55
   languageName: node
   linkType: hard
 
@@ -11083,6 +11094,23 @@ __metadata:
   version: 1.1.2
   resolution: "prelude-ls@npm:1.1.2"
   checksum: 10c0/7284270064f74e0bb7f04eb9bff7be677e4146417e599ccc9c1200f0f640f8b11e592d94eb1b18f7aa9518031913bb42bea9c86af07ba69902864e61005d6f18
+  languageName: node
+  linkType: hard
+
+"prettier-plugin-organize-imports@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "prettier-plugin-organize-imports@npm:3.2.4"
+  peerDependencies:
+    "@volar/vue-language-plugin-pug": ^1.0.4
+    "@volar/vue-typescript": ^1.0.4
+    prettier: ">=2.0"
+    typescript: ">=2.9"
+  peerDependenciesMeta:
+    "@volar/vue-language-plugin-pug":
+      optional: true
+    "@volar/vue-typescript":
+      optional: true
+  checksum: 10c0/c20afa9b379106839a273d53c83fef70920e8ae86939d4890a06c63da19440de411568793e716bafcdd96e5ba8e34233f2944ea53ecd6ac18ba1ec0fa05bb58b
   languageName: node
   linkType: hard
 
