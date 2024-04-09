@@ -1,8 +1,8 @@
-import { Message } from '@genkit-ai/ai/generate';
+import { Message } from '@genkit-ai/ai';
 import {
   CandidateData,
   defineModel,
-  GenerationRequest,
+  GenerateRequest,
   MessageData,
   modelRef,
   ModelReference,
@@ -19,18 +19,8 @@ const API_NAME_MAP: Record<string, string> = {
 };
 
 const AnthropicConfigSchema = z.object({
-  /**
-   * An object describing metadata about the request.
-   */
   metadata: z
     .object({
-      /**
-       * An external identifier for the user who is associated with the request.
-       *
-       * This should be a uuid, hash value, or other opaque identifier. Anthropic may use
-       * this id to help detect abuse. Do not include any identifying information such as
-       * name, email address, or phone number.
-       */
       user_id: z.string().optional(),
     })
     .optional(),
@@ -39,7 +29,7 @@ const AnthropicConfigSchema = z.object({
 export const claude3Opus = modelRef({
   name: 'anthropic/claude-3-opus',
   info: {
-    names: ['anthropic/claude-3-opus-20240229'],
+    versions: ['claude-3-opus-20240229'],
     label: 'Anthropic - Claude 3 Opus',
     supports: {
       multiturn: true,
@@ -54,7 +44,7 @@ export const claude3Opus = modelRef({
 export const claude3Sonnet = modelRef({
   name: 'anthropic/claude-3-sonnet',
   info: {
-    names: ['anthropic/claude-3-sonnet-20240229'],
+    versions: ['claude-3-sonnet-20240229'],
     label: 'Anthropic - Claude 3 Sonnet',
     supports: {
       multiturn: true,
@@ -69,7 +59,7 @@ export const claude3Sonnet = modelRef({
 export const claude3Haiku = modelRef({
   name: 'anthropic/claude-3-haiku',
   info: {
-    names: ['anthropic/claude-3-haiku-20240307'],
+    versions: ['claude-3-haiku-20240307'],
     label: 'Anthropic - Claude 3 Haiku',
     supports: {
       multiturn: true,
@@ -210,7 +200,7 @@ function fromAnthropicContentBlockChunk(
 
 export function toAnthropicRequestBody(
   modelName: string,
-  request: GenerationRequest,
+  request: GenerateRequest,
 ) {
   const model = SUPPORTED_CLAUDE_MODELS[modelName];
   if (!model) throw new Error(`Unsupported model: ${modelName}`);
@@ -254,7 +244,7 @@ export function claudeModel(name: string, client: Anthropic) {
     {
       name: modelId,
       ...model.info,
-      customOptionsType: SUPPORTED_CLAUDE_MODELS[name].configSchema,
+      configSchema: SUPPORTED_CLAUDE_MODELS[name].configSchema,
     },
     async (request, streamingCallback) => {
       let response: Anthropic.Message;

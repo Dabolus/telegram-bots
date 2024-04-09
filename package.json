@@ -22,25 +22,5 @@
   "workspaces": [
     "bots/*"
   ],
-  "packageManager": "yarn@4.1.1",
-  "resolutions": {
-    "@genkit-ai/ai": "file:./genkit-dist/genkit-ai-ai-0.0.5.tgz",
-    "@genkit-ai/common": "file:./genkit-dist/genkit-ai-common-0.0.5.tgz",
-    "@genkit-ai/dotprompt": "file:./genkit-dist/genkit-ai-dotprompt-0.0.5.tgz",
-    "@genkit-ai/flow": "file:./genkit-dist/genkit-ai-flow-0.0.5.tgz",
-    "@genkit-ai/plugin-chroma": "file:./genkit-dist/genkit-ai-plugin-chroma-0.0.5.tgz",
-    "@genkit-ai/plugin-dev-local-vectorstore": "file:./genkit-dist/genkit-ai-plugin-dev-local-vectorstore-0.0.5.tgz",
-    "@genkit-ai/plugin-firebase": "file:./genkit-dist/genkit-ai-plugin-firebase-0.0.5.tgz",
-    "@genkit-ai/plugin-gcp": "file:./genkit-dist/genkit-ai-plugin-gcp-0.0.5.tgz",
-    "@genkit-ai/plugin-google-genai": "file:./genkit-dist/genkit-ai-plugin-google-genai-0.0.5.tgz",
-    "@genkit-ai/plugin-ollama": "file:./genkit-dist/genkit-ai-plugin-ollama-0.0.5.tgz",
-    "@genkit-ai/plugin-openai": "file:./genkit-dist/genkit-ai-plugin-openai-0.0.5.tgz",
-    "@genkit-ai/plugin-pinecone": "file:./genkit-dist/genkit-ai-plugin-pinecone-0.0.5.tgz",
-    "@genkit-ai/plugin-ragas": "file:./genkit-dist/genkit-ai-plugin-ragas-0.0.4.tgz",
-    "@genkit-ai/plugin-vertex-ai": "patch:@genkit-ai/plugin-vertex-ai@file%3A./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%23./genkit-dist/genkit-ai-plugin-vertex-ai-0.0.5.tgz%3A%3Ahash=153492&locator=telegram-bots%2540workspace%253A.#~/.yarn/patches/@genkit-ai-plugin-vertex-ai-file-427273e72b.patch",
-    "@genkit-ai/tools-plugin-firebase": "file:./genkit-dist/genkit-ai-tools-plugin-firebase-0.0.5.tgz",
-    "@genkit-ai/tools-plugin-google-cloud": "file:./genkit-dist/genkit-ai-tools-plugin-google-cloud-0.0.5.tgz",
-    "@genkit-ai/tools-plugins": "file:./genkit-dist/genkit-ai-tools-plugins-0.0.5.tgz",
-    "genkit-cli": "file:./genkit-dist/genkit-cli-0.0.5.tgz"
-  }
+  "packageManager": "yarn@4.1.1"
 }

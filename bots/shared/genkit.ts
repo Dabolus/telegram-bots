@@ -1,11 +1,10 @@
 import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
-import { generate } from '@genkit-ai/ai/generate';
-import { MessageData } from '@genkit-ai/ai/model';
-import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/plugin-openai';
-import { geminiProVision, imagen2 } from '@genkit-ai/plugin-vertex-ai';
-import { vertexAI } from '@genkit-ai/plugin-vertex-ai';
-import { configureGenkit } from '@genkit-ai/common/config';
+import { generate } from '@genkit-ai/ai';
+import type { MessageData } from '@genkit-ai/ai/model';
+import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/openai';
+import { geminiProVision, imagen2, vertexAI } from '@genkit-ai/vertexai';
+import { configureGenkit } from '@genkit-ai/core';
 import { claude3Opus } from './genkit-plugins/anthropic/claude';
 import anthropic from './genkit-plugins/anthropic';
 
@@ -103,7 +102,13 @@ export const setupGenkit = ({
     configureGenkit({
       plugins: [
         openAI({ apiKey: openaiApiKey }),
-        vertexAI({ location, projectId }),
+        vertexAI({
+          location,
+          projectId,
+          googleAuth: {
+            scopes: 'https://www.googleapis.com/auth/cloud-platform',
+          },
+        }),
         anthropic({ apiKey: anthropicApiKey }),
       ],
       enableTracingAndMetrics: false,

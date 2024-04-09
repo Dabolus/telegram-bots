@@ -1,4 +1,4 @@
-import { genkitPlugin, Plugin } from '@genkit-ai/common/config';
+import { genkitPlugin, Plugin } from '@genkit-ai/core';
 import Anthropic from '@anthropic-ai/sdk';
 import {
   claude3Opus,
@@ -6,7 +6,7 @@ import {
   claude3Haiku,
   claudeModel,
   SUPPORTED_CLAUDE_MODELS,
-} from './claude';
+} from './claude.js';
 export { claude3Opus, claude3Sonnet, claude3Haiku };
 
 export interface PluginOptions {

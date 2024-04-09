@@ -20,6 +20,4 @@ layers/*/build
 !.yarn/sdks
 !.yarn/versions
 
-genkit-dist/
-
 service-account.json
