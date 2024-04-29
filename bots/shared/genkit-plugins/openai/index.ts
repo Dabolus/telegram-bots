@@ -11,7 +11,6 @@ import {
   gpt35Turbo,
   gpt4,
   gpt4Turbo,
-  gpt4Vision,
   gptModel,
   SUPPORTED_GPT_MODELS,
 } from './gpt.js';
@@ -20,7 +19,6 @@ export {
   gpt35Turbo,
   gpt4,
   gpt4Turbo,
-  gpt4Vision,
   textEmbedding3Large,
   textEmbedding3Small,
 };

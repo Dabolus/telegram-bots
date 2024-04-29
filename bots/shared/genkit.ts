@@ -4,13 +4,13 @@ import { generate } from '@genkit-ai/ai';
 import type { MessageData } from '@genkit-ai/ai/model';
 import { geminiProVision, imagen2, vertexAI } from '@genkit-ai/vertexai';
 import { configureGenkit } from '@genkit-ai/core';
-import openAI, { gpt4Vision, dallE3 } from './genkit-plugins/openai';
+import openAI, { gpt4Turbo, dallE3 } from './genkit-plugins/openai';
 import anthropic, { claude3Opus } from './genkit-plugins/anthropic';
 
 export const chatConfigs = {
   openai: {
     text: {
-      model: gpt4Vision,
+      model: gpt4Turbo,
       displayName: 'GPT-4 Turbo with Vision',
       maxHistoryTokens: 128000,
       maxOutputTokens: 4096,

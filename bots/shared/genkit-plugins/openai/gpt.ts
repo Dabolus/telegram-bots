@@ -51,34 +51,13 @@ export const OpenAiConfigSchema = z.object({
 export const gpt4Turbo = modelRef({
   name: 'openai/gpt-4-turbo',
   info: {
-    versions: [
-      'gpt-4-turbo',
-      'gpt-4-turbo-2024-04-09',
-      'gpt-4-turbo-preview',
-      'gpt-4-0125-preview',
-      'gpt-4-1106-prevew',
-    ],
+    versions: ['gpt-4-turbo', 'gpt-4-turbo-2024-04-09'],
     label: 'OpenAI - GPT-4 Turbo',
     supports: {
       multiturn: true,
       tools: true,
-      media: false,
-      output: ['text', 'json'],
-    },
-  },
-  configSchema: OpenAiConfigSchema,
-});
-
-export const gpt4Vision = modelRef({
-  name: 'openai/gpt-4-vision',
-  info: {
-    versions: ['gpt-4-vision-preview', 'gpt-4-1106-vision-preview'],
-    label: 'OpenAI - GPT-4 Vision',
-    supports: {
-      multiturn: true,
-      tools: false,
       media: true,
-      output: ['text'],
+      output: ['text', 'json'],
     },
   },
   configSchema: OpenAiConfigSchema,
@@ -119,7 +98,6 @@ export const SUPPORTED_GPT_MODELS: Record<
   ModelReference<z.ZodTypeAny>
 > = {
   'gpt-4-turbo': gpt4Turbo,
-  'gpt-4-vision': gpt4Vision,
   'gpt-4': gpt4,
   'gpt-3.5-turbo': gpt35Turbo,
 };
