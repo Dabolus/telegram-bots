@@ -2,11 +2,10 @@ import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 import { generate } from '@genkit-ai/ai';
 import type { MessageData } from '@genkit-ai/ai/model';
-import { openAI, gpt4Vision, dallE3 } from '@genkit-ai/openai';
 import { geminiProVision, imagen2, vertexAI } from '@genkit-ai/vertexai';
 import { configureGenkit } from '@genkit-ai/core';
-import { claude3Opus } from './genkit-plugins/anthropic/claude';
-import anthropic from './genkit-plugins/anthropic';
+import openAI, { gpt4Vision, dallE3 } from './genkit-plugins/openai';
+import anthropic, { claude3Opus } from './genkit-plugins/anthropic';
 
 export const chatConfigs = {
   openai: {
