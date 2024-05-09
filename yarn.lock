@@ -15,6 +15,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anthropic-ai/sdk@npm:>=0.14 <1, @anthropic-ai/sdk@npm:^0.20.9":
+  version: 0.20.9
+  resolution: "@anthropic-ai/sdk@npm:0.20.9"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+    web-streams-polyfill: "npm:^3.2.1"
+  checksum: 10c0/5a26f4e2506c2408c30b4a83cc6fcf670aa68c1e99676fa1086e5747c752840467f502cbbef247fcc1e316c5074de805a53ff53e239551cc0419f4c91a43fbf2
+  languageName: node
+  linkType: hard
+
 "@anthropic-ai/sdk@npm:^0.20.7":
   version: 0.20.7
   resolution: "@anthropic-ai/sdk@npm:0.20.7"
@@ -31,6 +47,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anthropic-ai/vertex-sdk@npm:^0.3.5":
+  version: 0.3.6
+  resolution: "@anthropic-ai/vertex-sdk@npm:0.3.6"
+  dependencies:
+    "@anthropic-ai/sdk": "npm:>=0.14 <1"
+    google-auth-library: "npm:^9.4.2"
+  checksum: 10c0/62d46d3d337167741daa9a3233d3e0bb906b2a15af587a6d343e32072d6d61a0a671c8791fe3ecb9e7a3ea23c927fb75affab85127a4ec3f12f4673926b45b81
+  languageName: node
+  linkType: hard
+
 "@apidevtools/json-schema-ref-parser@npm:^9.1.2":
   version: 9.1.2
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.1.2"
@@ -43,14 +69,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asteasolutions/zod-to-openapi@npm:^6.3.1":
-  version: 6.4.0
-  resolution: "@asteasolutions/zod-to-openapi@npm:6.4.0"
+"@asteasolutions/zod-to-openapi@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@asteasolutions/zod-to-openapi@npm:7.0.0"
   dependencies:
     openapi3-ts: "npm:^4.1.2"
   peerDependencies:
     zod: ^3.20.2
-  checksum: 10c0/da875b18e5b5f730a955bd58c805e44aa69f3ea377c54a35a4c97b9b70f9133b03c309338d8bdf0f464e3606c0d2d3a2110923eadd8d05041847a899bc8f6ea3
+  checksum: 10c0/120499b6d997bd3fa21b4e6600f42d6b9201e2a85a7656b722a02c712d6a9fd7c474bf62ad31f76646fbd129d75331408ad3ed5c350c1436856ef306966a33e1
   languageName: node
   linkType: hard
 
@@ -1059,14 +1085,16 @@ __metadata:
     "@anthropic-ai/sdk": "npm:^0.20.7"
     "@aws-sdk/client-dynamodb": "npm:^3.564.0"
     "@aws-sdk/lib-dynamodb": "npm:^3.564.0"
-    "@genkit-ai/ai": "npm:0.5.0-rc.5"
-    "@genkit-ai/core": "npm:0.5.0-rc.5"
-    "@genkit-ai/vertexai": "npm:0.5.0-rc.5"
+    "@genkit-ai/ai": "npm:0.5.0-rc.9"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
+    "@genkit-ai/vertexai": "npm:0.5.0-rc.9"
     "@google-cloud/text-to-speech": "npm:^5.2.0"
     "@types/aws-lambda": "npm:^8.10.137"
     "@types/node-telegram-bot-api": "npm:^0.64.6"
     "@types/sharp": "npm:^0.32.0"
-    genkit: "npm:0.5.0-rc.5"
+    genkit: "npm:0.5.0-rc.9"
+    genkitx-anthropic: "npm:^0.1.0"
+    genkitx-openai: "npm:^0.1.0"
     gptoken: "npm:^0.1.0"
     node-telegram-bot-api: "npm:^0.65.1"
     openai: "npm:^4.38.5"
@@ -1353,12 +1381,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/busboy@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@fastify/busboy@npm:1.2.1"
-  dependencies:
-    text-decoding: "npm:^1.0.0"
-  checksum: 10c0/fe13effa7a7a2aa270ef62586cd8d04339036b10ffa1d3d6a883e502fcc1bdc6d8de1bd7ac9d46ef7718bed3b1202cac058e281f5053dee262af7538243cb780
+"@fastify/busboy@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "@fastify/busboy@npm:2.1.1"
+  checksum: 10c0/6f8027a8cba7f8f7b736718b013f5a38c0476eea67034c94a0d3c375e2b114366ad4419e6a6fa7ffc2ef9c6d3e0435d76dd584a7a1cbac23962fda7650b579e3
   languageName: node
   linkType: hard
 
@@ -1450,24 +1476,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@genkit-ai/ai@npm:0.5.0-rc.5":
-  version: 0.5.0-rc.5
-  resolution: "@genkit-ai/ai@npm:0.5.0-rc.5"
+"@genkit-ai/ai@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "@genkit-ai/ai@npm:0.5.0-rc.9"
   dependencies:
-    "@genkit-ai/core": "npm:0.5.0-rc.5"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
     "@opentelemetry/api": "npm:^1.7.0"
     "@types/node": "npm:^20.11.19"
     front-matter: "npm:^4.0.2"
+    json5: "npm:^2.2.3"
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.21.4"
-  checksum: 10c0/cc34d8b3535516c242386c4e878ef670abc93f7de2daf0ca3050df22d2b4441826dc9109c96582e1f03746d5d0b06b7929fd0886bdfb657f5e6cd8583b084c6a
+  checksum: 10c0/3b48ca1760e6c14640a7e016a4aef982a6f3f2e3cdab5bdcec0908e63d243e7d6fe33ac45646cfb6650722d6bc35ee31fd6afa6d5b33e844a08cbd716e9e4675
   languageName: node
   linkType: hard
 
-"@genkit-ai/core@npm:0.5.0-rc.5":
-  version: 0.5.0-rc.5
-  resolution: "@genkit-ai/core@npm:0.5.0-rc.5"
+"@genkit-ai/core@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "@genkit-ai/core@npm:0.5.0-rc.9"
   dependencies:
     "@google-cloud/firestore": "npm:^7.5.0"
     "@google-cloud/monitoring": "npm:^4.0.0"
@@ -1487,28 +1514,72 @@ __metadata:
     winston: "npm:^3.12.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.22.4"
-  checksum: 10c0/c4a2ee9c0c737eb1450df507ccb59eac71c137ac4ec0b6243bf4f48dddfbec45a22f9b88581f274dd1a474a1c57181df31310bd4332b22510bd0d54ceccf82db
+  checksum: 10c0/14ea8f04bab10fd0122f4cc72409bbe9de20d44cf158acbf83a1ee3e0360bdc2a0c6bb687207195e4b307403fa028567f440a031e3a3325657cee31f36c45a45
   languageName: node
   linkType: hard
 
-"@genkit-ai/tools-plugins@npm:0.5.0-rc.5":
-  version: 0.5.0-rc.5
-  resolution: "@genkit-ai/tools-plugins@npm:0.5.0-rc.5"
-  checksum: 10c0/5d72aaefbae39d3ddabbea9b014af55a87636e0d410095409b83b359c8141f5867c62140bfcb5656ae6815f31c3f3c37fbc779d68350af38a9068c16501aa3c6
-  languageName: node
-  linkType: hard
-
-"@genkit-ai/vertexai@npm:0.5.0-rc.5":
-  version: 0.5.0-rc.5
-  resolution: "@genkit-ai/vertexai@npm:0.5.0-rc.5"
+"@genkit-ai/flow@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "@genkit-ai/flow@npm:0.5.0-rc.9"
   dependencies:
-    "@genkit-ai/ai": "npm:0.5.0-rc.5"
-    "@genkit-ai/core": "npm:0.5.0-rc.5"
-    "@google-cloud/vertexai": "npm:^0.5.0"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
+    "@google-cloud/firestore": "npm:^7.6.0"
+    "@opentelemetry/api": "npm:^1.7.0"
+    "@types/cors": "npm:^2.8.17"
+    body-parser: "npm:^1.20.2"
+    cors: "npm:^2.8.5"
+    express: "npm:^4.19.2"
+    firebase-admin: "npm:^12.1.0"
+    firebase-functions: "npm:^4.3.1"
+    uuid: "npm:^9.0.1"
+    zod: "npm:^3.22.4"
+    zod-to-json-schema: "npm:^3.21.4"
+  checksum: 10c0/3a7ccacaa4a9ca6901be526ff7b5c3c4109c221b6e9813b37c1cb3b1d060de75caa66244426fd08f34a9dbff95b0661483ae01f67c5afc4fa1c8e89261d7b236
+  languageName: node
+  linkType: hard
+
+"@genkit-ai/tools-common@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "@genkit-ai/tools-common@npm:0.5.0-rc.9"
+  dependencies:
+    "@asteasolutions/zod-to-openapi": "npm:^7.0.0"
+    "@trpc/server": "npm:10.45.0"
+    adm-zip: "npm:^0.5.12"
+    axios: "npm:^1.6.7"
+    body-parser: "npm:^1.20.2"
+    chokidar: "npm:^3.5.3"
+    colorette: "npm:^2.0.20"
+    commander: "npm:^11.1.0"
+    configstore: "npm:^5.0.1"
+    express: "npm:^4.18.2"
+    get-port: "npm:5.1.1"
+    inquirer: "npm:^8.2.0"
+    js-yaml: "npm:^4.1.0"
+    json-2-csv: "npm:^5.5.1"
+    open: "npm:^6.3.0"
+    uuid: "npm:^9.0.1"
+    winston: "npm:^3.11.0"
+    yaml: "npm:^2.4.1"
+    zod: "npm:^3.22.4"
+    zod-to-json-schema: "npm:^3.22.4"
+  checksum: 10c0/cae9d7b9c6b3e313ba3e1b7a6a102fdee9a597f99f3af40153a4393283960e1cdc2e357dc6d6e2d767996fad3f9fb1d7e2b9c79f56df25ab9852de78a0f26a19
+  languageName: node
+  linkType: hard
+
+"@genkit-ai/vertexai@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "@genkit-ai/vertexai@npm:0.5.0-rc.9"
+  dependencies:
+    "@anthropic-ai/sdk": "npm:^0.20.7"
+    "@anthropic-ai/vertex-sdk": "npm:^0.3.5"
+    "@genkit-ai/ai": "npm:0.5.0-rc.9"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
+    "@genkit-ai/flow": "npm:0.5.0-rc.9"
+    "@google-cloud/vertexai": "npm:^1.1.0"
     google-auth-library: "npm:^9.6.3"
     node-fetch: "npm:^3.3.2"
     zod: "npm:^3.22.4"
-  checksum: 10c0/9e4a44f57747c16b5c0393da0af87bd32dcd387014ae4e88846b18fc63c2be77f38be1b48bbc85fdd6ff862b6044501ed58b67343d03d5697c9fa1245b75d77f
+  checksum: 10c0/7c5aaf5c305784837321206534efb2fed3deb9cf4ecad0903da6cf9c2e4ba23c6fbb0833eae740bdc75785c22332154f27c30dcb7bcb0c10942f1e20cd625338
   languageName: node
   linkType: hard
 
@@ -1555,6 +1626,18 @@ __metadata:
     google-gax: "npm:^4.3.1"
     protobufjs: "npm:^7.2.6"
   checksum: 10c0/1cdcedf4d607d26c6bf1fa9215ba567fbc34e0bb65d334a36664b564f52c85f0a6e8e0866ac5d980a0d645639a15e30ef7d8b0bc2e6f58a9b3f469438792b5a0
+  languageName: node
+  linkType: hard
+
+"@google-cloud/firestore@npm:^7.6.0":
+  version: 7.7.0
+  resolution: "@google-cloud/firestore@npm:7.7.0"
+  dependencies:
+    fast-deep-equal: "npm:^3.1.1"
+    functional-red-black-tree: "npm:^1.0.1"
+    google-gax: "npm:^4.3.3"
+    protobufjs: "npm:^7.2.6"
+  checksum: 10c0/b33b1b19cc54bdc5432208c692b606dd8b63a3147b50d19fd9f9baed103b6502c2006c572320cb346617eb01b2c79ab7f783f7fac7acf3f17425d9a2f510a3d5
   languageName: node
   linkType: hard
 
@@ -1714,12 +1797,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@google-cloud/vertexai@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@google-cloud/vertexai@npm:0.5.0"
+"@google-cloud/vertexai@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@google-cloud/vertexai@npm:1.1.0"
   dependencies:
     google-auth-library: "npm:^9.1.0"
-  checksum: 10c0/6433c7f62aefb3b687db42a416be502a431817e6b7e067ac808b3c55b0b49fbecee6e680bc3e0596cc9b34594d95540782608713d7268fa32cbfba81304b2bd6
+  checksum: 10c0/0b66f1fed509d2c8a8d1d1c15a6cc9a91d4624b30ad7bc44bf4fb5b29c0e2be265f7f9f6b15719385bfaa3a374750ef63d6cf861b5fb67eb2fd9ad1d597a349c
   languageName: node
   linkType: hard
 
@@ -1742,6 +1825,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@grpc/grpc-js@npm:~1.10.3":
+  version: 1.10.7
+  resolution: "@grpc/grpc-js@npm:1.10.7"
+  dependencies:
+    "@grpc/proto-loader": "npm:^0.7.13"
+    "@js-sdsl/ordered-map": "npm:^4.4.2"
+  checksum: 10c0/77a59af3780fa9ef90c6342e4d86afd2334524de44688adbe2f8365c87185e93ec9909c4f70b37d7055d27164950878781d5877596aff817e9c0961a3a0ef034
+  languageName: node
+  linkType: hard
+
 "@grpc/proto-loader@npm:^0.7.0, @grpc/proto-loader@npm:^0.7.10":
   version: 0.7.12
   resolution: "@grpc/proto-loader@npm:0.7.12"
@@ -1753,6 +1846,20 @@ __metadata:
   bin:
     proto-loader-gen-types: build/bin/proto-loader-gen-types.js
   checksum: 10c0/d026236f309e24fd5b840b9aefca49eb4002f270821e8194d0b622013c421b54e04df5f6b8f0797121a1e1141811a4ef088120690aea1e873701d277cd5b47fa
+  languageName: node
+  linkType: hard
+
+"@grpc/proto-loader@npm:^0.7.13":
+  version: 0.7.13
+  resolution: "@grpc/proto-loader@npm:0.7.13"
+  dependencies:
+    lodash.camelcase: "npm:^4.3.0"
+    long: "npm:^5.0.0"
+    protobufjs: "npm:^7.2.5"
+    yargs: "npm:^17.7.2"
+  bin:
+    proto-loader-gen-types: build/bin/proto-loader-gen-types.js
+  checksum: 10c0/dc8ed7aa1454c15e224707cc53d84a166b98d76f33606a9f334c7a6fb1aedd3e3614dcd2c2b02a6ffaf140587d19494f93b3a56346c6c2e26bc564f6deddbbf3
   languageName: node
   linkType: hard
 
@@ -3183,6 +3290,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cors@npm:^2.8.17, @types/cors@npm:^2.8.5":
+  version: 2.8.17
+  resolution: "@types/cors@npm:2.8.17"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/457364c28c89f3d9ed34800e1de5c6eaaf344d1bb39af122f013322a50bc606eb2aa6f63de4e41a7a08ba7ef454473926c94a830636723da45bf786df032696d
+  languageName: node
+  linkType: hard
+
 "@types/duplexify@npm:*":
   version: 3.6.4
   resolution: "@types/duplexify@npm:3.6.4"
@@ -3199,7 +3315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:^4.17.33":
+"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.33":
   version: 4.19.0
   resolution: "@types/express-serve-static-core@npm:4.19.0"
   dependencies:
@@ -3220,6 +3336,17 @@ __metadata:
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: 10c0/12e562c4571da50c7d239e117e688dc434db1bac8be55613294762f84fd77fbd0658ccd553c7d3ab02408f385bc93980992369dd30e2ecd2c68c358e6af8fabf
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:4.17.3":
+  version: 4.17.3
+  resolution: "@types/express@npm:4.17.3"
+  dependencies:
+    "@types/body-parser": "npm:*"
+    "@types/express-serve-static-core": "npm:*"
+    "@types/serve-static": "npm:*"
+  checksum: 10c0/68562d955a3970dbfb223d3386456a7db3ee1359e67535d9caaba969772e57a5bd2ce1e863b0a3ad394f2ec34dff865a05e0e8db34bb64b4bb9eff2d6120aa7a
   languageName: node
   linkType: hard
 
@@ -3495,7 +3622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adm-zip@npm:^0.5.5":
+"adm-zip@npm:^0.5.12, adm-zip@npm:^0.5.5":
   version: 0.5.12
   resolution: "adm-zip@npm:0.5.12"
   checksum: 10c0/fca2893b416bfcbee8b371a403f4d2e980a3c1055ce7b9b0b2ac8540c8efe6bbb27cc63ddf64ff6e6ed40c84fcb1ede7e95d230e7a567025e03f1044efbf6be0
@@ -4839,6 +4966,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cors@npm:^2.8.5":
+  version: 2.8.5
+  resolution: "cors@npm:2.8.5"
+  dependencies:
+    object-assign: "npm:^4"
+    vary: "npm:^1"
+  checksum: 10c0/373702b7999409922da80de4a61938aabba6929aea5b6fd9096fefb9e8342f626c0ebd7507b0e8b0b311380744cc985f27edebc0a26e0ddb784b54e1085de761
+  languageName: node
+  linkType: hard
+
 "crc-32@npm:^1.2.0":
   version: 1.2.2
   resolution: "crc-32@npm:1.2.2"
@@ -5064,6 +5201,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deeks@npm:3.1.0":
+  version: 3.1.0
+  resolution: "deeks@npm:3.1.0"
+  checksum: 10c0/3173ca28466cf31d550248c034c5466d93c5aecb8ee8ca547a2c9f471e62af4ebed7456c3310503be901d982867071b4411030a6b724528739895aee1dc2b482
+  languageName: node
+  linkType: hard
+
 "deep-extend@npm:^0.6.0":
   version: 0.6.0
   resolution: "deep-extend@npm:0.6.0"
@@ -5191,6 +5335,13 @@ __metadata:
   dependencies:
     path-type: "npm:^4.0.0"
   checksum: 10c0/dcac00920a4d503e38bb64001acb19df4efc14536ada475725e12f52c16777afdee4db827f55f13a908ee7efc0cb282e2e3dbaeeb98c0993dd93d1802d3bf00c
+  languageName: node
+  linkType: hard
+
+"doc-path@npm:4.1.1":
+  version: 4.1.1
+  resolution: "doc-path@npm:4.1.1"
+  checksum: 10c0/5a908c4d0c8431fa60349cad1d5f0775cf9825d4d85e6bd7f55925c01d6278be8dd04f6858b8f8fdc8ea992a63545595ea77a2282551ff95538608f382b46f8a
   languageName: node
   linkType: hard
 
@@ -5812,7 +5963,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.18.2, express@npm:^4.19.2":
+"express@npm:^4.17.1, express@npm:^4.18.2, express@npm:^4.19.2":
   version: 4.19.2
   resolution: "express@npm:4.19.2"
   dependencies:
@@ -5925,6 +6076,17 @@ __metadata:
   version: 1.4.1
   resolution: "extsprintf@npm:1.4.1"
   checksum: 10c0/e10e2769985d0e9b6c7199b053a9957589d02e84de42832c295798cb422a025e6d4a92e0259c1fb4d07090f5bfde6b55fd9f880ac5855bd61d775f8ab75a7ab0
+  languageName: node
+  linkType: hard
+
+"farmhash@npm:^3.3.0":
+  version: 3.3.1
+  resolution: "farmhash@npm:3.3.1"
+  dependencies:
+    node-addon-api: "npm:^5.1.0"
+    node-gyp: "npm:latest"
+    prebuild-install: "npm:^7.1.2"
+  checksum: 10c0/3633402d6989d55536b71742db7bf3b3b883d6729b6ff8f001701b733f8d8ccaf393b2b0d2b650c9a04fb3b24185ac79246800f6fa6b0e2fb891dc39aaa424f9
   languageName: node
   linkType: hard
 
@@ -6176,18 +6338,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-admin@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "firebase-admin@npm:12.0.0"
+"firebase-admin@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "firebase-admin@npm:12.1.0"
   dependencies:
-    "@fastify/busboy": "npm:^1.2.1"
+    "@fastify/busboy": "npm:^2.1.0"
     "@firebase/database-compat": "npm:^1.0.2"
     "@firebase/database-types": "npm:^1.0.0"
     "@google-cloud/firestore": "npm:^7.1.0"
     "@google-cloud/storage": "npm:^7.7.0"
     "@types/node": "npm:^20.10.3"
+    farmhash: "npm:^3.3.0"
     jsonwebtoken: "npm:^9.0.0"
     jwks-rsa: "npm:^3.0.1"
+    long: "npm:^5.2.3"
     node-forge: "npm:^1.3.1"
     uuid: "npm:^9.0.0"
   dependenciesMeta:
@@ -6195,7 +6359,24 @@ __metadata:
       optional: true
     "@google-cloud/storage":
       optional: true
-  checksum: 10c0/70e619250d1156b168da29312416932f91812a795b5807575b520d51d840d7dcfc1697799f761b63f084a9c284c616c0b6deadcdb1e3d208dd8dbc0a9a1853e2
+  checksum: 10c0/55661aa9418477c0698f726af17427412ffa38d373a27b4198262ea463191d6f998c0a703386a65416cd9e4d6390ea87a10b0bd60d70704cf083e930fd0ee5fd
+  languageName: node
+  linkType: hard
+
+"firebase-functions@npm:^4.3.1":
+  version: 4.9.0
+  resolution: "firebase-functions@npm:4.9.0"
+  dependencies:
+    "@types/cors": "npm:^2.8.5"
+    "@types/express": "npm:4.17.3"
+    cors: "npm:^2.8.5"
+    express: "npm:^4.17.1"
+    protobufjs: "npm:^7.2.2"
+  peerDependencies:
+    firebase-admin: ^10.0.0 || ^11.0.0 || ^12.0.0
+  bin:
+    firebase-functions: lib/bin/firebase-functions.js
+  checksum: 10c0/c430f5b2eaacdc5e5795eaa957b64ff1fa42eb0cb3a176090902c60f87a0568dca95d5e68f9aa21fad69ad3afa1a9ca3fb8a955cc2d3dbe73f8f0384964fe3a3
   languageName: node
   linkType: hard
 
@@ -6553,35 +6734,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"genkit@npm:0.5.0-rc.5":
-  version: 0.5.0-rc.5
-  resolution: "genkit@npm:0.5.0-rc.5"
+"genkit@npm:0.5.0-rc.9":
+  version: 0.5.0-rc.9
+  resolution: "genkit@npm:0.5.0-rc.9"
   dependencies:
-    "@asteasolutions/zod-to-openapi": "npm:^6.3.1"
-    "@genkit-ai/tools-plugins": "npm:0.5.0-rc.5"
-    "@trpc/server": "npm:10.45.0"
-    axios: "npm:^1.6.7"
-    body-parser: "npm:^1.20.2"
-    chokidar: "npm:^3.5.3"
+    "@genkit-ai/tools-common": "npm:0.5.0-rc.9"
     colorette: "npm:^2.0.20"
     commander: "npm:^11.1.0"
-    configstore: "npm:^5.0.1"
-    express: "npm:^4.18.2"
     extract-zip: "npm:^2.0.1"
-    firebase-admin: "npm:^12.0.0"
-    get-port: "npm:5.1.1"
-    inquirer: "npm:^8.2.0"
-    js-yaml: "npm:^4.1.0"
-    json-schema: "npm:^0.4.0"
-    open: "npm:^6.3.0"
-    uuid: "npm:^9.0.1"
-    winston: "npm:^3.11.0"
-    yaml: "npm:^2.4.1"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.22.4"
   bin:
     genkit: dist/bin/genkit.js
-  checksum: 10c0/7a180aa1c2e1946a2ac39cd343be6180c34e6e55bf899e05f43f14084f6809ea18516c24fdb63065b25c09365bd48a8c3e86ee9c7b4dd8d08e5a778e255f9b4e
+  checksum: 10c0/1c478480f1b82c214d79b70a300a0b90569d67939c3ec645e2712302d8b29584b1e4d4a4ca0e9c9c9b4753ca429038fd89fd3f65d6b1c3d28207c71ea3bcaf59
+  languageName: node
+  linkType: hard
+
+"genkitx-anthropic@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "genkitx-anthropic@npm:0.1.0"
+  dependencies:
+    "@anthropic-ai/sdk": "npm:^0.20.9"
+    "@genkit-ai/ai": "npm:0.5.0-rc.9"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
+    zod: "npm:^3.23.8"
+  checksum: 10c0/7c9e38e88c03f23ba4036ea68256bdc335768fef49d93a36b1c6413c05eaae3358d541122439e1637ecc4d8fadc0e5bece1cef1a56c5b5ed198caa37a912a5ce
+  languageName: node
+  linkType: hard
+
+"genkitx-openai@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "genkitx-openai@npm:0.1.0"
+  dependencies:
+    "@genkit-ai/ai": "npm:0.5.0-rc.9"
+    "@genkit-ai/core": "npm:0.5.0-rc.9"
+    openai: "npm:^4.43.0"
+    zod: "npm:^3.23.8"
+  checksum: 10c0/848937d06eeeffe65d18271ae65d60bd86a12669e8ca42f90e952566f07864a4fc75d0f38c7be0bc0cb892c5cdc00a2cc5c1c227e658e8cecd9d673ed227350d
   languageName: node
   linkType: hard
 
@@ -6793,6 +6982,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"google-auth-library@npm:^9.4.2":
+  version: 9.9.0
+  resolution: "google-auth-library@npm:9.9.0"
+  dependencies:
+    base64-js: "npm:^1.3.0"
+    ecdsa-sig-formatter: "npm:^1.0.11"
+    gaxios: "npm:^6.1.1"
+    gcp-metadata: "npm:^6.1.0"
+    gtoken: "npm:^7.0.0"
+    jws: "npm:^4.0.0"
+  checksum: 10c0/4dcd2b3542fb8cf68db00c46b65a386bdfdc3e4f6e626197e497fe9fbc1b92d9ea1ff2c28fcfe9653a79828e5cc90f904afbb48a6b189e19ea54d209c71efbd6
+  languageName: node
+  linkType: hard
+
 "google-gax@npm:^4.0.3, google-gax@npm:^4.3.1":
   version: 4.3.2
   resolution: "google-gax@npm:4.3.2"
@@ -6810,6 +7013,26 @@ __metadata:
     retry-request: "npm:^7.0.0"
     uuid: "npm:^9.0.1"
   checksum: 10c0/6c840f5f07e453d5a3aeec4eef65dead10fcd95d1432fd46494833ab46803f3c5398312ebfeb2d1de26367d7770146cf57d4c3f4d2864435be5b9c2999e37945
+  languageName: node
+  linkType: hard
+
+"google-gax@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "google-gax@npm:4.3.3"
+  dependencies:
+    "@grpc/grpc-js": "npm:~1.10.3"
+    "@grpc/proto-loader": "npm:^0.7.0"
+    "@types/long": "npm:^4.0.0"
+    abort-controller: "npm:^3.0.0"
+    duplexify: "npm:^4.0.0"
+    google-auth-library: "npm:^9.3.0"
+    node-fetch: "npm:^2.6.1"
+    object-hash: "npm:^3.0.0"
+    proto3-json-serializer: "npm:^2.0.0"
+    protobufjs: "npm:7.2.6"
+    retry-request: "npm:^7.0.0"
+    uuid: "npm:^9.0.1"
+  checksum: 10c0/08acc495345c6d14cf3f9381fc11b8ed00b3b9c86def4fd0edb16e3a393db19d1ceae06abab4cef82f849d87eb47f7662737a8d71bbf088a89eeac32b17ae650
   languageName: node
   linkType: hard
 
@@ -7745,6 +7968,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-2-csv@npm:^5.5.1":
+  version: 5.5.1
+  resolution: "json-2-csv@npm:5.5.1"
+  dependencies:
+    deeks: "npm:3.1.0"
+    doc-path: "npm:4.1.1"
+  checksum: 10c0/9cd0f9b1a552588cfa2cc921012a19bfa01f143b9c7f0e22623c921810ec7958ef5f0869966712d50fc8c9ed8d7de97e81f0f9d5550ac1c3b0671714f06b4bb9
+  languageName: node
+  linkType: hard
+
 "json-bigint@npm:^1.0.0":
   version: 1.0.0
   resolution: "json-bigint@npm:1.0.0"
@@ -7814,6 +8047,15 @@ __metadata:
   version: 5.0.1
   resolution: "json-stringify-safe@npm:5.0.1"
   checksum: 10c0/7dbf35cd0411d1d648dceb6d59ce5857ec939e52e4afc37601aa3da611f0987d5cee5b38d58329ceddf3ed48bd7215229c8d52059ab01f2444a338bf24ed0f37
+  languageName: node
+  linkType: hard
+
+"json5@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "json5@npm:2.2.3"
+  bin:
+    json5: lib/cli.js
+  checksum: 10c0/5a04eed94810fa55c5ea138b2f7a5c12b97c3750bc63d11e511dcecbfef758003861522a070c2272764ee0f4e3e323862f386945aeb5b85b87ee43f084ba586c
   languageName: node
   linkType: hard
 
@@ -8173,7 +8415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"long@npm:^5.0.0":
+"long@npm:^5.0.0, long@npm:^5.2.3":
   version: 5.2.3
   resolution: "long@npm:5.2.3"
   checksum: 10c0/6a0da658f5ef683b90330b1af76f06790c623e148222da9d75b60e266bbf88f803232dd21464575681638894a84091616e7f89557aa087fd14116c0f4e0e43d9
@@ -8714,6 +8956,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "node-addon-api@npm:5.1.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/0eb269786124ba6fad9df8007a149e03c199b3e5a3038125dfb3e747c2d5113d406a4e33f4de1ea600aa2339be1f137d55eba1a73ee34e5fff06c52a5c296d1d
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^6.1.0":
   version: 6.1.0
   resolution: "node-addon-api@npm:6.1.0"
@@ -8857,7 +9108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
+"object-assign@npm:^4, object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: 10c0/1f4df9945120325d041ccf7b86f31e8bcc14e73d29171e37a7903050e96b81323784ec59f93f102ec635bcf6fa8034ba3ea0a8c7e69fa202b87ae3b6cec5a414
@@ -8994,6 +9245,24 @@ __metadata:
   bin:
     openai: bin/cli
   checksum: 10c0/2145b54debf87c7c92b08cd04bfe510130011adbcfa03f36363a8539c88c040d2eb15f734a92173e23a8dfd92d8ba78fa3954ea6c44f1d5b450cdac50f26aea8
+  languageName: node
+  linkType: hard
+
+"openai@npm:^4.43.0":
+  version: 4.43.0
+  resolution: "openai@npm:4.43.0"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+    web-streams-polyfill: "npm:^3.2.1"
+  bin:
+    openai: bin/cli
+  checksum: 10c0/bd921a5fbc311e2e2f4fec0650248d39d882f13a39bf2d4c1f6861c6ebfda0b8ffb63b738229031d570160627a6beaa4ce9a505493d031b090179d32d9c2b50f
   languageName: node
   linkType: hard
 
@@ -9291,7 +9560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prebuild-install@npm:^7.1.1":
+"prebuild-install@npm:^7.1.1, prebuild-install@npm:^7.1.2":
   version: 7.1.2
   resolution: "prebuild-install@npm:7.1.2"
   dependencies:
@@ -9372,7 +9641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:7.2.6, protobufjs@npm:^7.2.3, protobufjs@npm:^7.2.4, protobufjs@npm:^7.2.5, protobufjs@npm:^7.2.6":
+"protobufjs@npm:7.2.6, protobufjs@npm:^7.2.2, protobufjs@npm:^7.2.3, protobufjs@npm:^7.2.4, protobufjs@npm:^7.2.5, protobufjs@npm:^7.2.6":
   version: 7.2.6
   resolution: "protobufjs@npm:7.2.6"
   dependencies:
@@ -10977,13 +11246,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"text-decoding@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "text-decoding@npm:1.0.0"
-  checksum: 10c0/290dbd6111f39a4020b3e2384de614f90051eff3cd11176329fda0a40ac0b0a07e6820b9aeb4b0b7c2cc7869b62cd3b25944c71e9e16b628bcf57299ab84e311
-  languageName: node
-  linkType: hard
-
 "text-hex@npm:1.0.x":
   version: 1.0.0
   resolution: "text-hex@npm:1.0.0"
@@ -11497,7 +11759,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vary@npm:~1.1.2":
+"vary@npm:^1, vary@npm:~1.1.2":
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: 10c0/f15d588d79f3675135ba783c91a4083dcd290a2a5be9fcb6514220a1634e23df116847b1cc51f66bfb0644cf9353b2abb7815ae499bab06e46dd33c1a6bf1f4f
@@ -11927,5 +12189,12 @@ __metadata:
   version: 3.22.4
   resolution: "zod@npm:3.22.4"
   checksum: 10c0/7578ab283dac0eee66a0ad0fc4a7f28c43e6745aadb3a529f59a4b851aa10872b3890398b3160f257f4b6817b4ce643debdda4fb21a2c040adda7862cab0a587
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.23.8":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69
   languageName: node
   linkType: hard

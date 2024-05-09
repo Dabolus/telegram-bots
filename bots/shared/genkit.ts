@@ -4,8 +4,8 @@ import { generate } from '@genkit-ai/ai';
 import type { MessageData } from '@genkit-ai/ai/model';
 import { geminiProVision, imagen2, vertexAI } from '@genkit-ai/vertexai';
 import { configureGenkit } from '@genkit-ai/core';
-import openAI, { gpt4Turbo, dallE3 } from './genkit-plugins/openai';
-import anthropic, { claude3Opus } from './genkit-plugins/anthropic';
+import { openAI, gpt4Turbo, dallE3 } from 'genkitx-openai';
+import { anthropic, claude3Opus } from 'genkitx-anthropic';
 
 export const chatConfigs = {
   openai: {
