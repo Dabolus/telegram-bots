@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
 import { generate } from '@genkit-ai/ai';
 import type { MessageData } from '@genkit-ai/ai/model';
-import { geminiProVision, imagen2, vertexAI } from '@genkit-ai/vertexai';
+import { gemini15ProPreview, imagen2, vertexAI } from '@genkit-ai/vertexai';
 import { configureGenkit } from '@genkit-ai/core';
 import { openAI, gpt4o, dallE3 } from 'genkitx-openai';
 import { anthropic, claude3Opus } from 'genkitx-anthropic';
@@ -27,10 +27,10 @@ export const chatConfigs = {
   },
   google: {
     text: {
-      model: geminiProVision,
-      displayName: 'Gemini Pro Vision',
-      maxHistoryTokens: 12288,
-      maxOutputTokens: 2048,
+      model: gemini15ProPreview,
+      displayName: 'Gemini 1.5 Pro',
+      maxHistoryTokens: 1000000,
+      maxOutputTokens: 8192,
     },
     image: {
       model: imagen2,
