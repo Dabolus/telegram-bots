@@ -24,11 +24,13 @@ const setWebhook = async url => {
   }
 };
 
+console.info('Getting deployed service information...');
 childProcess.exec('serverless info', async (_, stdout) => {
   const url = stdout.match(/POST - (.+)/)?.[1];
   const bots = Object.entries(process.env).filter(([key]) =>
     key.endsWith('_BOT_TOKEN'),
   );
+  console.info(`Found ${bots.length} bot(s) to set webhook for`);
   await Promise.all(
     bots.map(([key, token]) => {
       const botId = key
@@ -41,4 +43,5 @@ childProcess.exec('serverless info', async (_, stdout) => {
       return setWebhook(fullUrl);
     }),
   );
+  console.info('Webhooks set successfully!');
 });
