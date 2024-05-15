@@ -6,6 +6,6 @@ clean:
 
 build:
 	mkdir -p build/bin
-	curl https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz | tar x
+	curl https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz | tar -xj
 	mv ffmpeg-*-static/ffmpeg ffmpeg-*-static/ffprobe build/bin
 	rm -rf ffmpeg-*-static
