@@ -1,0 +1,55 @@
+name: Build and deploy
+'on':
+  push:
+    branches:
+      - main
+      - 'feat/**'
+      - 'fix/**'
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install deps
+        run: yarn install
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p bots/chattgb/static
+          echo "$CHATTGB_SERVICE_ACCOUNT_BASE64" | base64 --decode > bots/chattgb/static/service-account.json
+          yarn deploy
+          yarn postdeploy
+        env:
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+          ENABLE_ANALYTICS: ${{ secrets.ENABLE_ANALYTICS }}
+          ANALYTICS_API_SECRET: ${{ secrets.ANALYTICS_API_SECRET }}
+          ANALYTICS_MEASUREMENT_ID: ${{ secrets.ANALYTICS_MEASUREMENT_ID }}
+          SERVICE_SECRET: ${{ secrets.SERVICE_SECRET }}
+          GOOGLE_CUSTOM_SEARCH_API_KEY: ${{ secrets.GOOGLE_CUSTOM_SEARCH_API_KEY }}
+          GOOGLE_CUSTOM_SEARCH_CX: ${{ secrets.GOOGLE_CUSTOM_SEARCH_CX }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DABBEXT_BOT_TOKEN: ${{ secrets.DABBEXT_BOT_TOKEN }}
+          QUOTE_GENERATOR_BOT_TOKEN: ${{ secrets.QUOTE_GENERATOR_BOT_TOKEN }}
+          TELEGRAM_MEDIA_CONVERT_BOT_TOKEN: ${{ secrets.TELEGRAM_MEDIA_CONVERT_BOT_TOKEN }}
+          WOTD_BOT_TOKEN: ${{ secrets.WOTD_BOT_TOKEN }}
+          CHATTGB_BOT_TOKEN: ${{ secrets.CHATTGB_BOT_TOKEN }}
+          WOTD_CHAT_IDS_ALLOWLIST: ${{ secrets.WOTD_CHAT_IDS_ALLOWLIST }}
+          CHATTGB_CHAT_IDS_ALLOWLIST: ${{ secrets.CHATTGB_CHAT_IDS_ALLOWLIST }}
+          CHATTGB_ADMIN_USER_IDS: ${{ secrets.CHATTGB_ADMIN_USER_IDS }}
+          QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY: ${{ secrets.QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY }}
+          GCLOUD_LOCATION: ${{ secrets.GCLOUD_LOCATION }}
+          GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+          QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL: ${{ secrets.QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL }}
+          QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY: ${{ secrets.QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY }}
+          CHATTGB_GCLOUD_CLIENT_EMAIL: ${{ secrets.CHATTGB_GCLOUD_CLIENT_EMAIL }}
+          CHATTGB_GCLOUD_PRIVATE_KEY: ${{ secrets.CHATTGB_GCLOUD_PRIVATE_KEY }}
+          CHATTGB_SERVICE_ACCOUNT_BASE64: ${{ secrets.CHATTGB_SERVICE_ACCOUNT_BASE64 }}
+          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
