@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "make layers",
     "deploy": "serverless deploy",
-    "postdeploy": "node scripts/setup-webhooks"
+    "postdeploy": "node scripts/setup-webhooks.js"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
