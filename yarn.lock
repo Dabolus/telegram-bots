@@ -1093,8 +1093,8 @@ __metadata:
     "@types/node-telegram-bot-api": "npm:^0.64.6"
     "@types/sharp": "npm:^0.32.0"
     genkit: "npm:0.5.0-rc.9"
-    genkitx-anthropic: "npm:^0.5.2"
-    genkitx-openai: "npm:^0.5.2"
+    genkitx-anthropic: "npm:^0.5.3"
+    genkitx-openai: "npm:^0.5.3"
     gptoken: "npm:^0.1.0"
     node-telegram-bot-api: "npm:^0.65.1"
     openai: "npm:^4.38.5"
@@ -6750,29 +6750,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"genkitx-anthropic@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "genkitx-anthropic@npm:0.5.2"
+"genkitx-anthropic@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "genkitx-anthropic@npm:0.5.3"
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.20.9"
     zod: "npm:^3.23.8"
   peerDependencies:
     "@genkit-ai/ai": ^0.5.0
     "@genkit-ai/core": ^0.5.0
-  checksum: 10c0/c22a68fb64d99ab04043e31be99e2b0de8875022717ae86f6dd1ee4b3e1c7e801402304b4ccd4ada21eef904fc152ca3303e9a359ff60674efa67ac2e84b214a
+  checksum: 10c0/ba03613b80003b5ba38da2b53751188a75d38c427307c6d1ba3df0a0fab18dd0da97bf06b0814734fdfe1fae9e1d8a0f9ab43ed29365a95dd0744fd74296d032
   languageName: node
   linkType: hard
 
-"genkitx-openai@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "genkitx-openai@npm:0.5.2"
+"genkitx-openai@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "genkitx-openai@npm:0.5.3"
   dependencies:
     openai: "npm:^4.46.1"
     zod: "npm:^3.23.8"
   peerDependencies:
     "@genkit-ai/ai": ^0.5.0
     "@genkit-ai/core": ^0.5.0
-  checksum: 10c0/fa1a1e06ac19c19ceead28076efe95f9829ca2b8bc3ac3eee6fb84ceccd773b71d9ca4da9caedfde34e79f8102e4cdf0c29d816263102c7b04b5427fd202aae0
+  checksum: 10c0/1fad446fb7d55dcf56415d4f75d1034265f1f4e035b9973d3ec6c735507124e62c760fd17e65cc6eafa75f520d5de6f98c8691d5e2073cff6b34868ecb555efb
   languageName: node
   linkType: hard
 
