@@ -16,7 +16,9 @@ jobs:
         with:
           node-version: 22
       - name: Install deps
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Deploy
