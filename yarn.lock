@@ -15,7 +15,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:>=0.14 <1, @anthropic-ai/sdk@npm:^0.20.9":
+"@anthropic-ai/sdk@npm:>=0.14 <1":
   version: 0.20.9
   resolution: "@anthropic-ai/sdk@npm:0.20.9"
   dependencies:
@@ -44,6 +44,22 @@ __metadata:
     node-fetch: "npm:^2.6.7"
     web-streams-polyfill: "npm:^3.2.1"
   checksum: 10c0/be5068f98efb1daaec3377a4c69f181aab7093769b3e5b298f76abd9150136d761d56a0a5101157eaf73e7d04de4f05e8bb381f1cb6aff4c9ec7098808d1f4cb
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/sdk@npm:^0.21.0":
+  version: 0.21.1
+  resolution: "@anthropic-ai/sdk@npm:0.21.1"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+    web-streams-polyfill: "npm:^3.2.1"
+  checksum: 10c0/2d57f6e5b5f38571a65ce0d11067a8713dc2b536ecc41981186353fbdf18d7d0bdc8820bbda7e02aff7b2f34d437baf1ba58442532ec839c270a4967e6889475
   languageName: node
   linkType: hard
 
@@ -1093,8 +1109,8 @@ __metadata:
     "@types/node-telegram-bot-api": "npm:^0.64.6"
     "@types/sharp": "npm:^0.32.0"
     genkit: "npm:0.5.0-rc.9"
-    genkitx-anthropic: "npm:^0.5.3"
-    genkitx-openai: "npm:^0.5.3"
+    genkitx-anthropic: "npm:^0.8.0"
+    genkitx-openai: "npm:^0.8.0"
     gptoken: "npm:^0.1.0"
     node-telegram-bot-api: "npm:^0.65.1"
     openai: "npm:^4.38.5"
@@ -6750,29 +6766,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"genkitx-anthropic@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "genkitx-anthropic@npm:0.5.3"
+"genkitx-anthropic@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "genkitx-anthropic@npm:0.8.0"
   dependencies:
-    "@anthropic-ai/sdk": "npm:^0.20.9"
+    "@anthropic-ai/sdk": "npm:^0.21.0"
     zod: "npm:^3.23.8"
   peerDependencies:
     "@genkit-ai/ai": ^0.5.0
     "@genkit-ai/core": ^0.5.0
-  checksum: 10c0/ba03613b80003b5ba38da2b53751188a75d38c427307c6d1ba3df0a0fab18dd0da97bf06b0814734fdfe1fae9e1d8a0f9ab43ed29365a95dd0744fd74296d032
+  checksum: 10c0/6a61d501e423f0da4d2e79bf2d4509c0ce2b352e625e1c1f0af7c2ea6c4754d2a0e6f38fed7d9d077192a850a7764baad737ad8db146e0d5374944c70088ff3e
   languageName: node
   linkType: hard
 
-"genkitx-openai@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "genkitx-openai@npm:0.5.3"
+"genkitx-openai@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "genkitx-openai@npm:0.8.0"
   dependencies:
-    openai: "npm:^4.46.1"
+    openai: "npm:^4.47.1"
     zod: "npm:^3.23.8"
   peerDependencies:
     "@genkit-ai/ai": ^0.5.0
     "@genkit-ai/core": ^0.5.0
-  checksum: 10c0/1fad446fb7d55dcf56415d4f75d1034265f1f4e035b9973d3ec6c735507124e62c760fd17e65cc6eafa75f520d5de6f98c8691d5e2073cff6b34868ecb555efb
+  checksum: 10c0/f33dd087a336d03dd36db1539f51c0642fb4df38ba2ed7392abefd56fecd2fd34120b959b3acf8a26223ae71bedcd5596fe11e7305841b59828a01db71ae1aec
   languageName: node
   linkType: hard
 
@@ -9250,9 +9266,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openai@npm:^4.46.1":
-  version: 4.46.1
-  resolution: "openai@npm:4.46.1"
+"openai@npm:^4.47.1":
+  version: 4.47.1
+  resolution: "openai@npm:4.47.1"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -9264,7 +9280,7 @@ __metadata:
     web-streams-polyfill: "npm:^3.2.1"
   bin:
     openai: bin/cli
-  checksum: 10c0/a95f45adf85c499a231f4f5b20200674271c969ffb46cde387871d1751a85933e0cd7f18b69c0d35bb06392dda3dfd7ffc849c6ff3bedb8c88a24322ea62b133
+  checksum: 10c0/10f5c7cd388dca758a31ccfd572d0ff732324842bc41f8cda80db043ad59035dbb9f903d0273bc14d1565f680901b7d65993b5e4c27dcf5deee2235a544ac0e4
   languageName: node
   linkType: hard
 
