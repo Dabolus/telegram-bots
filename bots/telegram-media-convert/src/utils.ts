@@ -1,3 +1,4 @@
+import { downloadFileBuffer } from '@bots/shared/utils';
 import type TelegramBot from 'node-telegram-bot-api';
 
 export const downloadFile = async (
@@ -5,10 +6,7 @@ export const downloadFile = async (
   fileId: string,
 ): Promise<Buffer> => {
   const fileLink = await bot.getFileLink(fileId);
-  const fileReq = await fetch(fileLink);
-  const fileArrayBuffer = await fileReq.arrayBuffer();
-
-  return Buffer.from(fileArrayBuffer);
+  return downloadFileBuffer(fileLink);
 };
 
 export const emojiToCodePoint = (emoji: string): number[] => {

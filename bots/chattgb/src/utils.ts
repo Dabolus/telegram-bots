@@ -22,6 +22,7 @@ import {
   User as TelegramUser,
 } from 'node-telegram-bot-api';
 import { SunoApi } from '@clite/suno';
+import { downloadFileBuffer } from '@bots/shared/utils';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -232,7 +233,7 @@ export const openaiGenerateVoice = async (
     response_format: 'opus',
   });
   const responseArrayBuffer = await response.arrayBuffer();
-  return Buffer.from(new Uint8Array(responseArrayBuffer));
+  return Buffer.from(responseArrayBuffer);
 };
 
 export const generateVoice = async (
@@ -252,10 +253,7 @@ export const downloadFile = async (
   fileId: string,
 ): Promise<Buffer> => {
   const fileLink = await bot.getFileLink(fileId);
-  const fileReq = await fetch(fileLink);
-  const fileArrayBuffer = await fileReq.arrayBuffer();
-
-  return Buffer.from(fileArrayBuffer);
+  return downloadFileBuffer(fileLink);
 };
 
 export interface ImageToChatCompletionImageContentOptions {

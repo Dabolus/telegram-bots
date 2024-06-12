@@ -1,6 +1,7 @@
 import { customsearch, customsearch_v1 } from '@googleapis/customsearch';
 import { getItem, setItem } from '@bots/shared/cache';
 import type { Update } from 'node-telegram-bot-api';
+import { downloadFileBuffer } from '@bots/shared/utils';
 
 export interface WordResult {
   word: string;
@@ -100,15 +101,9 @@ export const getImage = async (
       return null;
     }
 
-    const res = await fetch(link);
+    const fileBuffer = await downloadFileBuffer(link);
 
-    if (!res.ok) {
-      return null;
-    }
-
-    const arrayBuffer = await res.arrayBuffer();
-
-    return Buffer.from(arrayBuffer);
+    return fileBuffer;
   } catch (error) {
     console.warn('Error getting image', error);
     return null;
