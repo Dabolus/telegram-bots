@@ -6,22 +6,24 @@
     "@anthropic-ai/sdk": "^0.20.7",
     "@aws-sdk/client-dynamodb": "^3.564.0",
     "@aws-sdk/lib-dynamodb": "^3.564.0",
-    "@genkit-ai/ai": "0.5.0-rc.9",
-    "@genkit-ai/core": "0.5.0-rc.9",
-    "@genkit-ai/vertexai": "0.5.0-rc.9",
+    "@genkit-ai/ai": "^0.5.0",
+    "@genkit-ai/core": "^0.5.0",
+    "@genkit-ai/vertexai": "^0.5.0",
     "@google-cloud/text-to-speech": "^5.2.0",
     "genkitx-anthropic": "^0.8.0",
     "genkitx-openai": "^0.8.0",
     "gptoken": "^0.1.0",
     "node-telegram-bot-api": "^0.65.1",
     "openai": "^4.38.5",
-    "sharp": "0.32.6"
+    "sharp": "0.32.6",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.137",
     "@types/node-telegram-bot-api": "^0.64.6",
     "@types/sharp": "^0.32.0",
-    "genkit": "0.5.0-rc.9"
+    "genkit": "^0.5.0"
   },
   "private": true
 }

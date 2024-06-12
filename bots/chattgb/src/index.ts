@@ -1,10 +1,10 @@
+import { z } from 'zod';
 import {
   getAllowedChatIds,
   getBotUsername,
   createUpdateHandler,
   createCommandChecker,
   getCommandArguments,
-  getCommandRegex,
   getBotAdmins,
   parseIds,
   withErrorLogging,
@@ -17,18 +17,18 @@ import {
 } from '@bots/shared/genkit';
 import {
   getChatConfiguration,
-  getChatContext,
+  getGenkitConfig,
   getDenyList,
-  getMessageImages,
-  getMessageText,
+  transformMessage,
   googleCredentialsPath,
-  parseJsonResponse,
   setChatConfiguration,
   setDenyList,
-  getImageCustomConfig,
-  speak,
+  isMediaMessage,
+  LlmImageInput,
+  LlmTextInput,
 } from './utils';
 import { handleSettings } from './settings';
+import { ModelArgument } from '@genkit-ai/ai/model';
 
 export const handler = createUpdateHandler(
   withErrorLogging(async (update, bot) => {
@@ -460,13 +460,6 @@ export const handler = createUpdateHandler(
       google: { credentialsPath: googleCredentialsPath },
     });
 
-    const message = await getMessageText(
-      openai,
-      botUsername,
-      bot,
-      update.message,
-    );
-
     if (
       update.message.chat.id !== update.message.from?.id &&
       !isReplyToBot &&
@@ -483,12 +476,17 @@ export const handler = createUpdateHandler(
       return;
     }
 
-    const messageText = message
-      .replace(getCommandRegex(botUsername, 'chat'), '')
-      .trim();
     const currentConfig = await getChatConfiguration(update.message.chat.id);
 
-    if (!messageText) {
+    const messageText =
+      (update?.message?.caption || update?.message?.text)?.trim() ?? '';
+    const isReplyToMessage =
+      update?.message?.reply_to_message &&
+      // Ignore text from replies to the bot itself
+      update?.message?.reply_to_message.from?.username !== botUsername;
+    const isMedia = isMediaMessage(update.message);
+
+    if (!messageText && !isReplyToMessage && !isMedia) {
       console.warn(
         'Received an empty message not replying to another user, ignoring it',
       );
@@ -496,43 +494,62 @@ export const handler = createUpdateHandler(
     }
 
     await bot.sendChatAction(update.message.chat.id, 'typing');
-    const moderationResult = await openai.moderations.create({
-      input: message,
-      model: 'text-moderation-latest',
+    const {
+      context: fullContext,
+      tools,
+      outputSchema,
+    } = getGenkitConfig({
+      bot,
+      message: update.message,
+      genkit,
+      openai,
+      config: currentConfig,
     });
-    if (moderationResult.results.some(result => result.flagged)) {
-      console.info(
-        `Message "${message}" from chat ${update.message.chat.id} was flagged as inappropriate by OpenAI`,
-      );
-      await bot.sendChatAction(update.message.chat.id, 'typing');
-      await setDenyList([...denyList, update.message.from!.id]);
-      await bot.sendMessage(
-        update.message.chat.id,
-        'Your message is inappropriate. You have been added to the deny list and will not be able to use this bot anymore.',
-        {
-          reply_to_message_id: update.message.message_id,
-        },
-      );
+    const { input, media } = await transformMessage({
+      openai,
+      bot,
+      botUsername,
+      message: update.message,
+      denyList,
+      botAdmins,
+    });
+    if (!input) {
+      console.warn('No content found in the message, ignoring it');
       return;
     }
-    const fullContext = await getChatContext(currentConfig);
-    const { images, extraText } = await getMessageImages(
-      openai,
-      botUsername,
-      bot,
-      update.message,
-    );
+    if ((input as LlmImageInput).caption || (input as LlmTextInput).message) {
+      const text =
+        (input as LlmImageInput).caption || (input as LlmTextInput).message;
+      const moderationResult = await openai.moderations.create({
+        input: text,
+        model: 'text-moderation-latest',
+      });
+      if (moderationResult.results.some(result => result.flagged)) {
+        console.info(
+          `Message "${text}" from chat ${update.message.chat.id} was flagged as inappropriate by OpenAI`,
+        );
+        await bot.sendChatAction(update.message.chat.id, 'typing');
+        await setDenyList([...denyList, update.message.from!.id]);
+        await bot.sendMessage(
+          update.message.chat.id,
+          'Your message is inappropriate. You have been added to the deny list and will not be able to use this bot anymore.',
+          {
+            reply_to_message_id: update.message.message_id,
+          },
+        );
+        return;
+      }
+      console.info('Done');
+    }
     const updatedMessages = updateChatHistory(
       fullContext,
       currentConfig.history?.messages || [],
       {
         role: 'user',
         content: [
-          {
-            text: extraText ? `${message}\n\n${extraText}` : message,
-          },
-          // If the message contains a photo and/or a video, provide them together with the request
-          ...images,
+          { text: JSON.stringify(input) },
+          // If the message contains some media, provide it together with the request
+          ...media,
         ],
       },
     );
@@ -540,37 +557,30 @@ export const handler = createUpdateHandler(
     const newMessage = updatedMessages.at(-1)!;
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const textModelConfig = currentConfig.models?.text ?? 'openai';
-    const completion = await genkit.generate({
-      model: chatConfigs[textModelConfig].text.model,
-      output: { format: 'text' },
+    const completion = await genkit.generate<typeof outputSchema>({
+      model: chatConfigs[textModelConfig].text.model as ModelArgument,
+      tools: Object.values(tools),
+      returnToolRequests: true,
+      output: {
+        format: 'json',
+      },
       config: {
         maxOutputTokens: chatConfigs[textModelConfig].text.maxOutputTokens,
-        custom:
-          textModelConfig === 'openai'
-            ? {
-                user: update.message.from?.id.toString(),
-              }
-            : {
-                metadata: {
-                  user_id: update.message.from?.id.toString(),
-                },
+        ...(textModelConfig === 'openai'
+          ? {
+              user: update.message.from?.id.toString(),
+            }
+          : {
+              metadata: {
+                user_id: update.message.from?.id.toString(),
               },
+            }),
       },
       history: [
         {
-          role: currentConfig.models?.text === 'google' ? 'user' : 'system',
+          role: 'system',
           content: [{ text: fullContext }],
         },
-        ...(currentConfig.models?.text === 'google'
-          ? [
-              {
-                role: 'model' as const,
-                content: [
-                  { text: 'Got it, I will do everything you requested.' },
-                ],
-              },
-            ]
-          : []),
         ...previousMessages,
       ],
       prompt: newMessage.content,
@@ -581,94 +591,21 @@ export const handler = createUpdateHandler(
       return;
     }
     for (const rawResponse of rawResponseParts) {
-      const {
-        message: response,
-        image,
-        tts,
-        followup = [],
-      } = await parseJsonResponse(rawResponse);
-      // If the response contains the field "image", we need to generate an image
-      // using the configured image API
-      if (image?.prompt) {
-        const prompt = image.prompt.trim() || '';
-        console.info(
-          `Generating image for chat ${update.message.chat.id} with prompt "${prompt}"`,
+      if (rawResponse.toolRequest) {
+        await tools[rawResponse.toolRequest.name as keyof typeof tools](
+          rawResponse.toolRequest.input as any, // TODO: improve typings
         );
-        const chatAction = image.file ? 'upload_document' : 'upload_photo';
-        await bot.sendChatAction(update.message.chat.id, chatAction);
-
-        const imageModelConfig = currentConfig.models?.image ?? 'openai';
-        const imageResponse = await genkit.generate({
-          model: chatConfigs[imageModelConfig].image.model,
-          prompt,
-          config: {
-            custom: getImageCustomConfig(
-              imageModelConfig,
-              image,
-              update.message.from?.id,
-            ),
-          },
-          output: {
-            format: 'media',
-          },
-        });
-        const imageMedia = imageResponse.media();
-        if (!imageMedia) {
-          console.error('No image received from DALL-E');
-          return;
-        }
-        const imageContentType = imageMedia.contentType ?? 'image/png';
-        const imageBuffer = Buffer.from(
-          imageMedia.url.slice(imageMedia.url.indexOf(',') + 1),
-          'base64',
-        );
-        const methodToUse = image.file ? 'sendDocument' : 'sendPhoto';
-        await bot[methodToUse](
-          update.message.chat.id,
-          imageBuffer,
-          {
-            reply_to_message_id: update.message.message_id,
-            parse_mode: 'HTML',
-            caption: image.caption || response,
-          },
-          {
-            contentType: imageContentType,
-            filename: `${prompt.replace(/\s+/g, '_')}.${imageContentType.slice(
-              imageContentType.indexOf('/') + 1,
-            )}`,
-          },
-        );
-      } else if (tts?.input) {
-        const input = tts.input.trim() || '';
-        console.info(
-          `Generating voice note for chat ${update.message.chat.id} with input "${input}"`,
-        );
-        await bot.sendChatAction(update.message.chat.id, 'record_voice');
-        const ttsResponseBuffer = await speak(openai, input, {
-          modelConfig: currentConfig.models?.tts ?? 'openai',
-          male: tts.male,
-          languageCode: tts.language ?? update.message.from?.language_code,
-        });
-        await bot.sendVoice(
-          update.message.chat.id,
-          ttsResponseBuffer,
-          {
-            reply_to_message_id: update.message.message_id,
-          },
-          {
-            contentType: 'audio/opus',
-            filename: `${input.replace(/\s+/g, '_')}.opus`,
-          },
-        );
-      } else {
-        await bot.sendMessage(update.message.chat.id, response, {
+      } else if ((rawResponse.data as z.infer<typeof outputSchema>)?.message) {
+        const { message: responseMessage = '', followup = [] } =
+          rawResponse.data as z.infer<typeof outputSchema>;
+        await bot.sendMessage(update.message.chat.id, responseMessage, {
           reply_to_message_id: update.message.message_id,
           parse_mode: 'HTML',
           reply_markup: {
             selective: true,
-            ...(followup.length > 0
+            ...((followup as string[]).length > 0
               ? {
-                  keyboard: followup.map(hint => [
+                  keyboard: (followup as string[]).map(hint => [
                     {
                       text:
                         update.message?.chat?.id !== update.message?.from?.id

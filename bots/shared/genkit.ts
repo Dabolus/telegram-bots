@@ -69,6 +69,10 @@ export interface SetupGenkitOptions {
 
 let genkitConfigured = false;
 
+export interface GenkitWrapper {
+  generate: typeof generate;
+}
+
 export const setupGenkit = ({
   openai: { apiKey: openaiApiKey = process.env.OPENAI_API_KEY } = {},
   google: {
@@ -77,7 +81,7 @@ export const setupGenkit = ({
     credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS,
   } = {},
   anthropic: { apiKey: anthropicApiKey = process.env.ANTHROPIC_API_KEY } = {},
-}: SetupGenkitOptions = {}) => {
+}: SetupGenkitOptions = {}): GenkitWrapper => {
   if (!openaiApiKey) {
     throw new Error('OpenAI API key not provided!');
   }

@@ -3,17 +3,24 @@ import sharp from 'sharp';
 import os from 'node:os';
 import path from 'node:path';
 import fsSync, { promises as fs } from 'node:fs';
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
-import { chatConfigs } from '@bots/shared/genkit';
+import { getChatTools } from './tools';
+import { speak as googleGenerateVoice } from '@bots/shared/tts';
+import { getCommandRegex } from '@bots/shared/telegram';
+import { type GenkitWrapper, chatConfigs } from '@bots/shared/genkit';
 import type { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
-import { speak as googleSpeak } from '@bots/shared/tts';
-import type { z } from 'zod';
-import type { dallE3 } from '@genkit-ai/openai';
+import type { dallE3 } from 'genkitx-openai';
 import type { imagen2 } from '@genkit-ai/vertexai';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
 import type { SpeakOptions } from '@bots/shared/tts';
+import {
+  Message as TelegramMessage,
+  User as TelegramUser,
+} from 'node-telegram-bot-api';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -84,26 +91,10 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
   await setDenyList(newList);
 };
 
-export interface GPTResponse {
-  message: string;
-  image?: {
-    prompt: string;
-    caption?: string;
-    hd?: boolean;
-    natural?: boolean;
-    orientation?: 'landscape' | 'portrait' | 'square';
-    file?: boolean;
-  };
-  tts?: {
-    input: string;
-    male?: boolean;
-    language?: string;
-  };
-  followup?: string[];
-}
-
 export const getDalleImageSize = (
-  orientation?: NonNullable<GPTResponse['image']>['orientation'],
+  orientation?: Parameters<
+    ReturnType<typeof getChatTools>['generateImage']
+  >[0]['orientation'],
 ): '1792x1024' | '1024x1792' | '1024x1024' => {
   switch (orientation) {
     case 'landscape':
@@ -116,7 +107,9 @@ export const getDalleImageSize = (
 };
 
 export const getImagenImageSize = (
-  orientation?: NonNullable<GPTResponse['image']>['orientation'],
+  orientation?: Parameters<
+    ReturnType<typeof getChatTools>['generateImage']
+  >[0]['orientation'],
 ): '1:1' | '9:16' | '16:9' => {
   switch (orientation) {
     case 'landscape':
@@ -130,7 +123,9 @@ export const getImagenImageSize = (
 
 export const getImageCustomConfig = (
   modelConfig: ChatModelsConfiguration['image'],
-  imageGenerationConfig: NonNullable<GPTResponse['image']>,
+  imageGenerationConfig: Parameters<
+    ReturnType<typeof getChatTools>['generateImage']
+  >[0],
   userId?: number,
 ) => {
   switch (modelConfig) {
@@ -148,65 +143,11 @@ export const getImageCustomConfig = (
   }
 };
 
-export const parseJsonResponse = async (
-  message: Part,
-): Promise<GPTResponse> => {
-  if (!message.text) {
-    return { message: '' };
-  }
-  try {
-    const parsed = JSON.parse(
-      // Sometimes GPT-4 decides to ignore our instructions and wrap the JSON in a Markdown code block,
-      // so we need to remove it before parsing the JSON
-      message.text.replace(/^`{3}json\n(.+)`{3}$/s, '$1'),
-    );
-    return parsed;
-  } catch {
-    return { message: message.text };
-  }
-};
-
-export const getChatContext = async (
-  config?: ChatConfiguration,
-): Promise<string> => {
-  const textModel = chatConfigs[config?.models?.text ?? 'openai'].text;
-  const imageModel = chatConfigs[config?.models?.image ?? 'openai'].image;
-  const ttsModelConfig = config?.models?.tts ?? 'openai';
-  const ttsModel = chatConfigs[ttsModelConfig].tts;
-
-  return `You are a Telegram bot called ChatTGB that behaves according to a user-provided context.
-You MUST ALWAYS respond with a valid JSON.
-The JSON MUST be provided as-is, without being wrapped in a Markdown code block nor anything else, and it MUST be minified.
-If the user asks you to generate or to send an image, the response JSON MUST HAVE an "image" property, which MUST BE an object containing the following properties:
-- "prompt": the prompt to be provided to ${
-    imageModel.displayName
-  } to generate the requested image. This prompt MUST have a maximum length of ${
-    imageModel.maxInputTokens
-  } tokens;
-- "caption": (optional) if you think the image should also be associated with a caption, provide it here;
-- "hd": (optional) if the user asks for an HD or high quality image, set this to true;
-- "natural": (optional) if the user asks for an image that looks more natural, set this to true;
-- "orientation": (optional) if the user asks for an image with a specific orientation, provide it here. The value must be one of "landscape", "portrait", or "square";
-- "file": (optional) if the user asks for the image to be sent as a file, set this to true.
-When asked which technology you use to generate images, you MUST respond with "${
-    imageModel.displayName
-  }".
-If the user asks you to speak or to return an audio, or if they explicitly state that their message is a transcription from an audio, the response JSON MUST HAVE a "tts" property, which MUST BE an object containing the following properties:
-- "input": the content to be spoken by ${ttsModel.displayName}. This MUST be ${
-    ttsModelConfig === 'google'
-      ? 'valid SSML with the appropriate emphasis and pauses'
-      : 'plain text'
-  };${
-    ttsModelConfig === 'google'
-      ? '\n- "language": the main language code of the text to be spoken (e.g. "en-US");'
-      : ''
-  }
-- "male": (optional) if the user asks you to be a male or to speak with a male voice, set this to true.
-When asked which technology you use to generate audio, you MUST respond with "${
-    ttsModel.displayName
-  }".
-For any other message, the response JSON MUST HAVE a "message" property containing the answer to be sent to the user, based on the context you were provided with.
-The "message" property MUST BE written in Telegram's "HTML" format, so you can use the following HTML tags:
+export const getOutputSchema = (config?: ChatConfiguration) =>
+  z.object({
+    message: z.string().optional()
+      .describe(`The answer to be sent to the user, based on the context you were provided with.
+It MUST BE written in Telegram's "HTML" format, so you can use the following HTML tags:
 - <b>bold</b>
 - <i>italic</i>
 - <u>underline</u>
@@ -218,55 +159,66 @@ The "message" property MUST BE written in Telegram's "HTML" format, so you can u
 - <pre><code class="language-python">pre-formatted fixed-width code block in a specific language</code></pre>
 - <blockquote>Block quotation</blockquote>
 You MUST NOT use any other HTML tags.
-Reserved HTML entities in the message MUST BE escaped.
-Also, since the response is inside a JSON field, the backslashes MUST BE escaped with another backslash.
+Reserved HTML entities in the message MUST BE escaped.`),
+    ...(config?.history?.enabled && {
+      followup: z
+        .array(z.string())
+        .max(3)
+        .optional()
+        .describe(
+          'An array of up to 3 followup questions/messages the user might send after this response.',
+        ),
+    }),
+  });
+
+export const getChatContext = (
+  config: ChatConfiguration | undefined,
+  outputSchema: z.AnyZodObject,
+): string => {
+  const textModel = chatConfigs[config?.models?.text ?? 'openai'].text;
+  const imageModel = chatConfigs[config?.models?.image ?? 'openai'].image;
+  const ttsModelConfig = config?.models?.tts ?? 'openai';
+  const ttsModel = chatConfigs[ttsModelConfig].tts;
+
+  return `You are a Telegram bot called ChatTGB that behaves according to a user-provided context.
+The user input will be provided in the form of a JSON representing the content of the Telegram message you received.
+If the user asks you to generate or to send an image, you MUST generate an image.
+When asked which technology you use to generate images, you MUST respond with "${
+    imageModel.displayName
+  }".
+If the user asks you to speak or to return an audio, or if they explicitly state that their message is a transcription from an audio, you MUST speak.
+When asked which technology you use to generate audio, you MUST respond with "${
+    ttsModel.displayName
+  }".
 When asked which technology you use to answer to messages or to analyze images and videos, you MUST respond with "${
     textModel.displayName
   }".
 In case the user sends you the contents of an SRT and more than one image together in a single message, you MUST respond as if they sent you a video composed by those frames and with the audio provided in the SRT.
 You MUST NOT IN ANY WAY reference the fact that you were given as input a transcription and the video frames. Instead, you MUST respond as if the user sent you the video directly and you were able to view it and listen it.
-${
-  config?.history?.enabled
-    ? '\nIf the response might have one or more followup questions/messages by the user, provide them in a "followup" property, which must be an array of strings containing up to 3 followup questions/messages.\n'
-    : ''
-}
+Your responses MUST be minified JSON conforming to the schema provided below in triple quotes:
+"""${JSON.stringify(zodToJsonSchema(outputSchema))}"""
 The context is the one provided below in triple quotes:
 """${config?.context || 'You are an helpful assistant.'}"""`;
 };
 
-export const getMessageText = async (
-  openai: OpenAI,
-  botUsername: string,
-  bot: TelegramBot,
-  message: TelegramBot.Message,
-): Promise<string> => {
-  const messageText = (message?.caption || message?.text)?.trim() ?? '';
-  const replyToMessageText =
-    message.reply_to_message &&
-    // Ignore text from replies to the bot itself
-    message.reply_to_message.from?.username !== botUsername &&
-    (await getMessageText(openai, botUsername, bot, message.reply_to_message));
-  const replyToMessageTextTemplate = replyToMessageText
-    ? `\n\nMessage above is a reply to another message. The original message can be found below:\n${replyToMessageText}`
-    : '';
-  if (!message?.voice) {
-    return `${messageText}${replyToMessageTextTemplate}`;
-  }
-  const voiceLink = await bot.getFileLink(message.voice.file_id);
-  const voiceReq = await fetch(voiceLink);
-  const transcription = await openai.audio.transcriptions.create({
-    model: 'whisper-1',
-    file: voiceReq,
-    response_format: 'text',
-  });
-  return `The user sent an audio. The transcription is provided here in triple quotes: """${transcription}"""${
-    messageText
-      ? `\nThe user also provided the following prompt together with the audio, reported in the following triple quotes: """${messageText}"""`
-      : ''
-  }${replyToMessageTextTemplate}`;
+export interface GetGenkitConfigParams {
+  bot: TelegramBot;
+  message: TelegramBot.Message;
+  genkit: GenkitWrapper;
+  openai: OpenAI;
+  config?: ChatConfiguration;
+}
+
+export const getGenkitConfig = (params: GetGenkitConfigParams) => {
+  const outputSchema = getOutputSchema(params.config);
+  return {
+    context: getChatContext(params.config, outputSchema),
+    tools: getChatTools(params),
+    outputSchema,
+  };
 };
 
-export const openaiSpeak = async (
+export const openaiGenerateVoice = async (
   openai: OpenAI,
   input: string,
   { male }: SpeakOptions = {},
@@ -281,7 +233,7 @@ export const openaiSpeak = async (
   return Buffer.from(new Uint8Array(responseArrayBuffer));
 };
 
-export const speak = async (
+export const generateVoice = async (
   openai: OpenAI,
   input: string,
   {
@@ -290,8 +242,8 @@ export const speak = async (
   }: Omit<SpeakOptions, 'ssml'> & { modelConfig?: 'openai' | 'google' } = {},
 ) =>
   modelConfig === 'openai'
-    ? openaiSpeak(openai, input, { ...options, ssml: false })
-    : googleSpeak(input, { ...options, ssml: true });
+    ? openaiGenerateVoice(openai, input, { ...options, ssml: false })
+    : googleGenerateVoice(input, { ...options, ssml: true });
 
 export const downloadFile = async (
   bot: TelegramBot,
@@ -430,20 +382,278 @@ export const extractVideoFrames = async (
   };
 };
 
-export const extractImagesFromMessage = async (
+export interface LlmBaseInput
+  extends Pick<
+    TelegramMessage,
+    | 'from'
+    | 'date'
+    | 'chat'
+    | 'sender_chat'
+    | 'forward_from'
+    | 'forward_from_chat'
+    | 'forward_from_message_id'
+    | 'forward_signature'
+    | 'forward_sender_name'
+    | 'forward_date'
+    | 'is_topic_message'
+    | 'edit_date'
+    | 'media_group_id'
+    | 'author_signature'
+  > {
+  id: number;
+  type: string;
+  reply_to?: LlmInput;
+}
+
+export interface LlmTextInput extends LlmBaseInput {
+  type: 'text';
+  message: string;
+}
+
+export interface LlmImageInput extends LlmBaseInput {
+  type: 'image';
+  caption?: string;
+}
+
+export interface LlmStickerInput extends LlmBaseInput {
+  type: 'sticker';
+  emoji?: string;
+}
+
+export interface LlmAnimatedStickerInput extends LlmBaseInput {
+  type: 'animated_sticker';
+  emoji?: string;
+}
+
+export interface LlmVideoInput extends LlmBaseInput {
+  type: 'video';
+  transcription?: string;
+  caption?: string;
+}
+
+export interface LlmGifInput extends LlmBaseInput {
+  type: 'gif';
+  caption?: string;
+}
+
+export interface LlmAudioInput extends LlmBaseInput {
+  type: 'audio';
+  transcription?: string;
+  caption?: string;
+}
+
+export type LlmInput =
+  | LlmTextInput
+  | LlmImageInput
+  | LlmStickerInput
+  | LlmAnimatedStickerInput
+  | LlmVideoInput
+  | LlmGifInput
+  | LlmAudioInput;
+
+export const isImageMessage = (message: TelegramMessage): boolean =>
+  Boolean(message.photo) ||
+  message?.document?.mime_type?.startsWith('image/') ||
+  false;
+
+export const isStickerMessage = (
+  message: TelegramMessage,
+): message is TelegramMessage & {
+  sticker: NonNullable<TelegramMessage['sticker']>;
+} => Boolean(message.sticker);
+
+export const isVideoMessage = (message: TelegramMessage): boolean =>
+  Boolean(message.video) ||
+  Boolean(message.video_note) ||
+  message?.document?.mime_type?.startsWith('video/') ||
+  false;
+
+export const isGifMessage = (message: TelegramMessage): boolean =>
+  Boolean(message.animation);
+
+export const isAudioMessage = (message: TelegramMessage): boolean =>
+  Boolean(message.voice) ||
+  Boolean(message.audio) ||
+  message?.document?.mime_type?.startsWith('audio/') ||
+  false;
+
+export const isMediaMessage = (message: TelegramMessage): boolean =>
+  isImageMessage(message) ||
+  isStickerMessage(message) ||
+  isVideoMessage(message) ||
+  isGifMessage(message) ||
+  isAudioMessage(message);
+
+const mapTelegramUser = ({
+  user,
+  denyList,
+  botAdmins,
+}: {
+  user?: TelegramUser;
+  denyList: number[];
+  botAdmins: number[];
+}) => {
+  if (!user) {
+    return;
+  }
+  const isAdmin = botAdmins.includes(user.id);
+  const isBlocked = denyList.includes(user.id) && !isAdmin;
+  return {
+    ...user,
+    is_admin: isAdmin,
+    is_blocked: isBlocked,
+  };
+};
+
+const extractMessageCommonFields = ({
+  bot,
+  botUsername,
+  message,
+  denyList,
+  botAdmins,
+}: {
+  bot: TelegramBot;
+  botUsername: string;
+  message: TelegramMessage;
+  denyList: number[];
+  botAdmins: number[];
+}): Omit<LlmBaseInput, 'type'> => ({
+  id: message.message_id,
+  from: mapTelegramUser({
+    user: message.from,
+    denyList,
+    botAdmins,
+  }),
+  date: message.date,
+  chat: message.chat,
+  sender_chat: message.sender_chat,
+  forward_from: mapTelegramUser({
+    user: message.forward_from,
+    denyList,
+    botAdmins,
+  }),
+  forward_from_chat: message.forward_from_chat,
+  forward_from_message_id: message.forward_from_message_id,
+  forward_signature: message.forward_signature,
+  forward_sender_name: message.forward_sender_name,
+  forward_date: message.forward_date,
+  is_topic_message: message.is_topic_message,
+  edit_date: message.edit_date,
+  media_group_id: message.media_group_id,
+  author_signature: message.author_signature,
+  ...(message.reply_to_message && {
+    reply_to: messageToInput({
+      bot,
+      botUsername,
+      message: message.reply_to_message,
+      denyList,
+      botAdmins,
+    }),
+  }),
+});
+
+const messageToInput = ({
+  bot,
+  botUsername,
+  message,
+  transcription,
+  denyList,
+  botAdmins,
+}: {
+  bot: TelegramBot;
+  botUsername: string;
+  message: TelegramMessage;
+  transcription?: string;
+  denyList: number[];
+  botAdmins: number[];
+}): LlmInput | undefined => {
+  const commonFields = extractMessageCommonFields({
+    bot,
+    botUsername,
+    message,
+    denyList,
+    botAdmins,
+  });
+  if (message.text) {
+    const messageText = message.text
+      .replace(getCommandRegex(botUsername, 'chat'), '')
+      .trim();
+
+    return {
+      ...commonFields,
+      type: 'text',
+      message: messageText,
+    };
+  }
+  if (isImageMessage(message)) {
+    const messageCaption = message.caption
+      ?.replace(getCommandRegex(botUsername, 'chat'), '')
+      .trim();
+
+    return {
+      ...commonFields,
+      type: 'image',
+      caption: messageCaption,
+    };
+  }
+  if (isStickerMessage(message)) {
+    return {
+      ...commonFields,
+      type:
+        message.sticker.is_animated || message.sticker.is_video
+          ? 'animated_sticker'
+          : 'sticker',
+      emoji: message.sticker.emoji,
+    };
+  }
+  if (isVideoMessage(message)) {
+    const messageCaption = message.caption
+      ?.replace(getCommandRegex(botUsername, 'chat'), '')
+      .trim();
+
+    return {
+      ...commonFields,
+      type: 'video',
+      transcription,
+      caption: messageCaption,
+    };
+  }
+  if (isGifMessage(message)) {
+    const messageCaption = message.caption
+      ?.replace(getCommandRegex(botUsername, 'chat'), '')
+      .trim();
+
+    return {
+      ...commonFields,
+      type: 'gif',
+      caption: messageCaption,
+    };
+  }
+  if (isAudioMessage(message)) {
+    const messageCaption = message.caption
+      ?.replace(getCommandRegex(botUsername, 'chat'), '')
+      .trim();
+
+    return {
+      ...commonFields,
+      type: 'audio',
+      transcription,
+      caption: messageCaption,
+    };
+  }
+};
+
+const extractMediaFromMessage = async (
   openai: OpenAI,
   bot: TelegramBot,
-  message: TelegramBot.Message,
-): Promise<{
-  images: MediaPart[];
-  extraText?: string;
-}> => {
+  message: TelegramMessage,
+): Promise<{ media: MediaPart[]; transcription?: string }> => {
   if (
-    message?.photo ||
-    (message?.sticker &&
+    message.photo ||
+    (message.sticker &&
       !message.sticker.is_animated &&
       !message.sticker.is_video) ||
-    message?.document?.mime_type?.startsWith('image/')
+    message.document?.mime_type?.startsWith('image/')
   ) {
     const imageFileId =
       message.photo?.at(-1)?.file_id ||
@@ -451,7 +661,7 @@ export const extractImagesFromMessage = async (
       message.document?.file_id ||
       '';
     const fileBuffer = await downloadFile(bot, imageFileId);
-    const imageContent = await imageToChatCompletionImageContent(fileBuffer, {
+    const imagePart = await imageToChatCompletionImageContent(fileBuffer, {
       // If the image is a sticker, we don't need to transform it,
       // as Telegram stickers are already 512x512 WebPs
       transform: !message.sticker,
@@ -459,21 +669,21 @@ export const extractImagesFromMessage = async (
       // a highly detailed analysis of its content
       highDetail: !!message.document,
     });
-    return { images: [imageContent] };
+    return { media: [imagePart] };
   }
   if (
-    message?.video ||
-    message?.video_note ||
-    message?.animation ||
-    message?.sticker?.is_video ||
-    message?.document?.mime_type?.startsWith('video/')
+    message.video ||
+    message.video_note ||
+    message.animation ||
+    message.sticker?.is_video ||
+    message.document?.mime_type?.startsWith('video/')
   ) {
     const videoFileId =
-      message?.video?.file_id ||
-      message?.video_note?.file_id ||
-      message?.animation?.file_id ||
-      message?.sticker?.file_id ||
-      message?.document?.file_id ||
+      message.video?.file_id ||
+      message.video_note?.file_id ||
+      message.animation?.file_id ||
+      message.sticker?.file_id ||
+      message.document?.file_id ||
       '';
     const {
       video: { filePath, processedFramesPath, images: videoImages },
@@ -484,53 +694,57 @@ export const extractImagesFromMessage = async (
       fs.rmdir(processedFramesPath, { recursive: true }),
       audioPath && fs.unlink(audioPath),
     ]);
-    return {
-      images: videoImages,
-      extraText: `The user sent a video. ${
-        audioTranscription
-          ? `The transcription of its audio is provided below in SRT format, while some frames samples from the video are provided together with this message:\n${audioTranscription}`
-          : 'The video has no audio. Some frames samples from the video are provided together with this message.'
-      }`,
-    };
+    return { media: videoImages, transcription: audioTranscription };
   }
-  return { images: [] };
+  if (
+    message.voice ||
+    message.audio ||
+    message.document?.mime_type?.startsWith('audio/')
+  ) {
+    const audioFileId =
+      message.voice?.file_id ||
+      message.audio?.file_id ||
+      message.document?.file_id ||
+      '';
+    const voiceLink = await bot.getFileLink(audioFileId);
+    const voiceReq = await fetch(voiceLink);
+    const transcription = (await openai.audio.transcriptions.create({
+      model: 'whisper-1',
+      file: voiceReq,
+      response_format: 'text',
+    })) as unknown as string;
+    return { media: [], transcription };
+  }
+  return { media: [] };
 };
 
-export const getMessageImages = async (
-  openai: OpenAI,
-  botUsername: string,
-  bot: TelegramBot,
-  message: TelegramBot.Message,
-): Promise<{
-  images: MediaPart[];
-  extraText?: string;
-}> => {
-  const messageImages = await extractImagesFromMessage(openai, bot, message);
-  const replyToMessageImages =
-    message.reply_to_message &&
-    // Ignore replies to the bot itself
-    message.reply_to_message.from?.username !== botUsername &&
-    (await getMessageImages(
-      openai,
-      botUsername,
-      bot,
-      message.reply_to_message,
-    ));
-  return {
-    images: [
-      ...messageImages.images,
-      ...(replyToMessageImages ? replyToMessageImages.images : []),
-    ],
-    extraText: [
-      ...(messageImages.extraText ? [messageImages.extraText] : []),
-      ...(replyToMessageImages
-        ? [
-            'Message replies to a media from another message, which is also provided together with this message.',
-            ...(replyToMessageImages.extraText
-              ? [replyToMessageImages.extraText]
-              : []),
-          ]
-        : []),
-    ].join('\n\n'),
-  };
+export const transformMessage = async ({
+  openai,
+  bot,
+  botUsername,
+  message,
+  denyList,
+  botAdmins,
+}: {
+  openai: OpenAI;
+  bot: TelegramBot;
+  botUsername: string;
+  message: TelegramMessage;
+  denyList: number[];
+  botAdmins: number[];
+}): Promise<{ input?: LlmInput; media: Part[] }> => {
+  const { media, transcription } = await extractMediaFromMessage(
+    openai,
+    bot,
+    message,
+  );
+  const input = messageToInput({
+    bot,
+    botUsername,
+    message,
+    transcription,
+    denyList,
+    botAdmins,
+  });
+  return { input, media };
 };

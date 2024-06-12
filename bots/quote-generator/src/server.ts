@@ -3,7 +3,7 @@ import path from 'path';
 import http from 'http';
 import ejs from 'ejs';
 import type { MessageEntity } from 'node-telegram-bot-api';
-import { setupBot } from '@bots/shared';
+import { setupBot } from '@bots/shared/telegram';
 import {
   host,
   port,
