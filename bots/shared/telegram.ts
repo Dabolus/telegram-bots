@@ -176,7 +176,10 @@ export const withErrorLogging =
         console.error('Error occurred without an update message:', error);
         return;
       }
-      console.error('Error! Logging it to chat:', (error as Error).message);
+      console.error(
+        'Error! Logging it to chat:',
+        (error as Error)?.stack ?? error,
+      );
       await bot.sendChatAction(update.message.chat.id, 'typing');
       await bot.sendMessage(
         update.message.chat.id,
