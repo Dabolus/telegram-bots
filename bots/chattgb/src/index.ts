@@ -29,6 +29,7 @@ import {
 } from './utils';
 import { handleSettings } from './settings';
 import { ModelArgument } from '@genkit-ai/ai/model';
+import { setupSuno } from '@bots/shared/suno';
 
 export const handler = createUpdateHandler(
   withErrorLogging(async (update, bot) => {
@@ -455,11 +456,6 @@ export const handler = createUpdateHandler(
       return;
     }
 
-    const openai = setupOpenAi();
-    const genkit = setupGenkit({
-      google: { credentialsPath: googleCredentialsPath },
-    });
-
     if (
       update.message.chat.id !== update.message.from?.id &&
       !isReplyToBot &&
@@ -493,6 +489,12 @@ export const handler = createUpdateHandler(
       return;
     }
 
+    const openai = setupOpenAi();
+    const genkit = setupGenkit({
+      google: { credentialsPath: googleCredentialsPath },
+    });
+    const suno = await setupSuno();
+
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const {
       context: fullContext,
@@ -503,6 +505,7 @@ export const handler = createUpdateHandler(
       message: update.message,
       genkit,
       openai,
+      suno,
       config: currentConfig,
     });
     const { input, media } = await transformMessage({

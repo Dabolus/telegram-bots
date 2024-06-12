@@ -12,3 +12,12 @@ export const parseArgs = (str: string): string[] =>
     },
     { quote: false, array: [''] },
   )?.array || [];
+
+export const downloadFileBuffer = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to download file: ${res.status} ${res.statusText}`);
+  }
+  const arrayBuffer = await res.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+};

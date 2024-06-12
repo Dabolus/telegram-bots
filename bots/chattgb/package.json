@@ -6,6 +6,7 @@
     "@anthropic-ai/sdk": "^0.20.7",
     "@aws-sdk/client-dynamodb": "^3.564.0",
     "@aws-sdk/lib-dynamodb": "^3.564.0",
+    "@clite/suno": "^0.1.5",
     "@genkit-ai/ai": "^0.5.0",
     "@genkit-ai/core": "^0.5.0",
     "@genkit-ai/vertexai": "^0.5.0",

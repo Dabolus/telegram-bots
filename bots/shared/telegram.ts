@@ -88,6 +88,31 @@ const extractChatId = (update: Update): number | undefined =>
   update.channel_post?.chat.id ||
   update.edited_channel_post?.chat.id;
 
+export const extractFormattedUserName = (
+  update: Omit<Update, 'update_id'>,
+): string => {
+  const user =
+    update.message?.from ||
+    update.edited_message?.from ||
+    update.channel_post?.from ||
+    update.edited_channel_post?.from ||
+    update.inline_query?.from ||
+    update.chosen_inline_result?.from ||
+    update.callback_query?.from ||
+    update.shipping_query?.from ||
+    update.pre_checkout_query?.from ||
+    update.poll_answer?.user ||
+    update.my_chat_member?.from ||
+    update.chat_member?.from ||
+    update.chat_join_request?.from;
+
+  if (user?.username) {
+    return user.username;
+  }
+
+  return `${user?.first_name}${user?.last_name ? ` ${user.last_name}` : ''}`;
+};
+
 export interface GetAllUpdatesResult {
   updates: Record<string, Update[]>;
   lastUpdateId: number;

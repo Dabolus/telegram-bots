@@ -21,6 +21,7 @@ import {
   Message as TelegramMessage,
   User as TelegramUser,
 } from 'node-telegram-bot-api';
+import { SunoApi } from '@clite/suno';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -206,6 +207,7 @@ export interface GetGenkitConfigParams {
   message: TelegramBot.Message;
   genkit: GenkitWrapper;
   openai: OpenAI;
+  suno: SunoApi;
   config?: ChatConfiguration;
 }
 

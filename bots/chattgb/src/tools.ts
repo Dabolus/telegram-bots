@@ -1,13 +1,15 @@
 import { defineTool } from '@genkit-ai/ai';
 import { z } from 'zod';
 import { chatConfigs } from '@bots/shared/genkit';
-import type TelegramBot from 'node-telegram-bot-api';
+import sharp from 'sharp';
 import {
   generateVoice,
   getImageCustomConfig,
   type GetGenkitConfigParams,
 } from './utils';
 import { ModelArgument } from '@genkit-ai/ai/model';
+import { downloadFileBuffer } from '@bots/shared/utils';
+import { extractFormattedUserName } from '@bots/shared/telegram';
 
 export const MediaSchema = z.object({
   url: z.string(),
@@ -19,6 +21,7 @@ export const getChatTools = ({
   message,
   genkit,
   openai,
+  suno,
   config,
 }: GetGenkitConfigParams) => {
   const imageModelConfig = config?.models?.image ?? 'openai';
@@ -153,5 +156,85 @@ export const getChatTools = ({
     },
   );
 
-  return { generateImage, speak };
+  const sing = defineTool(
+    {
+      name: 'sing',
+      description: 'Use this to sing or generate music using Suno',
+      inputSchema: z.object({
+        lyrics: z
+          .string()
+          .describe(
+            'The lyrics to provide to Suno. You can also use any of the available Suno structure tags (e.g. [intro], [chorus], etc.)',
+          ),
+        tags: z
+          .string()
+          .describe('The tags to provide to Suno (e.g. genre, mood, etc.)'),
+        title: z.string().describe('The title of the song'),
+        instrumental: z
+          .boolean()
+          .optional()
+          .describe('Whether to generate an instrumental'),
+        caption: z
+          .string()
+          .optional()
+          .describe('The caption to add to the song'),
+      }),
+      outputSchema: z.void(),
+    },
+    async ({ lyrics, tags, title, instrumental, caption }) => {
+      console.info(`Generating song for chat ${message.chat.id}`);
+
+      await bot.sendChatAction(message.chat.id, 'upload_voice');
+      const [song] = await suno.customGenerate(
+        lyrics,
+        tags,
+        title,
+        instrumental,
+        undefined,
+        true,
+      );
+      console.log(JSON.stringify(song, null, 2));
+      if (!song.audio_url) {
+        console.error(`No audio URL returned for song ${song.id}`);
+        return;
+      }
+      const [songBuffer, thumbnailBuffer] = await Promise.all([
+        downloadFileBuffer(song.audio_url),
+        song.image_url
+          ? downloadFileBuffer(song.image_url)
+              .then(buffer =>
+                // Telegram expects thumbnails to be 320x320 JPEGs
+                sharp(buffer)
+                  .resize({
+                    width: 320,
+                    height: 320,
+                    fit: 'inside',
+                    withoutEnlargement: true,
+                  })
+                  .jpeg()
+                  .toBuffer(),
+              )
+              // If something fails in the process, just ignore the thumbnail
+              .catch(() => undefined)
+          : Promise.resolve(undefined),
+      ]);
+      await bot.sendAudio(
+        message.chat.id,
+        songBuffer,
+        {
+          reply_to_message_id: message.message_id,
+          title: song.title ?? title,
+          thumbnail: thumbnailBuffer,
+          caption,
+          performer: `${extractFormattedUserName({ message })} ft. Suno`,
+        },
+        {
+          contentType: 'audio/mpeg',
+          filename: `${(song.title ?? title).replace(/\s+/g, '_')}.mp3`,
+        },
+      );
+    },
+  );
+
+  return { generateImage, speak, sing };
 };

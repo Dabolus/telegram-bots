@@ -124,7 +124,7 @@ constructs:
     type: queue
     worker:
       handler: bots/chattgb/src/index.handler
-      timeout: 120
+      timeout: 600
       memorySize: 1536
       environment:
         BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}

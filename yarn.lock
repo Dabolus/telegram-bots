@@ -1089,6 +1089,7 @@ __metadata:
     "@anthropic-ai/sdk": "npm:^0.20.7"
     "@aws-sdk/client-dynamodb": "npm:^3.564.0"
     "@aws-sdk/lib-dynamodb": "npm:^3.564.0"
+    "@clite/suno": "npm:^0.1.5"
     "@genkit-ai/ai": "npm:^0.5.0"
     "@genkit-ai/core": "npm:^0.5.0"
     "@genkit-ai/vertexai": "npm:^0.5.0"
@@ -1158,6 +1159,13 @@ __metadata:
     node-telegram-bot-api: "npm:^0.65.1"
   languageName: unknown
   linkType: soft
+
+"@clite/suno@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@clite/suno@npm:0.1.5"
+  checksum: 10c0/e2021ff1014300267eeef90f7b323c69f141c55d54ba80de2594bd9465a11225685228ee6004faf235f26d47b778d70fc86809a4176ca5f2ae9a3bece4f76fee
+  languageName: node
+  linkType: hard
 
 "@colors/colors@npm:1.6.0, @colors/colors@npm:^1.6.0":
   version: 1.6.0
