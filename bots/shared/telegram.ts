@@ -163,7 +163,20 @@ export const createUpdateHandler =
   (handler: Handler) =>
   async (event: SQSEvent, ctx: Context): Promise<SQSBatchResponse> => {
     ctx.callbackWaitsForEmptyEventLoop = false;
-    const batchItemFailures = await event.Records.reduce(
+    // Subtract 1 second to account for the time it takes to send the response
+    const availableTime = ctx.getRemainingTimeInMillis() - 1000;
+    const timeoutFailuresPromise = new Promise<SQSBatchItemFailure[]>(resolve =>
+      setTimeout(
+        () =>
+          resolve(
+            event.Records.map(({ messageId }) => ({
+              itemIdentifier: messageId,
+            })),
+          ),
+        availableTime,
+      ),
+    );
+    const batchItemFailuresPromise = event.Records.reduce(
       async (previousPromise, record) => {
         const failures = await previousPromise;
         try {
@@ -178,6 +191,10 @@ export const createUpdateHandler =
       },
       Promise.resolve<SQSBatchItemFailure[]>([]),
     );
+    const batchItemFailures = await Promise.race([
+      timeoutFailuresPromise,
+      batchItemFailuresPromise,
+    ]);
     return { batchItemFailures };
   };
 
