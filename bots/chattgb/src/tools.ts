@@ -164,11 +164,13 @@ export const getChatTools = ({
         lyrics: z
           .string()
           .describe(
-            'The lyrics to provide to Suno. You can also use any of the available Suno structure tags (e.g. [intro], [chorus], etc.)',
+            'The lyrics to provide to Suno. Make sure to never specify real artists names. You can also provide Suno with hints in square brackets (e.g. [rapped verse], [sad refrain], [guitar solo], etc.)',
           ),
         tags: z
           .string()
-          .describe('The tags to provide to Suno (e.g. genre, mood, etc.)'),
+          .describe(
+            'The tags to provide to Suno (e.g. genre, mood, etc.). Make sure to never specify real artists names.',
+          ),
         title: z.string().describe('The title of the song'),
         instrumental: z
           .boolean()
@@ -185,19 +187,43 @@ export const getChatTools = ({
       console.info(`Generating song for chat ${message.chat.id}`);
 
       await bot.sendChatAction(message.chat.id, 'upload_voice');
-      const [song] = await suno.customGenerate(
+      const songsRequests = await suno.customGenerate(
         lyrics,
         tags,
         title,
         instrumental,
-        undefined,
-        true,
       );
-      console.log(JSON.stringify(song, null, 2));
+      console.log(JSON.stringify(songsRequests, null, 2));
+      let song: Awaited<ReturnType<typeof suno.get>>[number] | undefined;
+      // We don't setup a timeout because we want to try up to
+      // the timeout of the Lambda function itself
+      while (!song) {
+        const songsStatuses = await suno.get(songsRequests.map(({ id }) => id));
+        // Handle error cases
+        if (songsStatuses.every(({ status }) => status === 'error')) {
+          console.error(
+            `Failed to generate songs: ${JSON.stringify(
+              songsStatuses,
+              null,
+              2,
+            )}`,
+          );
+          return;
+        }
+        song = songsStatuses.find(({ status }) => status === 'complete');
+        // If no song is completed yet, the find will fail and the song will still undefined.
+        // Wait some time before and then try again.
+        if (!song) {
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          await suno.keepAlive(true);
+        }
+      }
+
       if (!song.audio_url) {
         console.error(`No audio URL returned for song ${song.id}`);
         return;
       }
+
       const [songBuffer, thumbnailBuffer] = await Promise.all([
         downloadFileBuffer(song.audio_url),
         song.image_url
