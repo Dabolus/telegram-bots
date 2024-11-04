@@ -1,12 +1,6 @@
 import { v1 as tts } from '@google-cloud/text-to-speech';
 
-const client = new tts.TextToSpeechClient({
-  projectId: process.env.GCLOUD_PROJECT_ID,
-  credentials: {
-    client_email: process.env.GCLOUD_CLIENT_EMAIL,
-    private_key: process.env.GCLOUD_PRIVATE_KEY,
-  },
-});
+let client: tts.TextToSpeechClient;
 
 export interface SpeakOptions {
   languageCode?: string;
@@ -18,6 +12,12 @@ export const speak = async (
   content: string,
   { languageCode = 'en-US', male, ssml }: SpeakOptions = {},
 ): Promise<Buffer> => {
+  if (!client) {
+    new tts.TextToSpeechClient({
+      projectId: process.env.GCLOUD_PROJECT_ID,
+    });
+  }
+
   const [response] = await client.synthesizeSpeech({
     input: { [ssml ? 'ssml' : 'text']: content },
     voice: {

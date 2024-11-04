@@ -33,6 +33,9 @@ import { setupSuno } from '@bots/shared/suno';
 
 export const handler = createUpdateHandler(
   withErrorLogging(async (update, bot) => {
+    // Setup Google Application credentials for all Google-related services
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = googleCredentialsPath;
+
     const allowedIds = getAllowedChatIds();
     const botAdmins = getBotAdmins();
 
@@ -490,10 +493,8 @@ export const handler = createUpdateHandler(
     }
 
     const openai = setupOpenAi();
-    const genkit = setupGenkit({
-      google: { credentialsPath: googleCredentialsPath },
-    });
-    const suno = await setupSuno();
+    const genkit = setupGenkit();
+    const suno = await setupSuno().catch(() => undefined);
 
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const {
@@ -595,7 +596,7 @@ export const handler = createUpdateHandler(
     }
     for (const rawResponse of rawResponseParts) {
       if (rawResponse.toolRequest) {
-        await tools[rawResponse.toolRequest.name as keyof typeof tools](
+        await tools[rawResponse.toolRequest.name as keyof typeof tools]?.(
           rawResponse.toolRequest.input as any, // TODO: improve typings
         );
       } else if ((rawResponse.data as z.infer<typeof outputSchema>)?.message) {

@@ -184,6 +184,13 @@ export const getChatTools = ({
       outputSchema: z.void(),
     },
     async ({ lyrics, tags, title, instrumental, caption }) => {
+      if (!suno) {
+        console.error(
+          'Unable to generate songs with Suno: update the SUNO_COOKIE!',
+        );
+        return;
+      }
+
       console.info(`Generating song for chat ${message.chat.id}`);
 
       await bot.sendChatAction(message.chat.id, 'upload_voice');
@@ -262,5 +269,9 @@ export const getChatTools = ({
     },
   );
 
-  return { generateImage, speak, sing };
+  return {
+    generateImage,
+    speak,
+    ...(suno && { sing }),
+  };
 };

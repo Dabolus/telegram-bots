@@ -24,6 +24,7 @@ jobs:
         run: |
           mkdir -p bots/chattgb/static
           echo "$CHATTGB_SERVICE_ACCOUNT_BASE64" | base64 --decode > bots/chattgb/static/service-account.json
+          echo "$QUOTE_GENERATOR_SERVICE_ACCOUNT_BASE64" | base64 --decode > bots/quote-generator/static/service-account.json
           yarn deploy
           yarn postdeploy
         env:

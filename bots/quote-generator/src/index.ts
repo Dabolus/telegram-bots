@@ -8,12 +8,16 @@ import {
   extractQuoteInfo,
   generateImage,
   getRandomTemplateOptions,
+  googleCredentialsPath,
   quoteHeight,
   quoteWidth,
   uriEncodeEntities,
 } from './utils';
 
 export const handler = createUpdateHandler(async (update, bot) => {
+  // Setup Google Application credentials for all Google-related services
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = googleCredentialsPath;
+
   const botUsername = await getBotUsername(bot);
 
   if (

@@ -135,8 +135,6 @@ constructs:
         ANTHROPIC_API_KEY: ${env:ANTHROPIC_API_KEY}
         GCLOUD_LOCATION: ${env:GCLOUD_LOCATION}
         GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
-        GCLOUD_CLIENT_EMAIL: ${env:CHATTGB_GCLOUD_CLIENT_EMAIL}
-        GCLOUD_PRIVATE_KEY: ${env:CHATTGB_GCLOUD_PRIVATE_KEY}
       package:
         patterns:
           - 'bots/chattgb/static/**'
@@ -163,8 +161,6 @@ constructs:
         RENDERER_PATH: /quote-generator/render
         BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
         GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
-        GCLOUD_CLIENT_EMAIL: ${env:QUOTE_GENERATOR_GCLOUD_CLIENT_EMAIL}
-        GCLOUD_PRIVATE_KEY: ${env:QUOTE_GENERATOR_GCLOUD_PRIVATE_KEY}
         UNSPLASH_ACCESS_KEY: ${env:QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY}
       events:
         - httpApi:
@@ -175,6 +171,7 @@ constructs:
         - { Ref: FfmpegLambdaLayer }
       package:
         patterns:
+          - 'bots/quote-generator/static/**'
           - 'bots/quote-generator/templates/**'
   telegram-media-convert:
     type: queue

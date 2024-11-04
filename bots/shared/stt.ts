@@ -1,18 +1,18 @@
 import { v1p1beta1 as speech } from '@google-cloud/speech';
 
-const client = new speech.SpeechClient({
-  projectId: process.env.GCLOUD_PROJECT_ID,
-  credentials: {
-    client_email: process.env.GCLOUD_CLIENT_EMAIL,
-    private_key: process.env.GCLOUD_PRIVATE_KEY,
-  },
-});
+let client: speech.SpeechClient;
 
 export const recognize = async (
   audio: Buffer,
   sampleRateHertz: number,
   languageCode: string,
 ): Promise<string> => {
+  if (!client) {
+    client = new speech.SpeechClient({
+      projectId: process.env.GCLOUD_PROJECT_ID,
+    });
+  }
+
   const [response] = await client.recognize({
     config: {
       encoding: 'LINEAR16',

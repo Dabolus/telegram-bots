@@ -1,5 +1,7 @@
-import os from 'os';
-import { promises as fs } from 'fs';
+import path from 'node:path';
+import os from 'node:os';
+import url from 'node:url';
+import { promises as fs } from 'node:fs';
 import TelegramBot, {
   MessageEntity,
   MessageEntityType,
@@ -18,6 +20,11 @@ export const port = 40736;
 
 export const quoteWidth = 960;
 export const quoteHeight = 1280;
+
+export const googleCredentialsPath = path.resolve(
+  path.dirname(url.fileURLToPath(import.meta.url)),
+  '../static/service-account.json',
+);
 
 export const sanitize = (str: string) =>
   str.replace(
@@ -168,6 +175,7 @@ export const generateImage = async (
   await page.evaluate(
     imageUrl =>
       new Promise((resolve, reject) => {
+        // @ts-expect-error - We're in the browser context
         const img = new Image();
         img.addEventListener('load', resolve);
         img.addEventListener('error', reject);
