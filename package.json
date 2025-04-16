@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "make layers",
     "deploy": "serverless deploy",
-    "postdeploy": "node scripts/setup-webhooks.js",
+    "postdeploy": "bun scripts/setup-webhooks.ts",
     "upgrade-interactive": "ncu --interactive --deep"
   },
   "devDependencies": {

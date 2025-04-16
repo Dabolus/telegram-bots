@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const setWebhook = async url => {
+const setWebhook = async (url: string) => {
   const token = url.slice(url.lastIndexOf('/') + 1);
   const response = await fetch(
     `https://api.telegram.org/bot${token}/setWebhook`,
@@ -27,9 +27,13 @@ const setWebhook = async url => {
 console.info('Getting deployed service information...');
 childProcess.exec('serverless info', async (_, stdout) => {
   const url = stdout.match(/POST - (.+)/)?.[1];
-  const bots = Object.entries(process.env).filter(([key]) =>
-    key.endsWith('_BOT_TOKEN'),
-  );
+  if (!url) {
+    console.error('Could not find the deployed service URL!');
+    process.exit(1);
+  }
+  const bots = Object.entries(process.env).filter(
+    ([key, val]) => key.endsWith('_BOT_TOKEN') && !!val,
+  ) as [string, string][];
   console.info(`Found ${bots.length} bot(s) to set webhook for`);
   await Promise.all(
     bots.map(([key, token]) => {
