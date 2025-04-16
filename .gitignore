@@ -11,13 +11,4 @@ jspm_packages
 # Layers artifacts
 layers/*/build
 
-# Yarn 4
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
 service-account.json
