@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import {
   getAllowedChatIds,
   getBotUsername,
@@ -28,7 +27,7 @@ import {
   LlmTextInput,
 } from './utils';
 import { handleSettings } from './settings';
-import { ModelArgument } from '@genkit-ai/ai/model';
+import { z, type ModelArgument } from 'genkit';
 import { setupSuno } from '@bots/shared/suno';
 
 export const handler = createUpdateHandler(
@@ -580,7 +579,7 @@ export const handler = createUpdateHandler(
               },
             }),
       },
-      history: [
+      messages: [
         {
           role: 'system',
           content: [{ text: fullContext }],
@@ -589,7 +588,7 @@ export const handler = createUpdateHandler(
       ],
       prompt: newMessage.content,
     });
-    const rawResponseParts = completion.candidates?.[0]?.message?.content;
+    const rawResponseParts = completion.message?.content;
     if (!rawResponseParts?.length) {
       console.error('No responses received from Genkit');
       return;
@@ -634,10 +633,7 @@ export const handler = createUpdateHandler(
         ...currentConfig,
         history: {
           ...currentConfig.history,
-          messages: [
-            ...updatedMessages,
-            completion.candidates[0].message.toJSON(),
-          ],
+          messages: completion.messages,
         },
       });
     }

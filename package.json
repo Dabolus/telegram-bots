@@ -3,22 +3,22 @@
   "type": "module",
   "scripts": {
     "postinstall": "make layers",
-    "deploy": "serverless deploy",
+    "deploy": "bun run --bun serverless deploy",
     "postdeploy": "bun scripts/setup-webhooks.ts",
     "upgrade-interactive": "ncu --interactive --deep"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "dotenv": "^16.4.5",
-    "esbuild": "^0.20.2",
+    "@types/long": "^5.0.0",
+    "@types/node": "^22.14.1",
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.25.2",
     "esbuild-plugin-yaml": "^0.0.1",
     "npm-check-updates": "^17.1.18",
     "serverless": "^3.38.0",
-    "serverless-esbuild": "^1.52.1",
-    "serverless-lift": "^1.28.1",
-    "serverless-s3-sync": "^3.3.0",
-    "typescript": "^5.4.5",
-    "undici": "^6.14.1"
+    "serverless-esbuild": "^1.55.0",
+    "serverless-lift": "^1.31.0",
+    "serverless-s3-sync": "^3.4.0",
+    "typescript": "^5.8.3"
   },
   "resolutions": {
     "zod": "3.23.8"

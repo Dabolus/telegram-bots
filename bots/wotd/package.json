@@ -3,14 +3,14 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.564.0",
-    "@aws-sdk/lib-dynamodb": "^3.564.0",
-    "@googleapis/customsearch": "^2.0.0",
-    "node-telegram-bot-api": "^0.65.1"
+    "@aws-sdk/client-dynamodb": "^3.788.0",
+    "@aws-sdk/lib-dynamodb": "^3.789.0",
+    "@googleapis/customsearch": "^3.2.0",
+    "node-telegram-bot-api": "^0.66.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.137",
-    "@types/node-telegram-bot-api": "^0.64.6"
+    "@types/aws-lambda": "^8.10.149",
+    "@types/node-telegram-bot-api": "^0.64.8"
   },
   "private": true
 }

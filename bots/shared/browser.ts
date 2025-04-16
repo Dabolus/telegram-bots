@@ -9,7 +9,7 @@ export const initializeBrowser = async () => {
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath(),
     headless: chromium.headless,
-    ignoreHTTPSErrors: true,
+    acceptInsecureCerts: true,
   });
 
   return browser;

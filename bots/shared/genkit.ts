@@ -1,11 +1,10 @@
 import OpenAI from 'openai';
 import { countTokens } from 'gptoken';
-import { generate } from '@genkit-ai/ai';
-import type { MessageData } from '@genkit-ai/ai/model';
-import { gemini15ProPreview, imagen2, vertexAI } from '@genkit-ai/vertexai';
-import { configureGenkit } from '@genkit-ai/core';
+import { genkit, type Genkit, type MessageData } from 'genkit';
+import { logger } from 'genkit/logging';
+import { gemini25ProPreview0325, imagen3, vertexAI } from '@genkit-ai/vertexai';
 import { openAI, gpt4o, dallE3 } from 'genkitx-openai';
-import { anthropic, claude3Opus } from 'genkitx-anthropic';
+import { anthropic, claude37Sonnet } from 'genkitx-anthropic';
 
 export const chatConfigs = {
   openai: {
@@ -27,14 +26,14 @@ export const chatConfigs = {
   },
   google: {
     text: {
-      model: gemini15ProPreview,
-      displayName: 'Gemini 1.5 Pro',
-      maxHistoryTokens: 1000000,
-      maxOutputTokens: 8192,
+      model: gemini25ProPreview0325,
+      displayName: 'Gemini 2.5 Pro',
+      maxHistoryTokens: 1048576,
+      maxOutputTokens: 65536,
     },
     image: {
-      model: imagen2,
-      displayName: 'Imagen 2',
+      model: imagen3,
+      displayName: 'Imagen 3',
       maxInputTokens: 4000,
     },
     tts: {
@@ -45,10 +44,10 @@ export const chatConfigs = {
   },
   anthropic: {
     text: {
-      model: claude3Opus,
-      displayName: 'Claude 3 Opus',
-      maxHistoryTokens: 200000,
-      maxOutputTokens: 4096,
+      model: claude37Sonnet,
+      displayName: 'Claude 3.7 Sonnet',
+      maxHistoryTokens: 512000,
+      maxOutputTokens: 128000,
     },
   },
 } as const;
@@ -67,11 +66,7 @@ export interface SetupGenkitOptions {
   };
 }
 
-let genkitConfigured = false;
-
-export interface GenkitWrapper {
-  generate: typeof generate;
-}
+let genkitInstance: Genkit;
 
 export const setupGenkit = ({
   openai: { apiKey: openaiApiKey = process.env.OPENAI_API_KEY } = {},
@@ -81,7 +76,7 @@ export const setupGenkit = ({
     credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS,
   } = {},
   anthropic: { apiKey: anthropicApiKey = process.env.ANTHROPIC_API_KEY } = {},
-}: SetupGenkitOptions = {}): GenkitWrapper => {
+}: SetupGenkitOptions = {}): Genkit => {
   if (!openaiApiKey) {
     throw new Error('OpenAI API key not provided!');
   }
@@ -101,8 +96,9 @@ export const setupGenkit = ({
   // Explicitly set the environment variable for the Google Cloud credentials
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
 
-  if (!genkitConfigured) {
-    configureGenkit({
+  if (!genkitInstance) {
+    logger.setLogLevel('error');
+    genkitInstance = genkit({
       plugins: [
         openAI({ apiKey: openaiApiKey }),
         vertexAI({
@@ -114,13 +110,10 @@ export const setupGenkit = ({
         }),
         anthropic({ apiKey: anthropicApiKey }),
       ],
-      enableTracingAndMetrics: false,
-      logLevel: 'error',
     });
-    genkitConfigured = true;
   }
 
-  return { generate };
+  return genkitInstance;
 };
 
 let openai: OpenAI;

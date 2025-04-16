@@ -1,4 +1,4 @@
-import { v1p1beta1 as speech } from '@google-cloud/speech';
+import { v1 as speech } from '@google-cloud/speech';
 
 let client: speech.SpeechClient;
 

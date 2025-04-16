@@ -13,7 +13,7 @@ export const speak = async (
   { languageCode = 'en-US', male, ssml }: SpeakOptions = {},
 ): Promise<Buffer> => {
   if (!client) {
-    new tts.TextToSpeechClient({
+    client = new tts.TextToSpeechClient({
       projectId: process.env.GCLOUD_PROJECT_ID,
     });
   }
@@ -36,5 +36,5 @@ export const speak = async (
     throw new Error('Failed to synthesize speech');
   }
 
-  return Buffer.from(response.audioContent);
+  return Buffer.from(response.audioContent as Uint8Array);
 };

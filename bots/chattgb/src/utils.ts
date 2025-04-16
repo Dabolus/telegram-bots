@@ -3,15 +3,20 @@ import sharp from 'sharp';
 import os from 'node:os';
 import path from 'node:path';
 import fsSync, { promises as fs } from 'node:fs';
-import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { runFfmpeg, getFilePackets, videoHasAudio } from '@bots/shared/ffmpeg';
 import { getItem, setItem } from '@bots/shared/cache';
 import { getChatTools } from './tools';
 import { speak as googleGenerateVoice } from '@bots/shared/tts';
 import { getCommandRegex } from '@bots/shared/telegram';
-import { type GenkitWrapper, chatConfigs } from '@bots/shared/genkit';
-import type { MediaPart, MessageData, Part } from '@genkit-ai/ai/model';
+import { chatConfigs } from '@bots/shared/genkit';
+import {
+  z,
+  type Genkit,
+  type MediaPart,
+  type MessageData,
+  type Part,
+} from 'genkit';
 import type { dallE3 } from 'genkitx-openai';
 import type { imagen2 } from '@genkit-ai/vertexai';
 import type TelegramBot from 'node-telegram-bot-api';
@@ -94,9 +99,9 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
 };
 
 export const getDalleImageSize = (
-  orientation?: Parameters<
-    ReturnType<typeof getChatTools>['generateImage']
-  >[0]['orientation'],
+  orientation?: NonNullable<
+    Parameters<ReturnType<typeof getChatTools>['generateImage']>[0]
+  >['orientation'],
 ): '1792x1024' | '1024x1792' | '1024x1024' => {
   switch (orientation) {
     case 'landscape':
@@ -109,9 +114,9 @@ export const getDalleImageSize = (
 };
 
 export const getImagenImageSize = (
-  orientation?: Parameters<
-    ReturnType<typeof getChatTools>['generateImage']
-  >[0]['orientation'],
+  orientation?: NonNullable<
+    Parameters<ReturnType<typeof getChatTools>['generateImage']>[0]
+  >['orientation'],
 ): '1:1' | '9:16' | '16:9' => {
   switch (orientation) {
     case 'landscape':
@@ -125,9 +130,9 @@ export const getImagenImageSize = (
 
 export const getImageCustomConfig = (
   modelConfig: ChatModelsConfiguration['image'],
-  imageGenerationConfig: Parameters<
-    ReturnType<typeof getChatTools>['generateImage']
-  >[0],
+  imageGenerationConfig: NonNullable<
+    Parameters<ReturnType<typeof getChatTools>['generateImage']>[0]
+  >,
   userId?: number,
 ) => {
   switch (modelConfig) {
@@ -208,7 +213,7 @@ The context is the one provided below in triple quotes:
 export interface GetGenkitConfigParams {
   bot: TelegramBot;
   message: TelegramBot.Message;
-  genkit: GenkitWrapper;
+  genkit: Genkit;
   openai: OpenAI;
   suno?: SunoApi;
   config?: ChatConfiguration;

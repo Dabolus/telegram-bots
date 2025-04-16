@@ -4,6 +4,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.564.0"
+    "@aws-sdk/client-sqs": "^3.787.0"
   }
 }

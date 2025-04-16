@@ -1,5 +1,4 @@
-import { defineTool } from '@genkit-ai/ai';
-import { z } from 'zod';
+import { z, type ModelArgument } from 'genkit';
 import { chatConfigs } from '@bots/shared/genkit';
 import sharp from 'sharp';
 import {
@@ -7,7 +6,6 @@ import {
   getImageCustomConfig,
   type GetGenkitConfigParams,
 } from './utils';
-import { ModelArgument } from '@genkit-ai/ai/model';
 import { downloadFileBuffer } from '@bots/shared/utils';
 import { extractFormattedUserName } from '@bots/shared/telegram';
 
@@ -28,7 +26,7 @@ export const getChatTools = ({
   const imageModel = chatConfigs[imageModelConfig].image;
   const ttsModelConfig = config?.models?.tts ?? 'openai';
 
-  const generateImage = defineTool(
+  const generateImage = genkit.defineTool(
     {
       name: 'generateImage',
       description: 'Use this to generate images',
@@ -74,7 +72,7 @@ export const getChatTools = ({
         },
       });
 
-      const imageMedia = imageResponse.media();
+      const imageMedia = imageResponse.media;
 
       if (!imageMedia) {
         console.error('No media returned');
@@ -105,7 +103,7 @@ export const getChatTools = ({
       );
     },
   );
-  const speak = defineTool(
+  const speak = genkit.defineTool(
     {
       name: 'speak',
       description: 'Use this to speak',
@@ -156,7 +154,7 @@ export const getChatTools = ({
     },
   );
 
-  const sing = defineTool(
+  const sing = genkit.defineTool(
     {
       name: 'sing',
       description: 'Use this to sing or generate music using Suno',
@@ -273,5 +271,5 @@ export const getChatTools = ({
     generateImage,
     speak,
     ...(suno && { sing }),
-  };
+  } as const;
 };
