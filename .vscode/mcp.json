@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "serverless": {
+      "type": "stdio",
+      "command": "serverless",
+      "args": ["mcp"]
+    }
+  }
+}
