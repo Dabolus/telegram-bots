@@ -5,11 +5,13 @@
     "postinstall": "make layers",
     "deploy": "bun run --bun serverless deploy",
     "postdeploy": "bun scripts/setup-webhooks.ts",
-    "upgrade-interactive": "ncu --interactive --deep"
+    "upgrade-interactive": "ncu --interactive --deep",
+    "get-service-account-base64": "bun scripts/get-service-account-base64.ts"
   },
   "devDependencies": {
     "@types/long": "^5.0.0",
     "@types/node": "^22.15.30",
+    "clipboardy": "^4.0.0",
     "dotenv": "^16.5.0",
     "esbuild": "^0.25.5",
     "esbuild-plugin-yaml": "^0.0.1",
