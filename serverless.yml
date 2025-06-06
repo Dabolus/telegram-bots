@@ -1,7 +1,6 @@
 org: dabolus
 app: ${env:SERVICE_NAME}
 service: ${env:SERVICE_NAME}
-frameworkVersion: '3'
 useDotenv: true
 
 provider:

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "dependencies": {
     "node-telegram-bot-api": "^0.66.0",
-    "sharp": "0.34.1"
+    "sharp": "0.34.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",

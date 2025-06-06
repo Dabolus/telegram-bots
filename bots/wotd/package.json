@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.788.0",
-    "@aws-sdk/lib-dynamodb": "^3.789.0",
-    "@googleapis/customsearch": "^3.2.0",
+    "@aws-sdk/client-dynamodb": "^3.825.0",
+    "@aws-sdk/lib-dynamodb": "^3.825.0",
+    "@googleapis/customsearch": "^4.0.1",
     "node-telegram-bot-api": "^0.66.0"
   },
   "devDependencies": {
