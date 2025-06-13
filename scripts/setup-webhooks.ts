@@ -1,16 +1,19 @@
-import childProcess from 'child_process';
+import childProcess from 'node:child_process';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const setWebhook = async (url: string) => {
+const setWebhook = async (url: string, allowed_updates?: string[]) => {
   const token = url.slice(url.lastIndexOf('/') + 1);
   const response = await fetch(
     `https://api.telegram.org/bot${token}/setWebhook`,
     {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({
+        url,
+        allowed_updates,
+      }),
     },
   );
   const { ok, description } = await response.json();
@@ -39,16 +42,24 @@ childProcess.exec(
     ) as [string, string][];
     console.info(`Found ${bots.length} bot(s) to set webhook for`);
     await Promise.all(
-      bots.map(([key, token]) => {
+      bots.map(async ([key, token]) => {
         const botId = key
           .replace('_BOT_TOKEN', '')
           .replace(/_/g, '-')
           .toLowerCase();
+        const botPackageJson = (await import(`@bots/${botId}/package.json`, {
+          with: { type: 'json' },
+        }).catch(() => {})) as
+          | typeof import('@bots/dabbext/package.json')
+          | undefined;
         const fullUrl = url
           .replace('{botId}', botId)
           .replace('{botToken}', token);
         // Only set webhook if the bot is triggered via broker + worker logic
-        return stderr.includes(`${botId}Worker`) && setWebhook(fullUrl);
+        return (
+          stderr.includes(`${botId}Worker`) &&
+          setWebhook(fullUrl, botPackageJson?.allowedUpdates)
+        );
       }),
     );
     console.info('Webhooks set successfully!');

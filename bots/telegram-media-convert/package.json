@@ -11,5 +11,8 @@
     "@types/node-telegram-bot-api": "^0.64.8",
     "@types/sharp": "^0.32.0"
   },
-  "private": true
+  "private": true,
+  "allowedUpdates": [
+    "message"
+  ]
 }

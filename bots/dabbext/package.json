@@ -9,5 +9,8 @@
     "@types/aws-lambda": "^8.10.149",
     "@types/node-telegram-bot-api": "^0.64.8"
   },
-  "private": true
+  "private": true,
+  "allowedUpdates": [
+    "inline_query"
+  ]
 }
