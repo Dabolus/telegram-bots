@@ -25,27 +25,32 @@ const setWebhook = async (url: string) => {
 };
 
 console.info('Getting deployed service information...');
-childProcess.exec('serverless info', async (_, stdout) => {
-  const url = stdout.match(/POST - (.+)/)?.[1];
-  if (!url) {
-    console.error('Could not find the deployed service URL!');
-    process.exit(1);
-  }
-  const bots = Object.entries(process.env).filter(
-    ([key, val]) => key.endsWith('_BOT_TOKEN') && !!val,
-  ) as [string, string][];
-  console.info(`Found ${bots.length} bot(s) to set webhook for`);
-  await Promise.all(
-    bots.map(([key, token]) => {
-      const botId = key
-        .replace('_BOT_TOKEN', '')
-        .replace(/_/g, '-')
-        .toLowerCase();
-      const fullUrl = url
-        .replace('{botId}', botId)
-        .replace('{botToken}', token);
-      return setWebhook(fullUrl);
-    }),
-  );
-  console.info('Webhooks set successfully!');
-});
+childProcess.exec(
+  'serverless info',
+  { env: { ...process.env, CI: 'true' } },
+  async (_, __, stderr) => {
+    const url = stderr.match(/POST - (.+)/)?.[1];
+    if (!url) {
+      console.error('Could not find the deployed service URL!');
+      process.exit(1);
+    }
+    const bots = Object.entries(process.env).filter(
+      ([key, val]) => key.endsWith('_BOT_TOKEN') && !!val,
+    ) as [string, string][];
+    console.info(`Found ${bots.length} bot(s) to set webhook for`);
+    await Promise.all(
+      bots.map(([key, token]) => {
+        const botId = key
+          .replace('_BOT_TOKEN', '')
+          .replace(/_/g, '-')
+          .toLowerCase();
+        const fullUrl = url
+          .replace('{botId}', botId)
+          .replace('{botToken}', token);
+        // Only set webhook if the bot is triggered via broker + worker logic
+        return stderr.includes(`${botId}Worker`) && setWebhook(fullUrl);
+      }),
+    );
+    console.info('Webhooks set successfully!');
+  },
+);

@@ -34,26 +34,14 @@ provider:
               - Arn
 
 plugins:
-  - serverless-esbuild
   - serverless-s3-sync
   - serverless-lift
 
-custom:
+build:
   esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    format: esm
-    platform: node
-    target: node20
-    outputFileExtension: '.mjs'
-    resolveExtensions: ['.ts', '.mjs', '.js', '.json']
-    inject: ['cjs-shim.ts']
-    plugins: esbuild-plugins.cjs
-    packager: yarn
-    exclude:
-      - '@sparticuz/chromium'
-      - sharp
+    configFile: ./esbuild.config.js
+
+custom:
   s3Sync:
     - bucketName: ${env:SERVICE_NAME}-assets
       localDir: assets
@@ -161,10 +149,6 @@ constructs:
         BOT_TOKEN: ${env:QUOTE_GENERATOR_BOT_TOKEN}
         GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
         UNSPLASH_ACCESS_KEY: ${env:QUOTE_GENERATOR_UNSPLASH_ACCESS_KEY}
-      events:
-        - httpApi:
-            path: /bot${env:QUOTE_GENERATOR_BOT_TOKEN}
-            method: post
       layers:
         - { Ref: ChromiumLambdaLayer }
         - { Ref: FfmpegLambdaLayer }
@@ -181,10 +165,6 @@ constructs:
       environment:
         ASSETS_BASE_URL: https://${env:SERVICE_NAME}-assets.s3.amazonaws.com
         BOT_TOKEN: ${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
-      events:
-        - httpApi:
-            path: /bot${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
-            method: post
       layers:
         - { Ref: FfmpegLambdaLayer }
         - { Ref: SharpLambdaLayer }

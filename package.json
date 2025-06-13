@@ -2,16 +2,18 @@
   "name": "telegram-bots",
   "type": "module",
   "scripts": {
-    "postinstall": "make layers",
-    "deploy": "bun run --bun serverless deploy",
-    "postdeploy": "bun scripts/setup-webhooks.ts",
+    "build:layers": "make layers",
+    "deploy": "concurrently 'bun:build:*' && serverless deploy",
+    "setup-webhooks": "bun scripts/setup-webhooks.ts",
     "upgrade-interactive": "ncu --interactive --deep",
     "get-service-account-base64": "bun scripts/get-service-account-base64.ts"
   },
   "devDependencies": {
+    "@types/bun": "^1.2.16",
     "@types/long": "^5.0.0",
     "@types/node": "^22.15.30",
     "clipboardy": "^4.0.0",
+    "concurrently": "^9.1.2",
     "dotenv": "^16.5.0",
     "esbuild": "^0.25.5",
     "esbuild-plugin-yaml": "^0.0.1",
@@ -28,6 +30,5 @@
   "private": true,
   "workspaces": [
     "bots/*"
-  ],
-  "packageManager": "bun@1.2.15"
+  ]
 }
