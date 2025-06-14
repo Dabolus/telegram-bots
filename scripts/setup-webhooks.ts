@@ -13,6 +13,7 @@ const setWebhook = async (url: string, allowed_updates?: string[]) => {
       body: JSON.stringify({
         url,
         allowed_updates,
+        secret_token: process.env.SECRET_TOKEN,
       }),
     },
   );

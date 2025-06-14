@@ -65,6 +65,7 @@ functions:
       ENABLE_ANALYTICS: ${env:ENABLE_ANALYTICS}
       ANALYTICS_API_SECRET: ${env:ANALYTICS_API_SECRET}
       ANALYTICS_MEASUREMENT_ID: ${env:ANALYTICS_MEASUREMENT_ID}
+      SECRET_TOKEN: ${env:SECRET_TOKEN}
       CHATTGB_BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}
       CHATTGB_QUEUE_URL: ${construct:chattgb.queueUrl}
       DABBEXT_BOT_TOKEN: ${env:DABBEXT_BOT_TOKEN}
@@ -75,7 +76,7 @@ functions:
       TELEGRAM_MEDIA_CONVERT_QUEUE_URL: ${construct:telegram-media-convert.queueUrl}
     events:
       - httpApi:
-          path: /${env:SERVICE_SECRET}/{botId}/{botToken}
+          path: /broker/{botId}/{botToken}
           method: post
   quote-generator-renderer:
     handler: bots/quote-generator/src/renderer.handler

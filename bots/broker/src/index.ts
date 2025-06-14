@@ -5,21 +5,54 @@ import type {
   PollAnswer,
   CallbackQuery,
 } from 'node-telegram-bot-api';
-import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import type {
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResultV2,
+  Context,
+} from 'aws-lambda';
 
-export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
+export const handler = async (
+  event: APIGatewayProxyEventV2,
+  ctx: Context,
+): Promise<APIGatewayProxyResultV2> => {
   ctx.callbackWaitsForEmptyEventLoop = false;
 
   console.info('Received event', event.requestContext);
 
+  if (
+    event.headers['X-Telegram-Bot-Api-Secret-Token'] !==
+    process.env.SECRET_TOKEN
+  ) {
+    console.error('Invalid secret token provided in the request header');
+    return {
+      statusCode: 403,
+      body: JSON.stringify({
+        error: 'Forbidden',
+        message: 'Invalid secret token provided in the request header',
+      }),
+    };
+  }
+
   if (!event.body) {
     console.error('No body provided');
-    return;
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'Bad Request',
+        message: 'No body provided in the request',
+      }),
+    };
   }
 
   if (!event.pathParameters?.botId || !event.pathParameters?.botToken) {
     console.error('Missing bot parameters');
-    return;
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'Bad Request',
+        message: 'Missing botId or botToken in path parameters',
+      }),
+    };
   }
 
   const botEnvPrefix = event.pathParameters.botId
@@ -32,7 +65,13 @@ export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
     console.error(
       `Token mismatch for bot "${event.pathParameters.botId}" (looked for "${botEnvPrefix}_BOT_TOKEN" in environment variables)`,
     );
-    return;
+    return {
+      statusCode: 403,
+      body: JSON.stringify({
+        error: 'Forbidden',
+        message: `Token mismatch for bot "${event.pathParameters.botId}"`,
+      }),
+    };
   }
 
   const botQueueUrl = process.env[`${botEnvPrefix}_QUEUE_URL`];
@@ -41,7 +80,13 @@ export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
     console.error(
       `Unable to detect bot queue URL for bot "${event.pathParameters.botId}" (looked for "${botEnvPrefix}_QUEUE_URL" in environment variables)`,
     );
-    return;
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: 'Internal Server Error',
+        message: `Unable to detect bot queue URL for bot "${event.pathParameters.botId}"`,
+      }),
+    };
   }
 
   const sqs = new SQSClient({});
@@ -119,6 +164,15 @@ export const handler = async (event: APIGatewayProxyEvent, ctx: Context) => {
       console.info(`Analytics response: ${res.status} ${res.statusText}`);
     } catch (error) {
       console.error('Error while sending analytics event', error);
+      // Continue processing the event even if analytics fails
     }
   }
+
+  console.info('Event processed successfully');
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'Event processed successfully',
+    }),
+  };
 };
