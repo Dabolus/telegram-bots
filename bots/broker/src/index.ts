@@ -20,10 +20,12 @@ export const handler = async (
   console.info('Received event', event.requestContext);
 
   if (
-    event.headers['X-Telegram-Bot-Api-Secret-Token'] !==
+    event.headers['x-telegram-bot-api-secret-token'] !==
     process.env.SECRET_TOKEN
   ) {
-    console.error('Invalid secret token provided in the request header');
+    console.error(
+      `Invalid secret token provided in the request header. Header secret token: ${event.headers['x-telegram-bot-api-secret-token']}`,
+    );
     return {
       statusCode: 403,
       body: JSON.stringify({
