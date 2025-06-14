@@ -33,7 +33,7 @@ childProcess.exec(
   'serverless info',
   { env: { ...process.env, CI: 'true' } },
   async (_, __, stderr) => {
-    const url = stderr.match(/POST - (.+)/)?.[1];
+    const url = stderr.match(/POST - (.+\/broker\/.+)/)?.[1];
     if (!url) {
       console.error('Could not find the deployed service URL!');
       process.exit(1);
