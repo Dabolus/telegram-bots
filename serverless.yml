@@ -74,6 +74,8 @@ functions:
       QUOTE_GENERATOR_QUEUE_URL: ${construct:quote-generator.queueUrl}
       TELEGRAM_MEDIA_CONVERT_BOT_TOKEN: ${env:TELEGRAM_MEDIA_CONVERT_BOT_TOKEN}
       TELEGRAM_MEDIA_CONVERT_QUEUE_URL: ${construct:telegram-media-convert.queueUrl}
+      VIDEO_MEET_BOT_TOKEN: ${env:VIDEO_MEET_BOT_TOKEN}
+      VIDEO_MEET_QUEUE_URL: ${construct:video-meet.queueUrl}
     events:
       - httpApi:
           path: /broker/{botId}/{botToken}
@@ -106,6 +108,19 @@ functions:
           method: scheduler
           rate: cron(1 18 * * ? *)
           timezone: Europe/Rome
+  video-meet-oauth-callback:
+    handler: bots/video-meet/src/oauth.handler
+    environment:
+      BOT_TOKEN: ${env:VIDEO_MEET_BOT_TOKEN}
+      STATE_SECRET: ${env:VIDEO_MEET_STATE_SECRET}
+      GOOGLE_OAUTH_CLIENT_ID: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_SECRET}
+      GOOGLE_OAUTH_REDIRECT_PATH: /video-meet/oauth/callback
+      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+    events:
+      - httpApi:
+          path: /video-meet/oauth/callback
+          method: get
 
 constructs:
   chattgb:
@@ -172,6 +187,18 @@ constructs:
       package:
         patterns:
           - 'bots/telegram-media-convert/static/**'
+  video-meet:
+    type: queue
+    worker:
+      handler: bots/video-meet/src/index.handler
+      environment:
+        BOT_TOKEN: ${env:VIDEO_MEET_BOT_TOKEN}
+        GCLOUD_PROJECT_ID: ${env:GCLOUD_PROJECT_ID}
+        GOOGLE_OAUTH_CLIENT_ID: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_ID}
+        GOOGLE_OAUTH_CLIENT_SECRET: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_SECRET}
+        GOOGLE_OAUTH_REDIRECT_PATH: /video-meet/oauth/callback
+        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+        STATE_SECRET: ${env:VIDEO_MEET_STATE_SECRET}
 
 resources:
   Resources:

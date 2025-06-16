@@ -1,0 +1,16 @@
+{
+  "name": "@bots/video-meet",
+  "type": "module",
+  "version": "0.1.0",
+  "dependencies": {
+    "@google-apps/meet": "^0.6.0",
+    "google-auth-library": "^10.1.0",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "@types/node-telegram-bot-api": "^0.64.8",
+    "@types/telegram-web-app": "^7.10.1"
+  },
+  "private": true
+}
