@@ -95,6 +95,7 @@ export const getImage = async (
       num: 1,
       q: term,
       cx,
+      imgSize: 'large',
     });
 
     if (!link) {

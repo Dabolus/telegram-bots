@@ -9,7 +9,7 @@ import { getChatsWords, getImage, getUpdatedExclusions } from './utils';
 import messages from './messages';
 import type { Context } from 'aws-lambda';
 
-export const handler = async (event: unknown, context: Context) => {
+export const handler = async (_event: unknown, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
   const bot = setupBot();
@@ -44,10 +44,16 @@ export const handler = async (event: unknown, context: Context) => {
     await bot.sendMessage(chatId, messages.otherWords(otherMatches));
 
     console.log('Setting chat title');
-    await bot.setChatTitle(chatId, messages.chatTitle(mainMatch));
+    await bot.setChatTitle(chatId, messages.chatTitle(mainMatch)).catch(err => {
+      console.warn(`Failed to set chat title for ${chatId}:`, err);
+    });
 
     console.log('Setting chat description');
-    await bot.setChatDescription(chatId, messages.chatDescription(mainMatch));
+    await bot
+      .setChatDescription(chatId, messages.chatDescription(mainMatch))
+      .catch(err => {
+        console.warn(`Failed to set chat description for ${chatId}:`, err);
+      });
 
     console.info('Getting the image');
     const image = await getImage(mainMatch.word);
@@ -59,7 +65,9 @@ export const handler = async (event: unknown, context: Context) => {
     }
 
     console.info('Setting chat profile picture');
-    await bot.setChatPhoto(chatId, image);
+    await bot.setChatPhoto(chatId, image).catch(err => {
+      console.warn(`Failed to set chat profile picture for ${chatId}:`, err);
+    });
   }
 
   console.info('Done');
