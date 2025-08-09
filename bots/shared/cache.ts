@@ -17,6 +17,7 @@ const setupDynamoDB = () => {
 };
 
 const getVal = async (
+  botApiDialogId = 0,
   token = process.env.BOT_TOKEN,
   cacheTable = process.env.DYNAMODB_CACHE_TABLE,
 ) => {
@@ -32,7 +33,10 @@ const getVal = async (
   const { Item } = await ddb.send(
     new GetCommand({
       TableName: cacheTable,
-      Key: { botToken: `bot${token}` },
+      Key: {
+        botToken: `bot${token}`,
+        botApiDialogId,
+      },
     }),
   );
 
@@ -40,40 +44,35 @@ const getVal = async (
 };
 
 export const getItem = async <T>(
-  key: string,
+  key?: string,
+  botApiDialogId = 0,
   token = process.env.BOT_TOKEN,
   cacheTable = process.env.DYNAMODB_CACHE_TABLE,
 ): Promise<T | undefined> => {
-  const val = await getVal(token, cacheTable);
+  const val = await getVal(botApiDialogId, token, cacheTable);
 
-  return val?.[key];
+  return key ? val?.[key] : val;
 };
 
 export const setItem = async <T>(
-  key: string,
+  key: string | undefined,
   value: T,
+  botApiDialogId = 0,
   token = process.env.BOT_TOKEN,
   cacheTable = process.env.DYNAMODB_CACHE_TABLE,
 ): Promise<void> => {
-  if (!token) {
-    throw new Error('Telegram Bot token not provided!');
-  }
-  if (!cacheTable) {
-    throw new Error('Cache table not provided!');
-  }
-
+  const val = await getVal(botApiDialogId, token, cacheTable);
   const ddb = setupDynamoDB();
-
-  const val = await getVal(token, cacheTable);
 
   await ddb.send(
     new PutCommand({
       TableName: cacheTable,
       Item: {
         botToken: `bot${token}`,
+        botApiDialogId,
         val: {
           ...val,
-          [key]: value,
+          ...(key ? { [key]: value } : value),
         },
       },
     }),

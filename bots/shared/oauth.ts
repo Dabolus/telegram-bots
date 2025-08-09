@@ -47,7 +47,7 @@ export const createState = (
 export const verifyState = (
   state: string,
   stateSecret = process.env.STATE_SECRET,
-): string => {
+): number => {
   if (!stateSecret) {
     throw new Error('State secret not provided!');
   }
@@ -86,26 +86,24 @@ export const generateOAuthUrl = (telegramUserId: number): string => {
 export const handleOAuthCallback = async (
   code: string,
   state: string,
-): Promise<string> => {
+): Promise<number> => {
   const telegramUserId = verifyState(state);
   const client = setupOauthClient();
   const { tokens } = await client.getToken(code);
 
-  await setItem(`${telegramUserId}`, { tokens });
+  await setItem('tokens', tokens, telegramUserId);
 
   return telegramUserId;
 };
 
 export const getUserTokens = async (telegramUserId: number) => {
-  const cachedData = await getItem<{ tokens?: Credentials }>(
-    `${telegramUserId}`,
-  );
+  const tokens = await getItem<Credentials>('tokens', telegramUserId);
 
-  if (!cachedData?.tokens) {
+  if (!tokens) {
     throw new Error(`User ID ${telegramUserId} is not authenticated!`);
   }
 
-  return cachedData.tokens;
+  return tokens;
 };
 
 export const getAuthenticatedClient = async (
@@ -122,5 +120,5 @@ export const logoutClient = async (telegramUserId: number): Promise<void> => {
   const client = await getAuthenticatedClient(telegramUserId);
   await client.getAccessToken();
   await client.revokeCredentials();
-  await setItem(`${telegramUserId}`, {});
+  await setItem(undefined, {}, telegramUserId);
 };

@@ -54,7 +54,7 @@ export interface ChatConfiguration {
 export const getChatConfiguration = async (
   chatId: number,
 ): Promise<ChatConfiguration> => {
-  const config = await getItem<ChatConfiguration>(`${chatId}`);
+  const config = await getItem<ChatConfiguration>(undefined, chatId);
   return config || {};
 };
 
@@ -68,7 +68,7 @@ export const setChatConfiguration = async (
     const currentConfig = await getChatConfiguration(chatId);
     return setChatConfiguration(chatId, config(currentConfig));
   }
-  await setItem(`${chatId}`, config);
+  await setItem(undefined, config, chatId);
 };
 
 export const getDenyList = async (): Promise<number[]> => {

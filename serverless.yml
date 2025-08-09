@@ -99,7 +99,7 @@ functions:
     handler: bots/wotd/src/index.handler
     environment:
       BOT_TOKEN: ${env:WOTD_BOT_TOKEN}
-      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-data
       CHAT_IDS_ALLOWLIST: ${env:WOTD_CHAT_IDS_ALLOWLIST}
       GOOGLE_CUSTOM_SEARCH_API_KEY: ${env:GOOGLE_CUSTOM_SEARCH_API_KEY}
       GOOGLE_CUSTOM_SEARCH_CX: ${env:GOOGLE_CUSTOM_SEARCH_CX}
@@ -116,7 +116,7 @@ functions:
       GOOGLE_OAUTH_CLIENT_ID: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_ID}
       GOOGLE_OAUTH_CLIENT_SECRET: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_SECRET}
       GOOGLE_OAUTH_REDIRECT_PATH: /video-meet/oauth/callback
-      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+      DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-data
     events:
       - httpApi:
           path: /video-meet/oauth/callback
@@ -131,7 +131,7 @@ constructs:
       memorySize: 1536
       environment:
         BOT_TOKEN: ${env:CHATTGB_BOT_TOKEN}
-        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-data
         CHAT_IDS_ALLOWLIST: ${env:CHATTGB_CHAT_IDS_ALLOWLIST}
         ADMIN_USER_IDS: ${env:CHATTGB_ADMIN_USER_IDS}
         OPENAI_API_KEY: ${env:OPENAI_API_KEY}
@@ -197,7 +197,7 @@ constructs:
         GOOGLE_OAUTH_CLIENT_ID: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_ID}
         GOOGLE_OAUTH_CLIENT_SECRET: ${env:VIDEO_MEET_GOOGLE_OAUTH_CLIENT_SECRET}
         GOOGLE_OAUTH_REDIRECT_PATH: /video-meet/oauth/callback
-        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-cache
+        DYNAMODB_CACHE_TABLE: ${env:SERVICE_NAME}-data
         STATE_SECRET: ${env:VIDEO_MEET_STATE_SECRET}
 
 resources:
@@ -212,16 +212,20 @@ resources:
     CacheTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${env:SERVICE_NAME}-cache
+        TableName: ${env:SERVICE_NAME}-data
         AttributeDefinitions:
           - AttributeName: botToken
             AttributeType: S
+          - AttributeName: botApiDialogId
+            AttributeType: N
           # NOTE: this is not needed, but it's added here for completeness
           # - AttributeName: val
           #   AttributeType: M
         KeySchema:
           - AttributeName: botToken
             KeyType: HASH
+          - AttributeName: botApiDialogId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

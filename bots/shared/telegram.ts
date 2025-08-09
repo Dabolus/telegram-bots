@@ -123,12 +123,15 @@ export const getAllUpdates = async (
   offset: number = 0,
   currentUpdatesResult?: GetAllUpdatesResult,
 ): Promise<GetAllUpdatesResult> => {
+  console.info(`Fetching updates with offset ${offset}...`);
   const newUpdates = await bot.getUpdates({
     allowed_updates: ['message'],
     offset: offset + 1,
   });
+  console.info(`Fetched ${newUpdates.length} updates with offset ${offset}.`);
 
   if (newUpdates.length < 1) {
+    console.info('No updates available, stopping further requests.');
     return (
       currentUpdatesResult || {
         updates: {},
@@ -140,6 +143,9 @@ export const getAllUpdates = async (
   const latestOffset = newUpdates.reduce(
     (highest, { update_id }) => Math.max(highest, update_id),
     0,
+  );
+  console.info(
+    `New latest update ID is ${latestOffset}. Trying to fetch more...`,
   );
 
   return getAllUpdates(bot, latestOffset, {
