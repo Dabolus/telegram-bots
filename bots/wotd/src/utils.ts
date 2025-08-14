@@ -117,46 +117,52 @@ export const getUpdatedExclusions = async (
 ): Promise<Record<string, string[]>> => {
   const excludeRegex = new RegExp(`^\\/exclude(?:@${botUsername})?\\s+(.*)$`);
   const includeRegex = new RegExp(`^\\/include(?:@${botUsername})?\\s+(.*)$`);
-  const exclusions = await getItem<Record<string, string[]>>('exclusions');
 
-  const newExclusions = updates.reduce((acc, [chatId, chatUpdates]) => {
-    const newChatExclusions = chatUpdates.reduce((excl, update) => {
-      const { message: { text = '' } = {} } = update;
+  const newExclusionsEntries = await Promise.all(
+    updates.map(async ([chatId, chatUpdates]) => {
+      const exclusions = await getItem<string[]>('exclusions', Number(chatId));
 
-      // If the message is an exclude command, add the words to the exclusions
-      const excludeMatch = text.match(excludeRegex);
-      if (excludeMatch && excludeMatch.length > 1) {
-        const words = excludeMatch[1]
-          .split(/\s+/)
-          // Normalize the words
-          .map(word => word.toLowerCase().trim())
-          // Make sure we don't include empty words
-          .filter(word => !!word && word.length > 2);
-        return [...excl, ...words];
-      }
+      const newChatExclusions = Array.from(
+        new Set(
+          chatUpdates.reduce((excl, update) => {
+            const { message: { text = '' } = {} } = update;
 
-      // If the message is an include command, remove the word from the exclusions
-      const includeMatch = text.match(includeRegex);
-      if (includeMatch && includeMatch.length > 1) {
-        const words = includeMatch[1]
-          .split(/\s+/)
-          // Normalize the words
-          .map(word => word.toLowerCase().trim())
-          // Make sure we don't include empty words
-          .filter(word => !!word && word.length > 2);
-        return words.length > 0 ? excl.filter(w => !words.includes(w)) : excl;
-      }
+            // If the message is an exclude command, add the words to the exclusions
+            const excludeMatch = text.match(excludeRegex);
+            if (excludeMatch && excludeMatch.length > 1) {
+              const words = excludeMatch[1]
+                .split(/\s+/)
+                // Normalize the words
+                .map(word => word.toLowerCase().trim())
+                // Make sure we don't include empty words
+                .filter(word => !!word && word.length > 2);
+              return [...excl, ...words];
+            }
 
-      return excl;
-    }, exclusions?.[chatId] || []);
+            // If the message is an include command, remove the word from the exclusions
+            const includeMatch = text.match(includeRegex);
+            if (includeMatch && includeMatch.length > 1) {
+              const words = includeMatch[1]
+                .split(/\s+/)
+                // Normalize the words
+                .map(word => word.toLowerCase().trim())
+                // Make sure we don't include empty words
+                .filter(word => !!word && word.length > 2);
+              return words.length > 0
+                ? excl.filter(w => !words.includes(w))
+                : excl;
+            }
 
-    return {
-      ...acc,
-      [chatId]: Array.from(new Set(newChatExclusions)),
-    };
-  }, {});
+            return excl;
+          }, exclusions || []),
+        ),
+      );
 
-  await setItem('exclusions', newExclusions);
+      await setItem('exclusions', newChatExclusions, Number(chatId));
 
-  return newExclusions;
+      return [chatId, newChatExclusions];
+    }),
+  );
+
+  return Object.fromEntries(newExclusionsEntries);
 };
