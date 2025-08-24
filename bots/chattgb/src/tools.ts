@@ -40,10 +40,6 @@ export const getChatTools = ({
           .optional()
           .describe('The caption to add to the image, if any'),
         hd: z.boolean().optional().describe('Whether to generate an HD image'),
-        natural: z
-          .boolean()
-          .optional()
-          .describe('Whether to generate a natural image'),
         orientation: z
           .enum(['landscape', 'portrait', 'square'])
           .optional()

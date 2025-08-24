@@ -3,17 +3,17 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
-    "@google-cloud/speech": "^7.1.0",
-    "@sparticuz/chromium": "^133.0.0",
+    "@google-cloud/speech": "^7.2.0",
+    "@sparticuz/chromium": "^138.0.2",
     "ejs": "^3.1.10",
     "node-telegram-bot-api": "^0.66.0",
-    "puppeteer-core": "^24.10.0",
+    "puppeteer-core": "^24.17.0",
     "unsplash-js": "^7.0.19"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.149",
+    "@types/aws-lambda": "^8.10.152",
     "@types/ejs": "^3.1.5",
-    "@types/node-telegram-bot-api": "^0.64.8"
+    "@types/node-telegram-bot-api": "^0.64.10"
   },
   "private": true,
   "allowedUpdates": [

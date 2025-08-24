@@ -3,20 +3,20 @@ import { countTokens } from 'gptoken';
 import { genkit, type Genkit, type MessageData } from 'genkit';
 import { logger } from 'genkit/logging';
 import { gemini25ProPreview0325, imagen3, vertexAI } from '@genkit-ai/vertexai';
-import { openAI, gpt4o, dallE3 } from 'genkitx-openai';
-import { anthropic, claude37Sonnet } from 'genkitx-anthropic';
+import { openAI } from '@genkit-ai/compat-oai/openai';
+import { anthropic, claude4Sonnet } from 'genkitx-anthropic';
 
 export const chatConfigs = {
   openai: {
     text: {
-      model: gpt4o,
-      displayName: 'GPT-4o',
-      maxHistoryTokens: 128000,
-      maxOutputTokens: 4096,
+      model: openAI.model('gpt-5'),
+      displayName: 'GPT-5',
+      maxHistoryTokens: 400000,
+      maxOutputTokens: 128000,
     },
     image: {
-      model: dallE3,
-      displayName: 'DALL·E 3',
+      model: openAI.model('gpt-image-1'),
+      displayName: 'GPT Image 1',
       maxInputTokens: 4000,
     },
     tts: {
@@ -44,10 +44,10 @@ export const chatConfigs = {
   },
   anthropic: {
     text: {
-      model: claude37Sonnet,
-      displayName: 'Claude 3.7 Sonnet',
-      maxHistoryTokens: 512000,
-      maxOutputTokens: 128000,
+      model: claude4Sonnet,
+      displayName: 'Claude Sonnet 4',
+      maxHistoryTokens: 200000,
+      maxOutputTokens: 32000,
     },
   },
 } as const;

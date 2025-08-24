@@ -17,8 +17,7 @@ import {
   type MessageData,
   type Part,
 } from 'genkit';
-import type { dallE3 } from 'genkitx-openai';
-import type { imagen2 } from '@genkit-ai/vertexai';
+import type { imagen3 } from '@genkit-ai/vertexai';
 import type TelegramBot from 'node-telegram-bot-api';
 import type { OpenAI } from 'openai';
 import type { SpeakOptions } from '@bots/shared/tts';
@@ -28,6 +27,7 @@ import {
 } from 'node-telegram-bot-api';
 import { SunoApi } from '@clite/suno';
 import { downloadFileBuffer } from '@bots/shared/utils';
+import { ImageGenerateParamsNonStreaming } from 'openai/resources/images.mjs';
 
 export const googleCredentialsPath = path.resolve(
   path.dirname(url.fileURLToPath(import.meta.url)),
@@ -98,16 +98,16 @@ export const removeFromDenyList = async (userId: number): Promise<void> => {
   await setDenyList(newList);
 };
 
-export const getDalleImageSize = (
+export const getOpenAiImageSize = (
   orientation?: NonNullable<
     Parameters<ReturnType<typeof getChatTools>['generateImage']>[0]
   >['orientation'],
-): '1792x1024' | '1024x1792' | '1024x1024' => {
+): ImageGenerateParamsNonStreaming['size'] => {
   switch (orientation) {
     case 'landscape':
-      return '1792x1024';
+      return '1536x1024';
     case 'portrait':
-      return '1024x1792';
+      return '1024x1536';
     default:
       return '1024x1024';
   }
@@ -138,15 +138,15 @@ export const getImageCustomConfig = (
   switch (modelConfig) {
     case 'openai':
       return {
-        quality: imageGenerationConfig.hd ? 'hd' : 'standard',
-        style: imageGenerationConfig.natural ? 'natural' : 'vivid',
-        size: getDalleImageSize(imageGenerationConfig.orientation),
+        n: 1,
+        quality: imageGenerationConfig.hd ? 'high' : 'medium',
+        size: getOpenAiImageSize(imageGenerationConfig.orientation),
         user: userId?.toString(),
-      } satisfies z.infer<NonNullable<(typeof dallE3)['configSchema']>>;
+      } satisfies Omit<ImageGenerateParamsNonStreaming, 'prompt'>;
     case 'google':
       return {
         aspectRatio: getImagenImageSize(imageGenerationConfig.orientation),
-      } satisfies z.infer<NonNullable<(typeof imagen2)['configSchema']>>;
+      } satisfies z.infer<NonNullable<(typeof imagen3)['configSchema']>>;
   }
 };
 
