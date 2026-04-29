@@ -36,7 +36,7 @@ export const sanitize = (str: string) =>
         "'": '&apos;',
         '<': '&lt;',
         '>': '&gt;',
-      }[char as '&' | '"' | "'" | '<' | '>']),
+      })[char as '&' | '"' | "'" | '<' | '>'],
   );
 
 // Every entity not present in this map will use the `default` tag
@@ -434,7 +434,7 @@ export const extractQuoteInfo = async (
             update.message.audio?.file_id || update.message.voice!.file_id,
             update.message.from?.language_code || 'en-US',
           )
-        : match?.[1] ?? update.message.text;
+        : (match?.[1] ?? update.message.text);
 
     const trimmed = messageText?.trim();
 
@@ -480,7 +480,8 @@ export const extractQuoteInfo = async (
               update.message.reply_to_message.voice!.file_id,
             update.message.reply_to_message.from?.language_code || 'en-US',
           )
-        : update.message.reply_to_message.text;
+        : (update.message as any).quote?.text ||
+          update.message.reply_to_message.text;
 
     const trimmed = messageText?.trim();
 

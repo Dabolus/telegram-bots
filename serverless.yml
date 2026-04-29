@@ -5,7 +5,7 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
   region: us-east-1
   memorySize: 768
   timeout: 28
@@ -53,10 +53,22 @@ package:
 layers:
   chromium:
     path: layers/chromium/build
+    compatibleRuntimes:
+      - nodejs22.x
+    compatibleArchitectures:
+      - x86_64
   ffmpeg:
     path: layers/ffmpeg/build
+    compatibleRuntimes:
+      - nodejs22.x
+    compatibleArchitectures:
+      - x86_64
   sharp:
     path: layers/sharp/build
+    compatibleRuntimes:
+      - nodejs22.x
+    compatibleArchitectures:
+      - x86_64
 
 functions:
   broker:

@@ -3,26 +3,26 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.60.0",
-    "@aws-sdk/client-dynamodb": "^3.873.0",
-    "@aws-sdk/lib-dynamodb": "^3.873.0",
+    "@anthropic-ai/sdk": "^0.91.1",
+    "@aws-sdk/client-dynamodb": "^3.1038.0",
+    "@aws-sdk/lib-dynamodb": "^3.1038.0",
     "@clite/suno": "^0.1.5",
-    "@genkit-ai/compat-oai": "^1.17.0",
-    "@genkit-ai/vertexai": "^1.17.0",
-    "@google-cloud/text-to-speech": "^6.2.0",
-    "genkit": "^1.17.0",
-    "genkitx-anthropic": "^0.23.1",
+    "@genkit-ai/compat-oai": "^1.33.0",
+    "@genkit-ai/vertexai": "^1.33.0",
+    "@google-cloud/text-to-speech": "^6.4.0",
+    "genkit": "^1.33.0",
+    "genkitx-anthropic": "^0.30.0",
     "gptoken": "^0.1.0",
-    "node-telegram-bot-api": "^0.66.0",
-    "openai": "^5.15.0",
-    "sharp": "0.34.3",
-    "zod-to-json-schema": "3.24.6"
+    "node-telegram-bot-api": "^0.67.0",
+    "openai": "^6.35.0",
+    "sharp": "0.34.5",
+    "zod-to-json-schema": "3.25.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.152",
-    "@types/node-telegram-bot-api": "^0.64.10",
+    "@types/aws-lambda": "^8.10.161",
+    "@types/node-telegram-bot-api": "^0.64.14",
     "@types/sharp": "^0.32.0",
-    "genkit": "^1.17.0"
+    "genkit": "^1.33.0"
   },
   "private": true,
   "allowedUpdates": [

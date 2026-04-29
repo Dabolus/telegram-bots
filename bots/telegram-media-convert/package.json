@@ -3,12 +3,12 @@
   "type": "module",
   "version": "0.1.0",
   "dependencies": {
-    "node-telegram-bot-api": "^0.66.0",
-    "sharp": "0.34.3"
+    "node-telegram-bot-api": "^0.67.0",
+    "sharp": "0.34.5"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.152",
-    "@types/node-telegram-bot-api": "^0.64.10",
+    "@types/aws-lambda": "^8.10.161",
+    "@types/node-telegram-bot-api": "^0.64.14",
     "@types/sharp": "^0.32.0"
   },
   "private": true,

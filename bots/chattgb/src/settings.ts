@@ -189,7 +189,7 @@ const getEditedMessage = (
     case 'models:tts': {
       const currentTtsModel = currentChatConfiguration?.models?.tts ?? 'openai';
       return {
-        text: `Image model is currently <b>${chatConfigs[currentTtsModel].tts.displayName}</b>.`,
+        text: `TTS model is currently <b>${chatConfigs[currentTtsModel].tts.displayName}</b>.`,
         keyboard: [
           [
             {

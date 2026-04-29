@@ -27,7 +27,7 @@ import {
   LlmTextInput,
 } from './utils';
 import { handleSettings } from './settings';
-import { z, type ModelArgument } from 'genkit';
+import { z, type ToolArgument } from 'genkit';
 import { setupSuno } from '@bots/shared/suno';
 
 export const handler = createUpdateHandler(
@@ -561,13 +561,14 @@ export const handler = createUpdateHandler(
     await bot.sendChatAction(update.message.chat.id, 'typing');
     const textModelConfig = currentConfig.models?.text ?? 'openai';
     const completion = await genkit.generate<typeof outputSchema>({
-      model: chatConfigs[textModelConfig].text.model as ModelArgument,
-      tools: Object.values(tools),
+      model: chatConfigs[textModelConfig].text.model,
+      tools: Object.values(tools) as ToolArgument[],
       returnToolRequests: true,
       output: {
         format: 'json',
       },
       config: {
+        config: { responseModalities: ['TEXT', 'IMAGE', 'AUDIO'] },
         maxOutputTokens: chatConfigs[textModelConfig].text.maxOutputTokens,
         ...(textModelConfig === 'openai'
           ? {
@@ -625,6 +626,28 @@ export const handler = createUpdateHandler(
                 }),
           },
         });
+      }
+      if (rawResponse.media) {
+        const mediaContentType = rawResponse.media.contentType ?? 'image/png';
+        const mediaBuffer = Buffer.from(
+          rawResponse.media.url.slice(rawResponse.media.url.indexOf(',') + 1),
+          'base64',
+        );
+        await bot.sendDocument(
+          update.message.chat.id,
+          mediaBuffer,
+          {
+            reply_to_message_id: update.message.message_id,
+            parse_mode: 'HTML',
+            caption: rawResponse.text,
+          },
+          {
+            contentType: mediaContentType,
+            filename: `response.${
+              mediaContentType.slice(mediaContentType.indexOf('/') + 1) || 'png'
+            }`,
+          },
+        );
       }
     }
 
