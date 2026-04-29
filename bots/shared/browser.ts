@@ -5,10 +5,8 @@ let browserPromise: Promise<Browser>;
 
 export const initializeBrowser = async () => {
   const browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
+    args: puppeteer.defaultArgs({ args: chromium.args }),
     executablePath: await chromium.executablePath(),
-    headless: chromium.headless,
     acceptInsecureCerts: true,
   });
 
