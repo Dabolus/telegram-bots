@@ -7,7 +7,7 @@ export default _serverless => ({
   sourcemap: true,
   format: 'esm',
   platform: 'node',
-  target: 'node20',
+  target: 'node24',
   resolveExtensions: ['.ts', '.mjs', '.js', '.json'],
   inject: ['cjs-shim.ts'],
   external: ['@aws-sdk/*', '@sparticuz/chromium', 'sharp'],
